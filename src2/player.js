@@ -1,7 +1,8 @@
 'use strict';
 
-const Entity = require('./Entity');
-const { Attribute, PlayerRank } = require('./Attributes');
+const Entity = require('./entity');
+
+const { Attribute, PlayerRank } = require('./attributes');
 
 const PLAYERITEMS = 16; // max num of items in a player's inventory
 
@@ -70,23 +71,23 @@ class Player extends Entity {
 
   recalculateStats() {
     this.attributes[Attribute.MAXHITPOINTS] =
-        10 + parseInt(this.level * (this.GetAttr(Attribute.HEALTH) / 1.5));
+      10 + parseInt(this.level * (this.GetAttr(Attribute.HEALTH) / 1.5));
     this.attributes[Attribute.HPREGEN] =
-        parseInt(this.GetAttr(Attribute.HEALTH) / 5) + this.level;
+      parseInt(this.GetAttr(Attribute.HEALTH) / 5) + this.level;
 
     this.attributes[Attribute.ACCURACY] = this.GetAttr(Attribute.AGILITY) * 3;
-    this.attributes[Attribute.DODGING] = this.GetAttr(Attribute.AGILITY ) * 3;
+    this.attributes[Attribute.DODGING] = this.GetAttr(Attribute.AGILITY) * 3;
     this.attributes[Attribute.DAMAGEABSORB] = parseInt(this.GetAttr(Attribute.STRENGTH) / 5);
     this.attributes[Attribute.STRIKEDAMAGE] = parseInt(this.GetAttr(Attribute.STRENGTH) / 5);
 
     // make sure the hitpoints don't overflow if your max goes down
-    if(this.hitpoints > this.GetAttr(Attribute.MAXHITPOINTS))
-        this.hitpoints = this.GetAttr(Attribute.MAXHITPOINTS);
+    if (this.hitpoints > this.GetAttr(Attribute.MAXHITPOINTS))
+      this.hitpoints = this.GetAttr(Attribute.MAXHITPOINTS);
 
-    if( this.Weapon() != 0 )
-        this.addDynamicBonuses(this.Weapon());
-    if( this.Armor() != 0 )
-        this.addDynamicBonuses(this.Armor());
+    if (this.Weapon() != 0)
+      this.addDynamicBonuses(this.Weapon());
+    if (this.Armor() != 0)
+      this.addDynamicBonuses(this.Armor());
   }
 
   addBonuses(item) {
@@ -130,27 +131,27 @@ class Player extends Entity {
     // calculate the base value plus the temporary calculated value:
     const val = this.attributes[attr] + this.baseAttributes[attr];
 
-    if(attr == Attribute.STRENGTH || attr == Attribute.AGILITY
-        || attr == Attribute.HEALTH){
-        // return 1 if the value is less than 1
-        if(val < 1) return 1;
+    if (attr == Attribute.STRENGTH || attr == Attribute.AGILITY
+      || attr == Attribute.HEALTH) {
+      // return 1 if the value is less than 1
+      if (val < 1) return 1;
     }
 
     return val;
   }
 
   Weapon() {
-    if( this.weapon == -1 )                // if no weapon armed
-        return 0;                       // return 0
+    if (this.weapon == -1)                // if no weapon armed
+      return 0;                       // return 0
     else
-        return this.inventory[this.weapon];   // return item id
+      return this.inventory[this.weapon];   // return item id
   }
 
   Armor() {
-    if( this.armor == -1 )                 // if no armor armed
-        return 0;                       // return 0
+    if (this.armor == -1)                 // if no armor armed
+      return 0;                       // return 0
     else
-        return this.inventory[this.armor];    // return item id
+      return this.inventory[this.armor];    // return item id
   }
 
   MaxItems() {
@@ -158,10 +159,10 @@ class Player extends Entity {
   }
 
   pickUpItem(item) {
-    if(this.items < this.MaxItems()) {
+    if (this.items < this.MaxItems()) {
       this.inventory[this.items] = item;
       this.items++;
-        return true;
+      return true;
     }
     return false;
   }
@@ -173,7 +174,7 @@ class Player extends Entity {
         this.removeWeapon();
       }
 
-      if(this.armor === index) {
+      if (this.armor === index) {
         this.removeArmor();
       }
 
@@ -235,7 +236,7 @@ class Player extends Entity {
   sendString(str) {
     if (this.connection === 0) {
       console.error("Trying to send string to player " +
-                    this.name + " but player is not connected.");
+        this.name + " but player is not connected.");
       return;
     }
 
@@ -260,9 +261,9 @@ class Player extends Entity {
     else color = "green";
 
     const statbar = require('util').format(
-        "<white><bold>[<%s>%s</%s>/%s]</bold></white>",
-        color, this.hitPoints, color,
-        this.GetAttr(Attribute.MAXHITPOINTS));
+      "<white><bold>[<%s>%s</%s>/%s]</bold></white>",
+      color, this.hitPoints, color,
+      this.GetAttr(Attribute.MAXHITPOINTS));
 
     this.connection.sendMessage(statbar + '\n');
   }

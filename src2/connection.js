@@ -1,6 +1,6 @@
 'use strict';
 
-class Connection {
+class connection {
 
   constructor(socket, protocol) {
     this.socket = socket;
@@ -26,7 +26,7 @@ class Connection {
   sendMessage(msg) {
     try {
       this.socket.write(this.protocol.translate(msg));
-    } catch(err) {
+    } catch {
       this.close();
     }
   }
@@ -67,7 +67,7 @@ class Connection {
     }
 
     if (this.buffer.match(/\n/)) {
-      this._handler().handle(this.buffer.replace(/[\r\n]*$/,''));
+      this._handler().handle(this.buffer.replace(/[\r\n]*$/, ''));
       this.buffer = '';
     }
   }
@@ -80,4 +80,4 @@ class Connection {
 
 }
 
-module.exports = Connection;
+module.exports = connection;

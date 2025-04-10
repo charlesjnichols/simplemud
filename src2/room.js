@@ -1,7 +1,7 @@
 'use strict';
 
-const Entity = require('./Entity');
-const { RoomType, Direction } = require('./Attributes');
+const Entity = require('./entity');
+const { RoomType, Direction } = require('./attributes');
 
 class Room extends Entity {
   constructor() {

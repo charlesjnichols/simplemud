@@ -1,6 +1,6 @@
 'use strict';
 
-const Entity = require('./Entity');
+const Entity = require('./entity');
 
 class Store extends Entity {
 

@@ -1,9 +1,9 @@
 'use strict';
 
-const { playerDb, roomDb } = require('./Databases');
-const ConnectionHandler = require('./ConnectionHandler');
-const { Attribute } = require('./Attributes');
-const Player = require('./Player');
+const { playerDb, roomDb } = require('./databases');
+const ConnectionHandler = require('./connection-handler');
+const { Attribute } = require('./attributes');
+const Player = require('./player');
 
 let tempRoom; // keeps track of the room player was in before entering
 

@@ -11,7 +11,7 @@ const Player = require(path.join(__dirname, '..', 'src', 'Player'));
 
 describe("PlayerDatabase", () => {
 
-  const dataPath = path.join(__dirname, '..', 'data', 'players');
+  const dataPath = require('players');
 
   let testPlayer;
   beforeEach(() => {

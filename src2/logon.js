@@ -1,10 +1,10 @@
 'use strict';
 
-const { playerDb } = require('./Databases');
-const ConnectionHandler = require('./ConnectionHandler');
-const { PlayerRank } = require('./Attributes');
-const Player = require('./Player');
-const Game = require('./Game');
+const { playerDb } = require('./databases');
+const ConnectionHandler = require('./connection-handler');
+const { PlayerRank } = require('./attributes');
+const Player = require('./player');
+const {Game} = require('./game');
 
 // Acceptable states
 const NEWCONNECTION = "NEWCONNECTION";

@@ -1,13 +1,13 @@
 'use strict';
 
-const Util = require('./Util');
+const Util = require('./util');
 const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
-  require('./Databases');
-const ConnectionHandler = require('./ConnectionHandler');
+  require('./databases');
+const ConnectionHandler = require('./connection-handler');
 const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
-  require('./Attributes');
-const Player = require('./Player');
-const Train = require('./Train');
+  require('./attributes');
+const Player = require('./player');
+const Train = require('./train');
 
 const tostring = Util.tostring;
 const random = Util.randomInt;

@@ -1,9 +1,9 @@
 'use strict';
 
-const Connection = require('./Connection');
-const Logon = require('./Logon');
+const connection = require('./connection');
+const Logon = require('./logon');
 
-const ConnectionManager = (() => {
+const connection_manager = (() => {
 
   const cm = {};
   const connections = [];
@@ -13,7 +13,7 @@ const ConnectionManager = (() => {
   };
 
   cm.newConnection = (socket, protocol, handler) => {
-    const conn = new Connection(socket, protocol);
+    const conn = new connection(socket, protocol);
     const defaultHandler = handler || new Logon(conn);
     conn.addHandler(defaultHandler);
     connections.push(conn);
@@ -44,4 +44,4 @@ const ConnectionManager = (() => {
 
 })();
 
-module.exports = ConnectionManager;
+module.exports = connection_manager;

@@ -17,7 +17,7 @@ const timer = Game.getTimer();
 const seconds = Util.seconds;
 const minutes = Util.minutes;
 
-const file = path.join(__dirname, '..', 'data', 'gamedata.json');
+const file = require('gamedata.json');
 
 describe("GameLoop", () => {
 

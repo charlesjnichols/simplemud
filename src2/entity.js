@@ -29,14 +29,14 @@ class Entity {
     // for example, if the user types "st" when searching a "rusty stake",
     // only one pass would find the 'st' in "rusty", and determine that
     // there is no match. That's why more than one pass is needed.
-    while(pos !== -1) {
-        // match found at beginning, or match found at beginning of a word,
-        // therefore, return true.
-        if( pos === 0 || this.name[pos-1] === ' ' )
-            return true;
+    while (pos !== -1) {
+      // match found at beginning, or match found at beginning of a word,
+      // therefore, return true.
+      if (pos === 0 || this.name[pos - 1] === ' ')
+        return true;
 
-        // perform another search, starting at where the last one left off
-        pos = name.indexOf(search, pos + 1);
+      // perform another search, starting at where the last one left off
+      pos = name.indexOf(search, pos + 1);
     }
     // no matches
     return false;

@@ -3,11 +3,11 @@
 const jsonfile = require('jsonfile');
 const path = require('path');
 
-const { Attribute } = require('./Attributes');
+const { Attribute } = require('./attributes');
 
-const Util = require('./Util');
-const DB = require('./Databases');
-const Game = require('./Game');
+const Util = require('./util');
+const DB = require('./databases');
+const Game = require('./game');
 
 const timer = Game.getTimer();
 const seconds = Util.seconds;

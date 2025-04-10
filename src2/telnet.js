@@ -2,7 +2,7 @@
 
 const HtmlParser = require("htmlparser2");
 const Tree = require("tree");
-const { wrap } = require('./Util');
+const { wrap } = require('./util');
 
 const Telnet = {
   translate: (data) => {
