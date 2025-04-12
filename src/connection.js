@@ -25,7 +25,9 @@ class connection {
 
   sendMessage(msg) {
     try {
-      this.socket.write(this.protocol.translate(msg));
+      if (this.socket && !this.socket.destroyed && this.socket.writable){
+        this.socket.write(this.protocol.translate(msg));
+      }
     } catch {
       this.close();
     }

@@ -1,13 +1,13 @@
 'use strict';
 
-const createItemDatabase = require('./item-database');
+const createItemDatabase = require('./item/database');
 const createPlayerDatabase = require('./player/database');
-const createRoomDatabase = require('./room-database');
-const createStoreDatabase = require('./store-database');
+const createRoomDatabase = require('./room/database');
+const createStoreDatabase = require('./store/database');
 const {
   createEnemyTemplateDatabase,
   createEnemyDatabase
-} = require('./enemy-database');
+} = require('./enemy/database');
 
 
 // Instantiate all databases
