@@ -22,7 +22,6 @@ const file = path.join(__dirname, '..', 'data', 'gamedata.json');
 
 class GameLoop {
   constructor() {
-    this.loadDatabases();
     this.db = DB;
   }
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const { playerDb, roomDb } = require('./databases');
-const ConnectionHandler = require('./connection-handler');
+const ConnectionHandler = require('./connection/handler');
 const { Attribute } = require('./attributes');
 const Player = require('./player/player');
 

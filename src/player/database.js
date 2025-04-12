@@ -2,14 +2,19 @@
 
 const _ = require('lodash');
 
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const jsonfile = require('jsonfile');
 
+const { v4: uuidv4 } = require('uuid');
+
 const createEntityDatabase = require('../entity-database');
 const createPlayer = require('./player');
 
-const { v4: uuidv4 } = require('uuid');
+const { PlayerRank } = require("../attributes");
+const { encryptPassword } = require('../utils/password-vault');
+
 
 const PLAYER_DIR = path.resolve(process.cwd(), 'data/players');
 
@@ -26,17 +31,39 @@ function createPlayerDatabase() {
     return true;
   };
 
+  const ensureAdminPlayer = () => {
+    const hasAdmin = db.findByRank(PlayerRank.get('ADMIN'));
+
+    if (!hasAdmin) {
+      const password = crypto.randomBytes(12).toString('base64');
+      const encrypted = encryptPassword(password);
+      const adminData = {
+        name: 'admin',
+        password: encrypted,
+        rank: PlayerRank.get('ADMIN'),
+        inventory: [],
+        stats: { hp: 100, mp: 50, level: 100, xp: 0 },
+      };
+
+      const adminPlayer = createPlayer(adminData);
+      savePlayer(adminPlayer);
+      db.add(adminPlayer);
+
+      console.log(`[DB] Inof: No admin found. Created default admin with password: ${password}`);
+    }
+  };
+
   const load = (itemDb, roomDb) => {
     db.clear();
-  
+
     if (!fs.existsSync(PLAYER_DIR)) {
       console.warn('[DB] Warning: player data directory not found.');
       return false;
     }
-  
+
     console.log('[DB] Scanning player directory...');
     const files = fs.readdirSync(PLAYER_DIR);
-  
+
     _(files)
       .filter(f => f.endsWith('.json') && !f.startsWith('_'))
       .map(f => path.basename(f, '.json'))
@@ -49,8 +76,12 @@ function createPlayerDatabase() {
           console.warn(`[DB] Failed to load player '${name}'`);
         }
       });
-  
+
     console.log(`[DB] Loaded ${db.size()} players.`);
+
+    console.log('[DB] Ensuring an admin exists...');
+    ensureAdminPlayer();
+
     return true;
   };
 

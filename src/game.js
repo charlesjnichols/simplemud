@@ -5,15 +5,14 @@ const {randomInt} = require('./utils/math');
 const {dateStamp,timeStamp,upTime,createTimer,seconds,minutes} = require('./utils/time');
 const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
   require('./databases');
-const ConnectionHandler = require('./connection-handler');
+const ConnectionHandler = require('./connection/handler');
 const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
   require('./attributes');
-const Player = require('./player/player');
 const Train = require('./train');
 
 let isRunning = false;
 
-const timer = createTimer().reset();
+const timer = createTimer();
 
 // Game Handler class
 class Game extends ConnectionHandler {

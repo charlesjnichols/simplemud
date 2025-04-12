@@ -23,10 +23,10 @@ class connection {
     if (this._handler()) this._handler().enter();
   }
 
-  sendMessage(msg) {
+  sendMessage(message) {
     try {
       if (this.socket && !this.socket.destroyed && this.socket.writable){
-        this.socket.write(this.protocol.translate(msg));
+        this.socket.write(this.protocol.translate(message));
       }
     } catch {
       this.close();

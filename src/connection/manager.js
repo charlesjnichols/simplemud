@@ -1,7 +1,7 @@
 'use strict';
 
 const connection = require('./connection');
-const { createLogonHandler } = require('./logon');
+const { createLogonHandler } = require('../logon');
 
 const createConnectionManager = ({ playerDb }) => {
   const connections = [];

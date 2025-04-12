@@ -1,7 +1,7 @@
 'use strict';
 
 const { Attribute, ItemType } = require('../attributes');
-const { matchFull, matchPartial } = require('.././utils/matcher');
+const { matchFull, matchPartial } = require('../utils/matcher');
 
 function createItem(data = {}) {
   const type = ItemType.get(data.TYPE) || ItemType.get('WEAPON');

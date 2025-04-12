@@ -20,6 +20,10 @@ const createEntityDatabase = () => {
     return _.find([...map.values()], e => e.name?.toLowerCase().includes(lower) && (!filter || filter(e))) ?? null;
   };
 
+  const findByRank = (rank, filter) => {
+    return _.find([...map.values()], e => e.rank === rank && (!filter || filter(e))) ?? null;
+  };
+
   const hasId = (id) => map.has(id);
   const hasNameFull = (name) => Boolean(findByNameFull(name));
   const hasNamePartial = (name) => Boolean(findByNamePartial(name));
@@ -37,6 +41,7 @@ const createEntityDatabase = () => {
     findById,
     findByNameFull,
     findByNamePartial,
+    findByRank,
     hasId,
     hasNameFull,
     hasNamePartial,
