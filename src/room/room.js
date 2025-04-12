@@ -4,6 +4,8 @@ const { RoomType, Direction } = require('../attributes');
 // eslint-disable-next-line no-unused-vars
 const { matchFull, matchPartial } = require('../utils/matcher');
 
+const { createRoomMessages } = require("./messages");
+
 function createRoom(data = {}) {
   const rooms = Direction.enums.reduce((acc, dir) => {
     acc[dir] = 0;
@@ -22,8 +24,10 @@ function createRoom(data = {}) {
     items: [],
     money: 0,
     players: [],
-    enemies: [],
+    enemies: []
   };
+
+  room.messages = createRoomMessages(room);
 
   // ---------- Behavior ----------
 

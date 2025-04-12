@@ -2,6 +2,8 @@ const { Attribute, PlayerRank } = require('../attributes');
 const { matchFull, matchPartial } = require("../utils/matcher")
 const { encryptPassword, isEncrypted } = require('../utils/password-vault');
 
+const { createPlayerMessages } = require('./messages');
+
 const PLAYERITEMS = 16;
 
 function createPlayer(data = {}) {
@@ -185,6 +187,7 @@ function createPlayer(data = {}) {
 
   player.getMaxItems = () => PLAYERITEMS; // or use a shared constant if preferred
 
+  player.messages = createPlayerMessages(player);
 
   player.toJSON = () => ({
     id: player.id,

@@ -5,13 +5,11 @@ const path = require('path');
 
 const { Attribute } = require('./attributes');
 
-const Util = require('../util');
+const {seconds, minutes} = require('./utils/time');
 const DB = require('./databases');
 const Game = require('./game');
 
 const timer = Game.getTimer();
-const seconds = Util.seconds;
-const minutes = Util.minutes;
 
 const DBSAVETIME = minutes( 15 );
 const ROUNDTIME  = seconds( 1 );

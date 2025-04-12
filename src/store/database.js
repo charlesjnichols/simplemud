@@ -24,7 +24,7 @@ function createStoreDatabase() {
   }
 
   return {
-    ..._.pick(db, ['values','findById']),
+    ..._.pick(db, ['values', 'findById']),
     load,
   };
 }

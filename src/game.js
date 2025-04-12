@@ -10,6 +10,7 @@ const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
   require('./attributes');
 const {center, cyan, green, yellow, white, whiteBold, padLeft, padRight} = require("./utils/formatting");
 const Train = require('./train');
+const playerMessages = require("./player/messages");
 
 let isRunning = false;
 
@@ -52,7 +53,7 @@ class Game extends ConnectionHandler {
       " has entered the realm.</green></bold>");
 
     if (p.newbie) this.goToTrain();
-    else p.sendString(Game.printRoom(p.room));
+    else p.sendString(p.room.messages.printRoom());
   }
 
   handle(data) {
@@ -77,17 +78,17 @@ class Game extends ConnectionHandler {
     }
 
     if (firstWord === "experience" || firstWord === "exp") {
-      p.sendString(this.printExperience());
+      p.sendString(p.messages.printExperience());
       return;
     }
 
     if (firstWord === "help" || firstWord === "commands") {
-      p.sendString(Game.printHelp(p.rank));
+      p.sendString(p.messages.printHelp());
       return;
     }
 
     if (firstWord === "inventory" || firstWord === "inv") {
-      p.sendString(this.printInventory());
+      p.sendString(p.messages.printInventory());
       return;
     }
 
@@ -103,7 +104,7 @@ class Game extends ConnectionHandler {
     }
 
     if (firstWord === "stats" || firstWord === "st") {
-      p.sendString(this.printStats());
+      p.sendString(p.messages.printStats());
       return;
     }
 
@@ -132,13 +133,12 @@ class Game extends ConnectionHandler {
     }
 
     if (firstWord === "who") {
-      p.sendString(Game.whoList(
-        parseWord(data, 1).toLowerCase()));
+      p.sendString(p.messages.printWhoList(parseWord(data, 1).toLowerCase(), playerDb));
       return;
     }
 
     if (firstWord === "look" || firstWord === "l") {
-      p.sendString(Game.printRoom(p.room));
+      p.sendString(p.room.messages.printRoom());
       return;
     }
 
@@ -201,7 +201,7 @@ class Game extends ConnectionHandler {
         p.sendString("<red><bold>You're not in a store!</bold></red>");
         return;
       }
-      p.sendString(Game.storeList(p.room.data));
+      p.sendString(p.room.store.messages.printStoreList());
       return;
     }
 
@@ -442,7 +442,7 @@ class Game extends ConnectionHandler {
     p.room = next;
     next.addPlayer(p);
 
-    p.sendString(Game.printRoom(next));
+    p.sendString(next.messages.printRoom());
   }
 
   _oppositeDirection(dir) {
@@ -791,272 +791,6 @@ class Game extends ConnectionHandler {
         ": </yellow>" + msg);
     }
   }
-
-  static whoList(mode) {
-    let str = "<white><bold>" +
-      "--------------------------------------------------------------------------------\r\n" +
-      " Name             | Level     | Activity | Rank\r\n" +
-      "--------------------------------------------------------------------------------\r\n";
-
-    if (mode === 'all') {
-      str += Game._who(() => true);
-    } else {
-      str += Game._who((player) => player.loggedIn);
-    }
-
-    str +=
-      "--------------------------------------------------------------------------------" +
-      "</bold></white>";
-
-    return str;
-  }
-
-  static _who(filterFn) {
-    let str = "";
-    for (const key of playerDb.keys()) {
-      const player = playerDb.get(key);
-      if (filterFn(player)) {
-        const p = player;
-        str += " " + tostring(p.name, 17) + "| ";
-        str += tostring(p.level.toString(), 10) + "| ";
-
-        if (p.active) str += "<green>Online  </green>";
-        else if (p.loggedIn) str += "<yellow>Inactive</yellow>";
-        else str += "<red>Offline </red>";
-
-        str += " | ";
-        let rankColor = "";
-        switch(p.rank) {
-          case PlayerRank.REGULAR: rankColor = "white";   break;
-          case PlayerRank.GOD:     rankColor = "yellow";  break;
-          case PlayerRank.ADMIN:   rankColor = "green";   break;
-        }
-        str += "<" + rankColor + ">" + p.rank.toString() +
-          "</" + rankColor + ">\r\n";
-      }
-    }
-    return str;
-  }
-
-  static printHelp(rank) {
-    const help = "<white><bold>" +
-        "--------------------------------- Command List ---------------------------------\r\n" +
-        " /                          - Repeats your last command exactly.\r\n" +
-        " chat <mesg>                - Sends message to everyone in the game\r\n" +
-        " experience                 - Shows your experience statistics\r\n" +
-        " help                       - Shows this menu\r\n" +
-        " inventory                  - Shows a list of your items\r\n" +
-        " quit                       - Allows you to leave the realm.\r\n" +
-        " remove <'weapon'/'armor'>  - removes your weapon or armor\r\n" +
-        " stats                      - Shows all of your statistics\r\n" +
-        " time                       - shows the current system time.\r\n" +
-        " use <item>                 - use an item in your inventory\r\n" +
-        " whisper <who> <msg>        - Sends message to one person\r\n" +
-        " who                        - Shows a list of everyone online\r\n" +
-        " who all                    - Shows a list of everyone\r\n" +
-        " look                       - Shows you the contents of a room\r\n" +
-        " north/east/south/west      - Moves in a direction\r\n" +
-        " get/drop <item>            - Picks up or drops an item on the ground\r\n" +
-        " train                      - Train to the next level (TR)\r\n" +
-        " editstats                  - Edit your statistics (TR)\r\n" +
-        " list                       - Lists items in a store (ST)\r\n" +
-        " buy/sell <item>            - Buy or Sell an item in a store (ST)\r\n" +
-        " attack <enemy>             - Attack an enemy\r\n</bold></white>";
-
-      const god = "<yellow><bold>" +
-        "--------------------------------- God Commands ---------------------------------\r\n" +
-        " kick <who>                 - kicks a user from the realm\r\n" +
-        "</bold></yellow>";
-
-      const admin = "<green><bold>" +
-        "-------------------------------- Admin Commands --------------------------------\r\n" +
-        " announce <msg>             - Makes a global system announcement\r\n" +
-        " changerank <who> <rank>    - Changes the rank of a player\r\n" +
-        " reload <db>                - Reloads the requested database\r\n" +
-        " shutdown                   - Shuts the server down\r\n" +
-        "</bold></green>";
-
-      const end =
-        "--------------------------------------------------------------------------------";
-
-      switch(rank) {
-        case PlayerRank.REGULAR:
-          return help + end;
-        case PlayerRank.GOD:
-          return help + god + end;
-        default:
-          return help + god + admin + end;
-      }
-  }
-
-  static storeList(storeId) {
-    const store = storeDb.findById(storeId);
-    if (!store) return false;
-  
-    const divider = "-".repeat(80);
-    const columnWidthName = 33;
-    const columnWidthPrice = 10;
-  
-    const headerLines = [
-      divider,
-      center(green(`Welcome to ${store.name}!`), 80),
-      divider,
-      center(cyan("Item"), columnWidthName) + " | " +
-      center(cyan("Price"), columnWidthPrice),
-      divider
-    ];
-  
-    const itemLines = store.items.map(item => {
-      const name = yellow(padRight(item.name, columnWidthName));
-      const price = white(padLeft(`$${item.price}`, columnWidthPrice));
-      return ` ${name} | ${price}`;
-    });
-  
-    const footerLine = divider;
-  
-    return whiteBold(
-      [...headerLines, ...itemLines, footerLine].join("\r\n")
-    );
-  }
-  
-
-  printExperience() {
-    const p = this.player;
-    return "<white><bold>" +
-      " Level:         " + p.level + "\r\n" +
-      " Experience:    " + p.experience + "/" +
-      p.needForLevel(p.level + 1) + " (" +
-      Math.round(100 * p.experience / p.needForLevel(p.level + 1)) +
-      "%)</bold></white>";
-  }
-
-  printStats() {
-    const p = this.player;
-    const attr = p.GetAttr.bind(p);
-    const str = "<white><bold>" +
-    "---------------------------------- Your Stats ----------------------------------\r\n" +
-    " Name:          " + p.name + "\r\n" +
-    " Rank:          " + p.rank.toString() + "\r\n" +
-    " HP/Max:        " + p.hitPoints + "/" + attr(Attribute.MAXHITPOINTS) +
-    "  (" + Math.round(100 * p.hitPoints / attr(Attribute.MAXHITPOINTS)) + "%)\r\n" +
-    this.printExperience() + "\r\n" +
-    " Strength:      " + tostring(attr(Attribute.STRENGTH), 16) +
-    " Accuracy:      " + tostring(attr(Attribute.ACCURACY)) + "\r\n" +
-    " Health:        " + tostring(attr(Attribute.HEALTH), 16) +
-    " Dodging:       " + tostring(attr(Attribute.DODGING)) + "\r\n" +
-    " Agility:       " + tostring(attr(Attribute.AGILITY), 16) +
-    " Strike Damage: " + tostring(attr(Attribute.STRIKEDAMAGE)) + "\r\n" +
-    " StatPoints:    " + tostring(p.statPoints, 16) +
-    " Damage Absorb: " + tostring(attr(Attribute.DAMAGEABSORB)) + "\r\n" +
-    "--------------------------------------------------------------------------------" +
-    "</bold></white>";
-    return str;
-  }
-
-  printInventory() {
-    const p = this.player;
-
-    let itemList = "<white><bold>" +
-        "-------------------------------- Your Inventory --------------------------------\r\n" +
-        " Items:  ";
-
-    // Inventory
-    p.inventory.forEach((item) => {
-      itemList += item.name + ", ";
-    });
-
-    // chop off the extraneous comma, and add a newline.
-    itemList = itemList.slice(0, -2);
-    itemList += "\r\n";
-
-    // Weapon/Armor
-    itemList += " Weapon: ";
-    if (!p.getWeapon()) itemList += "NONE!";
-    else itemList += p.getWeapon().name;
-
-    itemList += "\r\n Armor:  ";
-    if (!p.getArmor()) itemList += "NONE!";
-    else itemList += p.getArmor().name;
-
-    // Money
-    itemList += "\r\n Money:  $" + p.money;
-
-    itemList +=
-        "\r\n--------------------------------------------------------------------------------" +
-        "</bold></white>";
-
-    return itemList;
-  }
-
-  static printRoom(room) {
-    let desc = `<newline/><bold><white>${room.name}</white></bold><newline/>` +
-      `<bold><magenta>${room.description}</magenta></bold><newline/>` +
-      "<bold><green>exits: ";
-
-    Direction.enums.forEach(dir => {
-      if (room.rooms[dir] !== 0) {
-        desc += dir.key + "  ";
-      }
-    });
-    desc += "</green></bold><newline/>";
-
-    // ---------------------------------
-    // ITEMS
-    // ---------------------------------
-    let temp = "<bold><yellow>You see: ";
-    let count = 0;
-    if (room.money > 0) {
-      temp += "$" + room.money + ", ";
-      count++;
-    }
-
-    room.items.forEach(item => {
-      temp += item.name + ", ";
-      count++;
-    });
-
-    if (count > 0) {
-      temp = temp.substr(0, temp.length - 2);
-      desc += temp + "</yellow></bold><newline/>";
-    }
-
-    // ---------------------------------
-    // PEOPLE
-    // ---------------------------------
-    temp = "<bold><cyan>People: ";
-    count = 0;
-
-    room.players.forEach(player => {
-      temp += player.name + ", ";
-      count++;
-    });
-
-    if (count > 0) {
-      temp = temp.substr(0, temp.length - 2);
-      desc += temp + "</cyan></bold><newline/>";
-    }
-
-    // ---------------------------------
-    // ENEMIES
-    // ---------------------------------
-    temp = "<bold><red>Enemies: ";
-    count = 0;
-
-    room.enemies.forEach(enemy => {
-      temp += enemy.name + ", ";
-      count++;
-    });
-
-    if (count > 0) {
-      temp = temp.substr(0, temp.length - 2);
-      desc += temp + "</red></bold><newline/>";
-    }
-
-    return desc;
-
-  }
-
-
 
 }
 

@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const { matchFull, matchPartial } = require('../utils/matcher');
+const { createStoreMessages } = require("./messages")
 
 function createStore(data = {}) {
   const store = {
@@ -7,6 +8,8 @@ function createStore(data = {}) {
     name: data.NAME || 'Unnamed Store',
     items: [],
   };
+
+  store.messages = createStoreMessages(store);
 
   const _findIn = (collection, name) => {
     const match = (fn) =>

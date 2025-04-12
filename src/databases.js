@@ -28,7 +28,7 @@ const loadDatabases = () => {
     enemyTpDb.load();
     enemyDb.load();
     storeDb.load(itemDb);
-    roomDb.loadTemplates();
+    roomDb.loadTemplates(storeDb);
     roomDb.loadData(itemDb);
     playerDb.load(itemDb, roomDb);
     console.log('[DB] All databases loaded successfully.');

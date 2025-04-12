@@ -6,6 +6,7 @@ const path = require('path');
 const jsonfile = require('jsonfile');
 const createRoom = require('./room');
 const createEntityDatabase = require('../entity-database');
+const { RoomType } = require('../attributes');
 
 const fileMap = path.join(process.cwd(), 'data', 'map.json');
 const fileMapData = path.join(process.cwd(), 'data', 'mapdata.json');
@@ -13,12 +14,18 @@ const fileMapData = path.join(process.cwd(), 'data', 'mapdata.json');
 function createRoomDatabase() {
   const db = createEntityDatabase();
 
-  function loadTemplates() {
+  function loadTemplates(storeDb) {
     db.clear();
     const dataArray = jsonfile.readFileSync(fileMap);
     dataArray.forEach(data => {
       const room = createRoom();
       room.loadTemplate(data);
+
+      if (room.type === RoomType.get("STORE")) {
+        room.store = storeDb.findById(room.data);
+        console.log(`[DB] Linked store '${room.store?.name || 'UNKNOWN'}' to store room '${room.name}'`);
+      }
+
       db.add(room);
     });
     console.log(`[DB] Loaded ${db.size()} rooms templates.`);
