@@ -3,7 +3,7 @@
 const { playerDb, roomDb } = require('./databases');
 const ConnectionHandler = require('./connection-handler');
 const { Attribute } = require('./attributes');
-const Player = require('./player');
+const Player = require('./player/player');
 
 let tempRoom; // keeps track of the room player was in before entering
 

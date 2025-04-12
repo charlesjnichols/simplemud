@@ -2,16 +2,17 @@
 
 const net = require('net');
 
-const ConnectionManager = require('./connection-manager');
+const {createConnectionManager} = require('./connection-manager');
 const GameLoop = require('./game-loop');
 const Telnet = require('./telnet');
+const { create } = require('lodash');
 
 const PORT = parseInt(process.argv[2]) || 3000;
 const HOST = process.argv[3] || '0.0.0.0';
 
 const server = net.createServer((socket) => {
   console.log(`[Connect] New connection from ${socket.remoteAddress}:${socket.remotePort}`);
-  ConnectionManager.newConnection(socket, Telnet);
+  connectionManager.newConnection(socket, Telnet);
 });
 
 server.on('error', (err) => {
@@ -26,5 +27,7 @@ server.listen(PORT, HOST, () => {
 });
 
 const gameLoop = new GameLoop();
+const connectionManager = createConnectionManager({playerDb: gameLoop.db.playerDb});
+
 setInterval(gameLoop.loop.bind(gameLoop), 1000);
 

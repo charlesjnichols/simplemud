@@ -47,7 +47,7 @@ class Util {
   static dateStamp() {
     const date = new Date();
 
-    let year = date.getFullYear();
+    const year = date.getFullYear();
 
     let month = date.getMonth() + 1;
     month = (month < 10 ? '0' : '') + month;
@@ -121,10 +121,10 @@ const stringWidth = require('string-width');
 // https://www.npmjs.com/package/wordwrap
 const wrapText = (text, width) => {
 
-  var start = 0;
-  var stop = width;
+  const start = 0;
+  const stop = width;
 
-  var chunks = text.toString()
+  const chunks = text.toString()
     .split(/(\S+\s+)/)
     .reduce(function (acc, x) {
       acc.push(x)
@@ -135,8 +135,8 @@ const wrapText = (text, width) => {
   return chunks.reduce((lines, rawChunk) => {
     if (rawChunk === '') return lines;
 
-    var chunk = rawChunk.replace(/\t/g, '    ');
-    var i = lines.length - 1;
+    const chunk = rawChunk.replace(/\t/g, '    ');
+    const i = lines.length - 1;
     if (stringWidth(lines[i]) + stringWidth(chunk) > stop) {
       lines[i] = lines[i].replace(/\s+$/, '');
 
@@ -148,7 +148,7 @@ const wrapText = (text, width) => {
       });
     }
     else if (chunk.match(/\n/)) {
-      var xs = chunk.split(/\n/);
+      const xs = chunk.split(/\n/);
       lines[i] += xs.shift();
       xs.forEach(function (c) {
         lines.push(

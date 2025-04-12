@@ -6,12 +6,12 @@ const Attribute = new Enum({
   STRENGTH: 0,
   HEALTH: 1,
   AGILITY: 2,
-  MAX_HIT_POINTS: 3,
+  MAXHITPOINTS: 3,
   ACCURACY: 4,
   DODGING: 5,
-  STRIKE_DAMAGE: 6,
-  DAMAGE_ABSORB: 7,
-  HP_REGEN: 8,
+  STRIKEDAMAGE: 6,
+  DAMAGEABSORB: 7,
+  HPREGEN: 8,
 });
 
 const ItemType = new Enum({
@@ -27,8 +27,8 @@ const PlayerRank = new Enum({
 });
 
 const RoomType = new Enum({
-  PLAIN_ROOM: 0,
-  TRAINING_ROOM: 1,
+  PLAINROOM: 0,
+  TRAININGROOM: 1,
   STORE: 2,
 });
 

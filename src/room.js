@@ -1,134 +1,98 @@
 'use strict';
 
-const Entity = require('./entity');
 const { RoomType, Direction } = require('./attributes');
+// eslint-disable-next-line no-unused-vars
+const { matchFull, matchPartial } = require('./utils/matcher');
 
-class Room extends Entity {
-  constructor() {
-    super();
-    // -----------------------------------------
-    //  template information
-    // -----------------------------------------
-    this.type = RoomType.PLAINROOM;
-    this.data = 0; // auxilliary data defined by room type
-    this.description = "UNDEFINED";
-    this.rooms = this._initRooms();
-    this.spawnWhich = 0;
-    this.maxEnemies = 0;
+function createRoom(data = {}) {
+  const rooms = Direction.enums.reduce((acc, dir) => {
+    acc[dir] = 0;
+    return acc;
+  }, {});
 
-    // -----------------------------------------
-    //  volatile data (save to disk)
-    // -----------------------------------------
-    this.items = [];
-    this.money = 0;
+  const room = {
+    id: data.ID ? parseInt(data.ID) : null,
+    name: data.NAME || 'Unnamed Room',
+    description: data.DESCRIPTION || 'UNDEFINED',
+    type: RoomType.get(data.TYPE || 'PLAINROOM'),
+    data: data.DATA ? parseInt(data.DATA) : null,
+    spawnWhich: data.ENEMY ? parseInt(data.ENEMY) : 0,
+    maxEnemies: data.MAXENEMIES ? parseInt(data.MAXENEMIES) : 0,
+    rooms,
+    items: [],
+    money: 0,
+    players: [],
+    enemies: [],
+  };
 
-    // -----------------------------------------
-    //  volatile data (do not save to disk)
-    // -----------------------------------------
-    this.players = [];
-    this.enemies = [];
-  }
+  // ---------- Behavior ----------
 
-  _initRooms() {
-    const rooms = [];
-    Direction.enums.forEach(dir => {
-      rooms[dir] = 0;
-    });
-    return rooms;
-  }
+  const _findIn = (collection, name) => {
+    const match = (fn) =>
+      collection.find(obj => obj?.[fn]?.call(obj, name)) || 0;
+    return match('matchFull') || match('matchPartial');
+  };
 
-  addPlayer(player) {
-    if (this.players.indexOf(player) === -1)
-      this.players.push(player);
-    player.room = this;
-  }
+  return Object.assign(room, {
+    addPlayer: (player) => {
+      if (room.players.length >= 32) room.players.shift();
+      room.players.push(player);
+    },
 
-  removePlayer(player) {
-    this.players = this.players.filter(p => p !== player);
-  }
+    removePlayer: (player) =>
+      room.players = room.players.filter(p => p !== player),
 
-  addItem(item) {
-    // remove the first (oldest) item if there's too many in the room.
-    if (this.items.length >= 32)
-      this.items.shift();
+    addItem: (item) => {
+      if (room.items.length >= 32) room.items.shift();
+      room.items.push(item);
+    },
 
-    // add the new item.
-    this.items.push(item);
-  }
+    removeItem: (item) =>
+      room.items = room.items.filter(i => i !== item),
 
-  removeItem(item) {
-    this.items = this.items.filter(i => i !== item);
-  }
+    findItem: (name) => _findIn(room.items, name),
 
-  findItem(itemName) {
-    const find = matchFn => {
-      for (let item of this.items) {
-        if (item[matchFn].bind(item, itemName)()) {
-          return item;
-        }
-      }
-      return 0;
-    };
-    let item = find('matchFull');
-    if (!item) item = find('matchPartial');
-    return item;
-  }
+    addEnemy: (enemy) => {
+      room.enemies.push(enemy);
+      enemy.room = room;
+    },
 
-  addEnemy(enemy) {
-    this.enemies.push(enemy);
-    enemy.room = this;
-  }
+    removeEnemy: (enemy) =>
+      room.enemies = room.enemies.filter(e => e !== enemy),
 
-  removeEnemy(enemy) {
-    this.enemies = this.enemies.filter(e => e !== enemy);
-  }
+    findEnemy: (name) => _findIn(room.enemies, name),
 
-  findEnemy(enemyName) {
-    const find = matchFn => {
-      for (let enemy of this.enemies) {
-        if (enemy[matchFn].bind(enemy, enemyName)()) {
-          return enemy;
-        }
-      }
-      return 0;
-    };
-    let item = find('matchFull');
-    if (!item) item = find('matchPartial');
-    return item;
-  }
+    loadTemplate: (dataObject) => {
+      room.id = parseInt(dataObject.ID);
+      room.name = dataObject.NAME;
+      room.description = dataObject.DESCRIPTION;
+      room.type = RoomType.get(dataObject.TYPE);
+      room.data = parseInt(dataObject.DATA);
+      Direction.enums.forEach(dir => {
+        room.rooms[dir] = parseInt(dataObject[dir.key]);
+      });
+      room.spawnWhich = parseInt(dataObject.ENEMY);
+      room.maxEnemies = parseInt(dataObject.MAXENEMIES);
+    },
 
-  loadTemplate(templateObject) {
-    this.id = parseInt(templateObject["ID"]);
-    this.name = templateObject["NAME"];
-    this.description = templateObject["DESCRIPTION"];
-    this.type = RoomType.get(templateObject["TYPE"]);
-    this.data = parseInt(templateObject["DATA"]);
-    Direction.enums.forEach(dir => {
-      this.rooms[dir] = parseInt(templateObject[dir.key]);
-    });
-    this.spawnWhich = parseInt(templateObject["ENEMY"]);
-    this.maxEnemies = parseInt(templateObject["MAXENEMIES"]);
-  }
+    loadData: (dataObject, itemDb) => {
+      if (!room.id) room.id = parseInt(dataObject.ROOMID);
+      room.items = [];
+      dataObject.ITEMS.split(' ').forEach(idStr => {
+        const id = parseInt(idStr);
+        if (!id) return;
+        const item = itemDb.findById(id);
+        if (item) room.items.push(item);
+      });
+      room.money = parseInt(dataObject.MONEY);
+    },
 
-  loadData(dataObject, itemDb) {
-    if (!this.id) this.id = parseInt(dataObject["ROOMID"]);
-    this.items = [];
-    dataObject["ITEMS"].split(' ').forEach(id => {
-      id = parseInt(id);
-      if (!id) return;
-      this.items.push(itemDb.findById(id));
-    });
-    this.money = parseInt(dataObject["MONEY"]);
-  }
+    serialize: () => ({
+      ROOMID: room.id,
+      ITEMS: room.items.map(i => i.id).join(' '),
+      MONEY: room.money,
+    }),
+  });
+}
 
-  serialize() {
-    return {
-      "ROOMID": this.id,
-      "ITEMS": this.items.map(item => item.id).join(' '),
-      "MONEY": this.money
-    };
-  }
-
-} // end class Room
-
-module.exports = Room;
+module.exports = createRoom;

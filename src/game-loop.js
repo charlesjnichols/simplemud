@@ -5,7 +5,7 @@ const path = require('path');
 
 const { Attribute } = require('./attributes');
 
-const Util = require('./util');
+const Util = require('../util');
 const DB = require('./databases');
 const Game = require('./game');
 
@@ -23,6 +23,7 @@ const file = path.join(__dirname, '..', 'data', 'gamedata.json');
 class GameLoop {
   constructor() {
     this.loadDatabases();
+    this.db = DB;
   }
 
   load() {
@@ -89,7 +90,7 @@ class GameLoop {
 
   performRound() {
     const now = timer.getMS();
-    for(let enemy of DB.enemyDb.map.values()) {
+    for(const enemy of DB.enemyDb.values()) {
       if (now >= enemy.nextAttackTime &&
           enemy.room.players.length > 0) {
         Game.enemyAttack(enemy);
@@ -98,7 +99,7 @@ class GameLoop {
   }
 
   performRegen() {
-    for (let room of DB.roomDb.map.values()) {
+    for (const room of DB.roomDb.values()) {
       if (room.spawnWhich !== 0 &&
           room.enemies.length < room.maxEnemies) {
         const template = DB.enemyTpDb.findById(room.spawnWhich);
@@ -110,7 +111,7 @@ class GameLoop {
   }
 
   performHeal() {
-    for (let p of DB.playerDb.map.values()) {
+    for (const p of DB.playerDb.values()) {
       if (p.active) {
         p.addHitPoints(p.GetAttr(Attribute.HPREGEN));
         p.printStatbar();

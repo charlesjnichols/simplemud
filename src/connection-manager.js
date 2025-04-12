@@ -1,47 +1,54 @@
 'use strict';
 
 const connection = require('./connection');
-const Logon = require('./logon');
+const { createLogonHandler } = require('./logon');
 
-const connection_manager = (() => {
-
-  const cm = {};
+const createConnectionManager = ({ playerDb }) => {
   const connections = [];
 
-  cm.getConnection = (index) => {
-      return connections[index];
+  const getConnection = (index) => {
+    return connections[index];
   };
 
-  cm.newConnection = (socket, protocol, handler) => {
+  const newConnection = (socket, protocol, handler) => {
     const conn = new connection(socket, protocol);
-    const defaultHandler = handler || new Logon(conn);
+    const defaultHandler = handler || createLogonHandler({ connection: conn, playerDb });
     conn.addHandler(defaultHandler);
     connections.push(conn);
-    socket.on('close', () => cm.removeConnection(socket));
+    socket.on('close', () => removeConnection(socket));
   };
 
-  cm.closeConnection = (socket) => {
-    const conn = cm.findConnection(socket);
+  const closeConnection = (socket) => {
+    const conn = findConnection(socket);
     conn.socket.end();
   };
 
-  cm.removeConnection = (socket) => {
-    const conn = cm.findConnection(socket);
+  const removeConnection = (socket) => {
+    const conn = findConnection(socket);
     const index = connections.indexOf(conn)
     if (index !== -1) connections.splice(index, 1);
   };
 
-  cm.totalConnections = () => {
+  const totalConnections = () => {
     return connections.length;
   };
 
-  cm.findConnection = (socket) => {
+  const findConnection = (socket) => {
     const conn = connections.filter(conn => conn.socket === socket);
     return conn.length ? conn[0] : 0;
   }
 
-  return cm;
+  return {
+    getConnection,
+    newConnection,
+    closeConnection,
+    removeConnection,
+    totalConnections,
+    findConnection
+  };
 
-})();
+};
 
-module.exports = connection_manager;
+module.exports = {
+  createConnectionManager
+};

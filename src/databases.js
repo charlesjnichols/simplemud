@@ -1,7 +1,7 @@
 'use strict';
 
 const createItemDatabase = require('./item-database');
-const createPlayerDatabase = require('./player-database');
+const createPlayerDatabase = require('./player/database');
 const createRoomDatabase = require('./room-database');
 const createStoreDatabase = require('./store-database');
 const {
@@ -25,12 +25,12 @@ const loadDatabases = () => {
   try {
     console.log('[DB] Loading databases...');
     itemDb.load();
-    playerDb.load(itemDb);
+    enemyTpDb.load();
+    enemyDb.load();
+    storeDb.load(itemDb);
     roomDb.loadTemplates();
     roomDb.loadData(itemDb);
-    storeDb.load(itemDb);
-    enemyTpDb.load();
-    enemyDb.load(enemyTpDb, roomDb);
+    playerDb.load(itemDb, roomDb);
     console.log('[DB] All databases loaded successfully.');
   } catch (err) {
     console.error(`[DB] Error loading databases: ${err.message}`);

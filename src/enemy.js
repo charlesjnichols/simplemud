@@ -1,78 +1,74 @@
 'use strict';
 
-// This file contains the definition of
-// both EnemyTemplate and Enemy classes
+const { matchFull, matchPartial } = require('./utils/matcher');
 
-const Entity = require('./entity');
+function createEnemyTemplate(data = {}) {
+  const template = {
+    id: data.ID ?? null,
+    name: data.NAME || 'Unknown',
+    hitPoints: Number(data.HITPOINTS) || 0,
+    accuracy: Number(data.ACCURACY) || 0,
+    dodging: Number(data.DODGING) || 0,
+    strikeDamage: Number(data.STRIKEDAMAGE) || 0,
+    damageAbsorb: Number(data.DAMAGEABSORB) || 0,
+    experience: Number(data.EXPERIENCE) || 0,
+    weapon: Number(data.WEAPON) || 0,
+    moneyMin: Number(data.MONEYMIN) || 0,
+    moneyMax: Number(data.MONEYMAX) || 0,
+    loot: Array.isArray(data.LOOT) ? data.LOOT : [],
+    matchFull: (str) => matchFull(data.NAME || '', str),
+    matchPartial: (str) => matchPartial(data.NAME || '', str),
+  };
 
-class EnemyTemplate extends Entity {
-  constructor() {
-    super();
-    this.hitPoints = 0;
-    this.accuracy = 0;
-    this.dodging = 0;
-    this.strikeDamage = 0;
-    this.damageAbsorb = 0;
-    this.experience = 0;
-    this.weapon = 0;
-    this.moneyMin = 0;
-    this.moneyMax = 0;
-    this.loot = [];
-  }
-
-  load(dataObject = {}) {
-    this.name = dataObject["NAME"] || 'Unknown';
-    this.hitPoints = Number(dataObject["HITPOINTS"]) || 0;
-    this.accuracy = Number(dataObject["ACCURACY"]) || 0;
-    this.dodging = Number(dataObject["DODGING"]) || 0;
-    this.strikeDamage = Number(dataObject["STRIKEDAMAGE"]) || 0;
-    this.damageAbsorb = Number(dataObject["DAMAGEABSORB"]) || 0;
-    this.experience = Number(dataObject["EXPERIENCE"]) || 0;
-    this.weapon = Number(dataObject["WEAPON"]) || 0;
-    this.moneyMin = Number(dataObject["MONEYMIN"]) || 0;
-    this.moneyMax = Number(dataObject["MONEYMAX"]) || 0;
-    this.loot = Array.isArray(dataObject["LOOT"]) ? dataObject["LOOT"] : [];
-  }
+  return template;
 }
 
-class Enemy extends Entity {
-  constructor() {
-    super();
-    this.tp = null; // Template instance
-    this.hitPoints = 0;
-    this.room = null;
-    this.nextAttackTime = 0;
-  }
+function createEnemy(data = {}, enemyTpDb, roomDb) {
+  const templateId = Number(data.TEMPLATEID);
+  const roomId = Number(data.ROOM);
+  const tp = enemyTpDb.findById(templateId);
+  const room = roomDb.findById(roomId);
 
-  loadTemplate(template) {
-    if (!template) {
-      throw new Error("Enemy template is undefined or null");
-    }
-    this.tp = template;
-    this.name = template.name;
-    this.hitPoints = template.hitPoints;
-  }
+  const enemy = {
+    id: data.ID ?? null,
+    name: tp?.name || 'Unnamed Enemy',
+    hitPoints: Number(data.HITPOINTS) || tp?.hitPoints || 0,
+    tp,
+    room,
+    nextAttackTime: Number(data.NEXTATTACKTIME) || 0,
+    matchFull: (str) => matchFull(tp?.name || '', str),
+    matchPartial: (str) => matchPartial(tp?.name || '', str),
 
-  loadData(dataObject = {}, enemyTpDb, roomDb) {
-    const templateId = Number(dataObject["TEMPLATEID"]);
-    const roomId = Number(dataObject["ROOM"]);
+    loadTemplate: (template) => {
+      if (!template) throw new Error("Enemy template is undefined or null");
+      enemy.tp = template;
+      enemy.name = template.name;
+      enemy.hitPoints = template.hitPoints;
+    },
 
-    this.tp = enemyTpDb.findById(templateId);
-    this.name = this.tp?.name || 'Unnamed Enemy';
-    this.hitPoints = Number(dataObject["HITPOINTS"]) || 0;
-    this.room = roomDb.findById(roomId);
-    this.nextAttackTime = Number(dataObject["NEXTATTACKTIME"]) || 0;
-  }
+    loadData: (dataObject) => {
+      const templateId = Number(dataObject.TEMPLATEID);
+      const roomId = Number(dataObject.ROOM);
+      enemy.tp = enemyTpDb.findById(templateId);
+      enemy.name = enemy.tp?.name || 'Unnamed Enemy';
+      enemy.hitPoints = Number(dataObject.HITPOINTS) || 0;
+      enemy.room = roomDb.findById(roomId);
+      enemy.nextAttackTime = Number(dataObject.NEXTATTACKTIME) || 0;
+    },
 
-  serialize() {
-    return {
-      "ID": this.id,
-      "TEMPLATEID": this.tp?.id ?? this.tp ?? -1,
-      "HITPOINTS": this.hitPoints,
-      "ROOM": this.room?.id ?? this.room ?? -1,
-      "NEXTATTACKTIME": this.nextAttackTime
-    };
-  }
+    serialize: () => ({
+      ID: enemy.id,
+      TEMPLATEID: enemy.tp?.id ?? -1,
+      HITPOINTS: enemy.hitPoints,
+      ROOM: enemy.room?.id ?? -1,
+      NEXTATTACKTIME: enemy.nextAttackTime,
+    }),
+  };
+
+  return enemy;
 }
 
-module.exports = { EnemyTemplate, Enemy };
+module.exports = {
+  createEnemyTemplate,
+  createEnemy,
+};

@@ -1,8 +1,10 @@
 'use strict';
 
+const _ = require('lodash');
+
 const path = require('path');
 const jsonfile = require('jsonfile');
-const Store = require('./store');
+const createStore = require('./store');
 const createEntityDatabase = require('./entity-database');
 
 const file = path.join(process.cwd(), 'data', 'stores.json');
@@ -14,7 +16,7 @@ function createStoreDatabase() {
     db.clear();
     const dataArray = jsonfile.readFileSync(file);
     dataArray.forEach(data => {
-      const store = new Store();
+      const store = createStore({});
       store.load(data, itemDb);
       db.add(store);
     });
@@ -22,7 +24,7 @@ function createStoreDatabase() {
   }
 
   return {
-    ...db,
+    ..._.pick(db, ['values','findById']),
     load,
   };
 }

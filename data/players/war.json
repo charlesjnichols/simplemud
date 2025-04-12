@@ -1,0 +1,28 @@
+{
+  "id": "a62c8c38-c8b6-48bc-aed2-5efd43b0768a",
+  "name": "war",
+  "password": "war",
+  "rank": "ADMIN",
+  "class": null,
+  "level": 1,
+  "experience": 0,
+  "money": 1000000,
+  "statPoints": 0,
+  "hitPoints": 0,
+  "nextAttackTime": 0,
+  "room": 1,
+  "weapon": -1,
+  "armor": -1,
+  "attributes": {
+    "STRENGTH": 0,
+    "HEALTH": 0,
+    "AGILITY": 0,
+    "MAXHITPOINTS": 0,
+    "ACCURACY": 0,
+    "DODGING": 0,
+    "STRIKEDAMAGE": 0,
+    "DAMAGEABSORB": 0,
+    "HPREGEN": 0
+  },
+  "inventory": []
+}

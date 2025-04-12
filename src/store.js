@@ -1,39 +1,35 @@
-'use strict';
+// eslint-disable-next-line no-unused-vars
+const { matchFull, matchPartial } = require('./utils/matcher');
 
-const Entity = require('./entity');
+function createStore(data = {}) {
+  const store = {
+    id: data.ID ? parseInt(data.ID) : null,
+    name: data.NAME || 'Unnamed Store',
+    items: [],
+  };
 
-class Store extends Entity {
+  const _findIn = (collection, name) => {
+    const match = (fn) =>
+      collection.find(obj => obj?.[fn]?.call(obj, name)) || 0;
+    return match('matchFull') || match('matchPartial');
+  };
 
-  constructor() {
-      super();
-      this.items = [];
-  }
+  return Object.assign(store, {
+    findItem: (itemName) => _findIn(store.items, itemName),
 
-  findItem(itemName) {
-    const find = matchFn => {
-      for (let item of this.items) {
-        if (item[matchFn].bind(item, itemName)()) {
-          return item;
-        }
-      }
-      return 0;
-    };
-    let item = find('matchFull');
-    if (!item) item = find('matchPartial');
-    return item;
-  }
+    load: (dataObject, itemDb) => {
+      store.id = parseInt(dataObject.ID);
+      store.name = dataObject.NAME;
+      store.items = [];
 
-  load(dataObject, itemDb) {
-    this.id = parseInt(dataObject["ID"]);
-    this.name = dataObject["NAME"];
-    this.items = [];
-    dataObject["ITEMS"].split(' ').forEach(id => {
-      id = parseInt(id);
-      if (!id) return;
-      this.items.push(itemDb.findById(id));
-    });
-  }
-
+      dataObject.ITEMS.split(' ').forEach(idStr => {
+        const id = parseInt(idStr);
+        if (!id) return;
+        const item = itemDb.findById(id);
+        if (item) store.items.push(item);
+      });
+    },
+  });
 }
 
-module.exports = Store;
+module.exports = createStore;

@@ -1,37 +1,31 @@
 'use strict';
 
-const Entity = require('./entity');
 const { Attribute, ItemType } = require('./attributes');
+const { matchFull, matchPartial } = require('./utils/matcher');
 
-class Item extends Entity {
-  constructor() {
-    super();
-    this.type = ItemType.get('WEAPON');
-    this.min = 0;
-    this.max = 0;
-    this.speed = 0;
-    this.price = 0;
-    this.attributes = [];
-  }
+function createItem(data = {}) {
+  const type = ItemType.get(data.TYPE) || ItemType.get('WEAPON');
 
-  load(dataObject) {
-    this.id = parseInt(dataObject.ID);
-    this.name = dataObject.NAME || 'Unnamed Item';
+  const attributes = Attribute.enums.reduce((acc, attr) => {
+    const val = parseInt(data[attr.key]);
+    acc[attr.value] = isNaN(val) ? 0 : val;
+    return acc;
+  }, []);
 
-    const type = ItemType.get(dataObject.TYPE);
-    this.type = type || null;
+  const item = {
+    id: data.ID,
+    name: data.NAME || 'Unnamed Item',
+    type,
+    min: parseInt(data.MIN) || 0,
+    max: parseInt(data.MAX) || 0,
+    speed: parseInt(data.SPEED) || 0,
+    price: parseInt(data.PRICE) || 0,
+    attributes,
+    matchFull: (str) => matchFull(data.NAME || '', str),
+    matchPartial: (str) => matchPartial(data.NAME || '', str),
+  };
 
-    this.min = parseInt(dataObject.MIN) || 0;
-    this.max = parseInt(dataObject.MAX) || 0;
-    this.speed = parseInt(dataObject.SPEED) || 0;
-    this.price = parseInt(dataObject.PRICE) || 0;
-
-    // Load attributes by attribute key
-    Attribute.enums.forEach(attr => {
-      const val = parseInt(dataObject[attr.key]);
-      this.attributes[attr] = isNaN(val) ? 0 : val;
-    });
-  }
+  return item;
 }
 
-module.exports = Item;
+module.exports = createItem;

@@ -1,20 +1,19 @@
 'use strict';
 
-const Util = require('./util');
+const {tostring,parseWord,removeWord} = require('./utils/strings');
+const {randomInt} = require('./utils/math');
+const {dateStamp,timeStamp,upTime,createTimer,seconds,minutes} = require('./utils/time');
 const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
   require('./databases');
 const ConnectionHandler = require('./connection-handler');
 const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
   require('./attributes');
-const Player = require('./player');
+const Player = require('./player/player');
 const Train = require('./train');
-
-const tostring = Util.tostring;
-const random = Util.randomInt;
 
 let isRunning = false;
 
-const timer = Util.createTimer().init();
+const timer = createTimer().reset();
 
 // Game Handler class
 class Game extends ConnectionHandler {
@@ -57,8 +56,6 @@ class Game extends ConnectionHandler {
   }
 
   handle(data) {
-    const parseWord = Util.parseWord;
-    const removeWord = Util.removeWord;
     const p = this.player;
 
     // check if the player wants to repeat a command
@@ -113,10 +110,10 @@ class Game extends ConnectionHandler {
     if (firstWord === "time") {
       const msg = "<bold><cyan>" +
         "The current system time is: " +
-        Util.timeStamp() + " on " +
-        Util.dateStamp() + "<newline/>" +
+        timeStamp() + " on " +
+        dateStamp() + "<newline/>" +
         "The system has been up for: " +
-        Util.upTime() + ".</cyan></bold>";
+        upTime() + ".</cyan></bold>";
       p.sendString(msg);
       return;
     }
@@ -391,7 +388,7 @@ class Game extends ConnectionHandler {
         const min = item.min;
         const max = item.max;
         p.addBonuses(item);
-        p.addHitPoints(random(min, max));
+        p.addHitPoints(randomInt(min, max));
         p.dropItem(index);
         p.printStatbar();
         return true;
@@ -405,12 +402,12 @@ class Game extends ConnectionHandler {
 
     typeName = typeName.toLowerCase();
 
-    if (typeName === "weapon" && p.Weapon() !== 0) {
+    if (typeName === "weapon" && p.getWeapon() !== 0) {
       p.removeWeapon();
       return true;
     }
 
-    if (typeName === "armor" && p.Armor() !== 0) {
+    if (typeName === "armor" && p.getArmor() !== 0) {
       p.removeArmor();
       return true;
     }
@@ -593,15 +590,14 @@ class Game extends ConnectionHandler {
       return;
     }
 
-    const seconds = Util.seconds;
-    const weapon = p.Weapon();
+        const weapon = p.getWeapon();
 
     let damage;
     if (weapon === 0) {
-      damage = random(1, 3);
+      damage = randomInt(1, 3);
       p.nextAttackTime = now + seconds(1);
     } else {
-      damage = random(weapon.min, weapon.max);
+      damage = randomInt(weapon.min, weapon.max);
       p.nextAttackTime = now + seconds(weapon.speed);
     }
 
@@ -609,7 +605,7 @@ class Game extends ConnectionHandler {
     const A = Attribute;
     const e = enemy.tp;
 
-    if (random(0,99) >= attr(A.ACCURACY) - e.dodging) {
+    if (randomInt(0,99) >= attr(A.ACCURACY) - e.dodging) {
       Game.sendRoom("<white>" + p.name + " swings at " + e.name +
                     " but misses!</white>", p.room);
       return;
@@ -634,24 +630,23 @@ class Game extends ConnectionHandler {
     const e = enemy.tp;
     const room = enemy.room;
     const now = timer.getMS();
-    const seconds = Util.seconds;
 
-    const p = room.players[random(0, room.players.length - 1)];
+    const p = room.players[randomInt(0, room.players.length - 1)];
 
     let damage;
     if (e.weapon === 0) {
-      damage = random(1, 3);
+      damage = randomInt(1, 3);
       enemy.nextAttackTime = now + seconds(1);
     } else {
       const weapon = (isNaN(e.weapon) ? e.weapon : itemDb.findById(e.weapon));
-      damage = random(weapon.min, weapon.max);
+      damage = randomInt(weapon.min, weapon.max);
       enemy.nextAttackTime = now + seconds(weapon.speed);
     }
 
     const attr = p.GetAttr.bind(p);
     const A = Attribute;
 
-    if (random(0,99) >= e.accuracy - attr(A.DODGING)) {
+    if (randomInt(0,99) >= e.accuracy - attr(A.DODGING)) {
       Game.sendRoom("<white>" + e.name + " swings at " + p.name +
                     " but misses!</white>", enemy.room);
       return;
@@ -688,7 +683,7 @@ class Game extends ConnectionHandler {
 
     // drop an item
     if (p.items > 0) {
-      const index = random(0, p.items - 1);
+      const index = randomInt(0, p.items - 1);
       const item = p.inventory[index];
       p.room.addItem(item);
       p.dropItem(index);
@@ -727,7 +722,7 @@ class Game extends ConnectionHandler {
                   " has died!</bold></cyan>", enemy.room);
 
     // drop the money
-    const money = random(e.moneyMin, e.moneyMax);
+    const money = randomInt(e.moneyMin, e.moneyMax);
     if (money > 0) {
       enemy.room.money += money;
       Game.sendRoom("<cyan>$" + money + " drops to the ground." +
@@ -736,7 +731,7 @@ class Game extends ConnectionHandler {
 
     // drop all the items
     e.loot.forEach(loot => {
-      if (random(0,99) < loot.chance) {
+      if (randomInt(0,99) < loot.chance) {
         const item = itemDb.findById(loot.itemId);
         enemy.room.addItem(item);
         Game.sendRoom("<cyan>" + item.name + " drops to the ground." +
@@ -768,8 +763,8 @@ class Game extends ConnectionHandler {
   }
 
   static _sendToPlayers(msg, filter) {
-    for (let key of playerDb.map.keys()) {
-      const player = playerDb.map.get(key);
+    for (const key of playerDb.keys()) {
+      const player = playerDb.get(key);
       if (player[filter]) player.sendString(msg);
     }
   }
@@ -818,8 +813,8 @@ class Game extends ConnectionHandler {
 
   static _who(filterFn) {
     let str = "";
-    for (let key of playerDb.map.keys()) {
-      const player = playerDb.map.get(key);
+    for (const key of playerDb.keys()) {
+      const player = playerDb.get(key);
       if (filterFn(player)) {
         const p = player;
         str += " " + tostring(p.name, 17) + "| ";
@@ -964,12 +959,12 @@ class Game extends ConnectionHandler {
 
     // Weapon/Armor
     itemList += " Weapon: ";
-    if (!p.Weapon()) itemList += "NONE!";
-    else itemList += p.Weapon().name;
+    if (!p.getWeapon()) itemList += "NONE!";
+    else itemList += p.getWeapon().name;
 
     itemList += "\r\n Armor:  ";
-    if (!p.Armor()) itemList += "NONE!";
-    else itemList += p.Armor().name;
+    if (!p.getArmor()) itemList += "NONE!";
+    else itemList += p.getArmor().name;
 
     // Money
     itemList += "\r\n Money:  $" + p.money;

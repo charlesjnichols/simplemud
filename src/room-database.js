@@ -1,8 +1,10 @@
 'use strict';
 
+const _ = require('lodash');
+
 const path = require('path');
 const jsonfile = require('jsonfile');
-const Room = require('./room');
+const createRoom = require('./room');
 const createEntityDatabase = require('./entity-database');
 
 const fileMap = path.join(process.cwd(), 'data', 'map.json');
@@ -15,11 +17,11 @@ function createRoomDatabase() {
     db.clear();
     const dataArray = jsonfile.readFileSync(fileMap);
     dataArray.forEach(data => {
-      const room = new Room();
+      const room = createRoom();
       room.loadTemplate(data);
       db.add(room);
     });
-    console.log('[DB] Room templates loaded.');
+    console.log(`[DB] Loaded ${db.size()} rooms templates.`);
   }
 
   function loadData(itemDb) {
@@ -31,7 +33,7 @@ function createRoomDatabase() {
         room.loadData(data, itemDb);
       }
     });
-    console.log('[DB] Room data loaded.');
+    console.log(`[DB] Loaded ${db.size()} rooms.`);
   }
 
   function saveData() {
@@ -42,7 +44,7 @@ function createRoomDatabase() {
   }
 
   return {
-    ...db,
+    ..._.pick(db, ['values','findById']),
     loadTemplates,
     loadData,
     saveData,

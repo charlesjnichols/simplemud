@@ -1,72 +1,35 @@
 'use strict';
 
 const { SortedMap } = require('insort');
+const _ = require('lodash');
 
-function createEntityDatabase() {
-  const map = new SortedMap([], (a, b) => a > b);
+const createEntityDatabase = () => {
+  const map = new SortedMap();
 
-  function clear() {
-    map.clear();
-  }
+  const add = (entity) => map.set(entity.id, entity);
+  const get = (id) => map.get(id);
+  const findById = (id) => map.get(id);
 
-  function add(entity) {
-    const id = findOpenId();
-    entity.id = id;
-    map.set(id, entity);
-  }
+  const findByNameFull = (name, filter) => {
+    const lower = name.toLowerCase();
+    return _.find([...map.values()], e => e.name?.toLowerCase() === lower && (!filter || filter(e))) ?? null;
+  };
 
-  function get(id) {
-    return map.get(id);
-  }
+  const findByNamePartial = (name, filter) => {
+    const lower = name.toLowerCase();
+    return _.find([...map.values()], e => e.name?.toLowerCase().includes(lower) && (!filter || filter(e))) ?? null;
+  };
 
-  function findOpenId() {
-    let previousId = 0;
-    for (const key of map.keys()) {
-      if (key !== previousId + 1) break;
-      previousId = key;
-    }
-    return previousId + 1;
-  }
+  const hasId = (id) => map.has(id);
+  const hasNameFull = (name) => Boolean(findByNameFull(name));
+  const hasNamePartial = (name) => Boolean(findByNamePartial(name));
 
-  function findById(id) {
-    return map.get(id) || undefined;
-  }
+  const findOpenId = () => _.find(_.range(1, Number.MAX_SAFE_INTEGER), id => !map.has(id)) ?? 1;
 
-  function findByNameFull(name) {
-    return _findByName(name, 'matchFull');
-  }
-
-  function findByNamePartial(name) {
-    return _findByName(name, 'matchPartial');
-  }
-
-  function _findByName(name, matchFuncName, filterFn = null) {
-    for (const entity of map.values()) {
-      const matcher = entity[matchFuncName];
-      if (typeof matcher === 'function' && matcher.call(entity, name)) {
-        if (!filterFn || filterFn(entity)) {
-          return entity;
-        }
-      }
-    }
-    return false;
-  }
-
-  function hasId(id) {
-    return findById(id) !== undefined;
-  }
-
-  function hasNameFull(name) {
-    return findByNameFull(name) !== false;
-  }
-
-  function hasNamePartial(name) {
-    return findByNamePartial(name) !== false;
-  }
-
-  function size() {
-    return map.size;
-  }
+  const clear = () => map.clear();
+  const values = () => [...map.values()];
+  const keys = () => map.keys();
+  const size = () => map.size;
 
   return {
     add,
@@ -77,10 +40,12 @@ function createEntityDatabase() {
     hasId,
     hasNameFull,
     hasNamePartial,
-    size,
     findOpenId,
     clear,
+    values,
+    keys,
+    size
   };
-}
+};
 
 module.exports = createEntityDatabase;
