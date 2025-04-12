@@ -8,6 +8,7 @@ const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
 const ConnectionHandler = require('./connection/handler');
 const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
   require('./attributes');
+const {center, cyan, green, yellow, white, whiteBold, padLeft, padRight} = require("./utils/formatting");
 const Train = require('./train');
 
 let isRunning = false;
@@ -889,23 +890,35 @@ class Game extends ConnectionHandler {
   }
 
   static storeList(storeId) {
-    const s = storeDb.findById(storeId);
-    if (!s) return false;
-    let output = "<white><bold>" +
-                "--------------------------------------------------------------------------------\r\n";
-      output += " Welcome to " + s.name + "!\r\n";
-      output += "--------------------------------------------------------------------------------\r\n";
-      output += " Item                           | Price\r\n";
-      output += "--------------------------------------------------------------------------------\r\n";
-
-    s.items.forEach(item => {
-      output += " " + tostring(item.name, 31) + "| ";
-      output += tostring(item.price) + "\r\n";
+    const store = storeDb.findById(storeId);
+    if (!store) return false;
+  
+    const divider = "-".repeat(80);
+    const columnWidthName = 33;
+    const columnWidthPrice = 10;
+  
+    const headerLines = [
+      divider,
+      center(green(`Welcome to ${store.name}!`), 80),
+      divider,
+      center(cyan("Item"), columnWidthName) + " | " +
+      center(cyan("Price"), columnWidthPrice),
+      divider
+    ];
+  
+    const itemLines = store.items.map(item => {
+      const name = yellow(padRight(item.name, columnWidthName));
+      const price = white(padLeft(`$${item.price}`, columnWidthPrice));
+      return ` ${name} | ${price}`;
     });
-    output += "--------------------------------------------------------------------------------\r\n" +
-              "</bold></white>";
-    return output;
+  
+    const footerLine = divider;
+  
+    return whiteBold(
+      [...headerLines, ...itemLines, footerLine].join("\r\n")
+    );
   }
+  
 
   printExperience() {
     const p = this.player;
