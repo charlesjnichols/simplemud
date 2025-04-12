@@ -17,13 +17,12 @@ function createItemDatabase() {
       console.log('[DB] Loading item database...');
 
       const dataArray = jsonfile.readFileSync(filePath);
-      dataArray.forEach(data => {
+      dataArray.forEach((data) => {
         const item = createItem(data);
         db.add(item);
       });
 
       console.log(`[DB] Loaded ${db.size()} items.`);
-
     } catch (err) {
       console.error(`[DB] Failed to load item database: ${err.message}`);
     }

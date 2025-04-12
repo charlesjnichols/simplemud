@@ -3,16 +3,20 @@
 // Time
 const timeStamp = () => {
   const date = new Date();
-  return `${String(date.getHours()).padStart(2, '0')}:` +
-         `${String(date.getMinutes()).padStart(2, '0')}:` +
-         `${String(date.getSeconds()).padStart(2, '0')}`;
+  return (
+    `${String(date.getHours()).padStart(2, '0')}:` +
+    `${String(date.getMinutes()).padStart(2, '0')}:` +
+    `${String(date.getSeconds()).padStart(2, '0')}`
+  );
 };
 
 const dateStamp = () => {
   const date = new Date();
-  return `${date.getFullYear()}.` +
-         `${String(date.getMonth() + 1).padStart(2, '0')}.` +
-         `${String(date.getDate()).padStart(2, '0')}`;
+  return (
+    `${date.getFullYear()}.` +
+    `${String(date.getMonth() + 1).padStart(2, '0')}.` +
+    `${String(date.getDate()).padStart(2, '0')}`
+  );
 };
 
 const upTime = (secNum = process.uptime()) => {
@@ -25,7 +29,7 @@ const upTime = (secNum = process.uptime()) => {
     [year, 'year'],
     [day, 'day'],
     [hour, 'hour'],
-    [min, 'minute']
+    [min, 'minute'],
   ]
     .filter(([val]) => val > 0)
     .map(([val, label]) => `${val} ${label}${val !== 1 ? 's' : ''}`)
@@ -53,8 +57,8 @@ const createTimer = () => {
       initTime.current = getTimeMS();
     },
     getMS: () => {
-      return (getTimeMS() - initTime.current) + startTime.current;
-    }
+      return getTimeMS() - initTime.current + startTime.current;
+    },
   };
 };
 
@@ -65,5 +69,5 @@ module.exports = {
   getTimeMS,
   seconds,
   minutes,
-  createTimer
+  createTimer,
 };

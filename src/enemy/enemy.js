@@ -40,7 +40,7 @@ function createEnemy(data = {}, enemyTpDb, roomDb) {
     matchPartial: (str) => matchPartial(tp?.name || '', str),
 
     loadTemplate: (template) => {
-      if (!template) throw new Error("Enemy template is undefined or null");
+      if (!template) throw new Error('Enemy template is undefined or null');
       enemy.tp = template;
       enemy.name = template.name;
       enemy.hitPoints = template.hitPoints;

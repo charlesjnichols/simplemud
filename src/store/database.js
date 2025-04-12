@@ -15,7 +15,7 @@ function createStoreDatabase() {
   function load(itemDb) {
     db.clear();
     const dataArray = jsonfile.readFileSync(file);
-    dataArray.forEach(data => {
+    dataArray.forEach((data) => {
       const store = createStore({});
       store.load(data, itemDb);
       db.add(store);

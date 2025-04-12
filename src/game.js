@@ -1,16 +1,14 @@
 'use strict';
 
-const {tostring,parseWord,removeWord} = require('./utils/strings');
-const {randomInt} = require('./utils/math');
-const {dateStamp,timeStamp,upTime,createTimer,seconds,minutes} = require('./utils/time');
-const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
-  require('./databases');
+const { tostring, parseWord, removeWord } = require('./utils/strings');
+const { randomInt } = require('./utils/math');
+const { dateStamp, timeStamp, upTime, createTimer, seconds, minutes } = require('./utils/time');
+const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } = require('./databases');
 const ConnectionHandler = require('./connection/handler');
-const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
-  require('./attributes');
-const {center, cyan, green, yellow, white, whiteBold, padLeft, padRight} = require("./utils/formatting");
+const { Attribute, PlayerRank, ItemType, Direction, RoomType } = require('./attributes');
+const { center, cyan, green, yellow, white, whiteBold, padLeft, padRight } = require('./utils/formatting');
 const Train = require('./train');
-const playerMessages = require("./player/messages");
+const playerMessages = require('./player/messages');
 
 let isRunning = false;
 
@@ -18,7 +16,6 @@ const timer = createTimer();
 
 // Game Handler class
 class Game extends ConnectionHandler {
-
   static isRunning() {
     return isRunning;
   }
@@ -37,7 +34,7 @@ class Game extends ConnectionHandler {
   }
 
   enter() {
-    this.lastCommand = "";
+    this.lastCommand = '';
 
     const p = this.player;
     p.active = true;
@@ -49,8 +46,7 @@ class Game extends ConnectionHandler {
     if (!isNaN(p.room)) p.room = roomDb.findById(p.room);
     p.room.addPlayer(p);
 
-    Game.sendGame("<bold><green>" + p.name +
-      " has entered the realm.</green></bold>");
+    Game.sendGame('<bold><green>' + p.name + ' has entered the realm.</green></bold>');
 
     if (p.newbie) this.goToTrain();
     else p.sendString(p.room.messages.printRoom());
@@ -70,61 +66,64 @@ class Game extends ConnectionHandler {
     //  REGULAR access commands
     // ------------------------------------------------------------------------
 
-    if (firstWord === "chat" || firstWord === ':') {
+    if (firstWord === 'chat' || firstWord === ':') {
       const text = removeWord(data, 0);
-      Game.sendGame(
-        `<white><bold>${p.name} chats: ${text}</bold></white>`);
+      Game.sendGame(`<white><bold>${p.name} chats: ${text}</bold></white>`);
       return;
     }
 
-    if (firstWord === "experience" || firstWord === "exp") {
+    if (firstWord === 'experience' || firstWord === 'exp') {
       p.sendString(p.messages.printExperience());
       return;
     }
 
-    if (firstWord === "help" || firstWord === "commands") {
+    if (firstWord === 'help' || firstWord === 'commands') {
       p.sendString(p.messages.printHelp());
       return;
     }
 
-    if (firstWord === "inventory" || firstWord === "inv") {
+    if (firstWord === 'inventory' || firstWord === 'inv') {
       p.sendString(p.messages.printInventory());
       return;
     }
 
-    if (firstWord === "quit") {
+    if (firstWord === 'quit') {
       this.connection.close();
-      Game.logoutMessage(p.name + " has left the realm.");
+      Game.logoutMessage(p.name + ' has left the realm.');
       return;
     }
 
-    if (firstWord === "remove") {
+    if (firstWord === 'remove') {
       this.removeItem(parseWord(data, 1));
       return;
     }
 
-    if (firstWord === "stats" || firstWord === "st") {
+    if (firstWord === 'stats' || firstWord === 'st') {
       p.sendString(p.messages.printStats());
       return;
     }
 
-    if (firstWord === "time") {
-      const msg = "<bold><cyan>" +
-        "The current system time is: " +
-        timeStamp() + " on " +
-        dateStamp() + "<newline/>" +
-        "The system has been up for: " +
-        upTime() + ".</cyan></bold>";
+    if (firstWord === 'time') {
+      const msg =
+        '<bold><cyan>' +
+        'The current system time is: ' +
+        timeStamp() +
+        ' on ' +
+        dateStamp() +
+        '<newline/>' +
+        'The system has been up for: ' +
+        upTime() +
+        '.</cyan></bold>';
       p.sendString(msg);
       return;
     }
 
-    if (firstWord === "use") {
+    if (firstWord === 'use') {
       this.useItem(removeWord(data, 0));
       return;
     }
 
-    if (firstWord === "whisper") {
+    if (firstWord === 'whisper') {
       // get the players name
       const name = parseWord(data, 1);
       const message = removeWord(removeWord(data, 0), 0);
@@ -132,71 +131,69 @@ class Game extends ConnectionHandler {
       return;
     }
 
-    if (firstWord === "who") {
+    if (firstWord === 'who') {
       p.sendString(p.messages.printWhoList(parseWord(data, 1).toLowerCase(), playerDb));
       return;
     }
 
-    if (firstWord === "look" || firstWord === "l") {
+    if (firstWord === 'look' || firstWord === 'l') {
       p.sendString(p.room.messages.printRoom());
       return;
     }
 
-    if (firstWord === "north" || firstWord === "n") {
+    if (firstWord === 'north' || firstWord === 'n') {
       this.move(Direction.NORTH);
       return;
     }
 
-    if (firstWord === "east" || firstWord === "e") {
+    if (firstWord === 'east' || firstWord === 'e') {
       this.move(Direction.EAST);
       return;
     }
 
-    if (firstWord === "south" || firstWord === "s") {
+    if (firstWord === 'south' || firstWord === 's') {
       this.move(Direction.SOUTH);
       return;
     }
 
-    if (firstWord === "west" || firstWord === "w") {
+    if (firstWord === 'west' || firstWord === 'w') {
       this.move(Direction.WEST);
       return;
     }
 
-    if (firstWord === "get" || firstWord === "take") {
+    if (firstWord === 'get' || firstWord === 'take') {
       this.getItem(removeWord(data, 0));
       return;
     }
 
-    if (firstWord === "drop") {
+    if (firstWord === 'drop') {
       this.dropItem(removeWord(data, 0));
       return;
     }
 
-    if (firstWord === "train") {
+    if (firstWord === 'train') {
       if (p.room.type !== RoomType.TRAININGROOM) {
-        p.sendString("<red><bold>You cannot train here!</bold></red>");
+        p.sendString('<red><bold>You cannot train here!</bold></red>');
         return;
       }
       if (p.train()) {
-        p.sendString("<green><bold>You are now level " +
-                     p.level + "</bold></green>");
+        p.sendString('<green><bold>You are now level ' + p.level + '</bold></green>');
       } else {
-        p.sendString("<red><bold>You don't have enough " +
-                     "experience to train!</bold></red>");
+        p.sendString("<red><bold>You don't have enough " + 'experience to train!</bold></red>');
       }
       return;
     }
 
-    if (firstWord === "editstats") {
+    if (firstWord === 'editstats') {
       if (p.room.type !== RoomType.TRAININGROOM) {
-        p.sendString("<red><bold>You cannot edit your stats here!</bold></red>");
+        p.sendString('<red><bold>You cannot edit your stats here!</bold></red>');
         return;
       }
       this.goToTrain();
       return;
     }
 
-    if (firstWord === "list") {
+    if (firstWord === 'list') {
       if (p.room.type !== RoomType.STORE) {
         p.sendString("<red><bold>You're not in a store!</bold></red>");
         return;
@@ -205,7 +202,7 @@ class Game extends ConnectionHandler {
       return;
     }
 
-    if (firstWord === "buy") {
+    if (firstWord === 'buy') {
       if (p.room.type !== RoomType.STORE) {
         p.sendString("<red><bold>You're not in a store!</bold></red>");
         return;
@@ -214,7 +211,7 @@ class Game extends ConnectionHandler {
       return;
     }
 
-    if (firstWord === "sell") {
+    if (firstWord === 'sell') {
       if (p.room.type !== RoomType.STORE) {
         p.sendString("<red><bold>You're not in a store!</bold></red>");
         return;
@@ -223,7 +220,7 @@ class Game extends ConnectionHandler {
       return;
     }
 
-    if (firstWord === "attack" || firstWord === "a") {
+    if (firstWord === 'attack' || firstWord === 'a') {
       this.playerAttack(removeWord(data, 0));
       return;
     }
@@ -232,18 +229,17 @@ class Game extends ConnectionHandler {
     //  GOD access commands
     // ------------------------------------------------------------------------
 
-    if (firstWord === "kick" && p.rank >= PlayerRank.GOD) {
-
+    if (firstWord === 'kick' && p.rank >= PlayerRank.GOD) {
       const targetName = parseWord(data, 1);
       if (targetName === '') {
-        p.sendString("<red><bold>Usage: kick <name></bold></red>");
+        p.sendString('<red><bold>Usage: kick <name></bold></red>');
         return;
       }
 
       // find a player to kick
       const target = playerDb.findLoggedIn(targetName);
       if (!target) {
-        p.sendString("<red><bold>Player could not be found</bold></red>");
+        p.sendString('<red><bold>Player could not be found</bold></red>');
         return;
       }
 
@@ -253,8 +249,7 @@ class Game extends ConnectionHandler {
       }
 
       target.connection.close();
-      Game.logoutMessage(target.name +
-        " has been kicked by " + p.name + "!!!");
+      Game.logoutMessage(target.name + ' has been kicked by ' + p.name + '!!!');
       return;
     }
 
@@ -262,68 +257,66 @@ class Game extends ConnectionHandler {
     //  ADMIN access commands
     // ------------------------------------------------------------------------
 
-    if (firstWord === "announce" && p.rank >= PlayerRank.ADMIN) {
+    if (firstWord === 'announce' && p.rank >= PlayerRank.ADMIN) {
       Game.announce(removeWord(data, 0));
       return;
     }
 
-    if (firstWord === "changerank" && p.rank >= PlayerRank.ADMIN) {
+    if (firstWord === 'changerank' && p.rank >= PlayerRank.ADMIN) {
       const name = parseWord(data, 1);
       let rank = parseWord(data, 2);
 
       if (name === '' || rank === '') {
-        p.sendString("<red><bold>Usage: changerank <name> <rank></bold></red>");
+        p.sendString('<red><bold>Usage: changerank <name> <rank></bold></red>');
         return;
       }
 
       // find the player to change rank
       const target = playerDb.findByNameFull(name);
       if (!target) {
-        p.sendString("<red><bold>Error: Could not find user " +
-          name + "</bold></red>");
+        p.sendString('<red><bold>Error: Could not find user ' + name + '</bold></red>');
         return;
       }
 
       rank = PlayerRank.get(rank.toUpperCase());
       if (!rank) {
-        p.sendString("<red><bold>Invalid rank!</bold></red>");
+        p.sendString('<red><bold>Invalid rank!</bold></red>');
         return;
       }
 
       target.rank = rank;
-      Game.sendGame("<green><bold>" + target.name +
-        "'s rank has been changed to: " + target.rank.toString());
+      Game.sendGame('<green><bold>' + target.name + "'s rank has been changed to: " + target.rank.toString());
       return;
     }
 
-    if (firstWord === "reload" && p.rank >= PlayerRank.ADMIN) {
+    if (firstWord === 'reload' && p.rank >= PlayerRank.ADMIN) {
       const db = parseWord(data, 1);
 
       if (db === '') {
-        p.sendString("<red><bold>Usage: reload <db></bold></red>");
+        p.sendString('<red><bold>Usage: reload <db></bold></red>');
         return;
       }
 
-      if (db === "items") {
+      if (db === 'items') {
         itemDb.load();
-        p.sendString("<bold><cyan>Item Database Reloaded!</cyan></bold>");
+        p.sendString('<bold><cyan>Item Database Reloaded!</cyan></bold>');
       } else if (db === 'rooms') {
         roomDb.loadTemplates();
-        p.sendString("<bold><cyan>Room Database Reloaded!</cyan></bold>");
+        p.sendString('<bold><cyan>Room Database Reloaded!</cyan></bold>');
       } else if (db === 'stores') {
         storeDb.load(itemDb);
-        p.sendString("<bold><cyan>Store Database Reloaded!</cyan></bold>");
+        p.sendString('<bold><cyan>Store Database Reloaded!</cyan></bold>');
       } else if (db === 'enemies') {
         enemyTpDb.load();
-        p.sendString("<bold><cyan>Enemy Database Reloaded!</cyan></bold>");
+        p.sendString('<bold><cyan>Enemy Database Reloaded!</cyan></bold>');
       } else {
-        p.sendString("<bold><red>Invalid Database Name!</red></bold>");
+        p.sendString('<bold><red>Invalid Database Name!</red></bold>');
       }
       return;
     }
 
-    if (firstWord === "shutdown" && p.rank >= PlayerRank.ADMIN) {
-      Game.announce("SYSTEM IS SHUTTING DOWN");
+    if (firstWord === 'shutdown' && p.rank >= PlayerRank.ADMIN) {
+      Game.announce('SYSTEM IS SHUTTING DOWN');
       Game.setIsRunning(false);
       return;
     }
@@ -331,9 +324,7 @@ class Game extends ConnectionHandler {
     // ------------------------------------------------------------------------
     //  Command not recognized, send to room
     // ------------------------------------------------------------------------
-    Game.sendRoom("<bold>" + p.name + " says: <dim>" +
-                  data + "</dim></bold>", p.room);
-
+    Game.sendRoom('<bold>' + p.name + ' says: <dim>' + data + '</dim></bold>', p.room);
   }
 
   leave() {
@@ -358,7 +349,7 @@ class Game extends ConnectionHandler {
   goToTrain() {
     const conn = this.connection;
     const p = this.player;
-    Game.logoutMessage(p.name + " leaves to edit stats");
+    Game.logoutMessage(p.name + ' leaves to edit stats');
     conn.addHandler(new Train(conn, p));
   }
 
@@ -367,22 +358,20 @@ class Game extends ConnectionHandler {
     const index = p.getItemIndex(name);
 
     if (index === -1) {
-      p.sendString("<red><bold>Could not find that item!</bold></red>");
+      p.sendString('<red><bold>Could not find that item!</bold></red>');
       return false;
     }
 
     const item = p.inventory[index];
 
-    switch(item.type) {
+    switch (item.type) {
       case ItemType.WEAPON:
         p.useWeapon(index);
-        Game.sendRoom("<green><bold>" + p.name + " arms a " +
-                      item.name + "</bold></green>", p.room);
+        Game.sendRoom('<green><bold>' + p.name + ' arms a ' + item.name + '</bold></green>', p.room);
         return true;
       case ItemType.ARMOR:
         p.useArmor(index);
-        Game.sendRoom("<green><bold>" + p.name + " puts on a " +
-                      item.name + "</bold></green>", p.room);
+        Game.sendRoom('<green><bold>' + p.name + ' puts on a ' + item.name + '</bold></green>', p.room);
         return true;
       case ItemType.HEALING:
         const min = item.min;
@@ -402,42 +391,39 @@ class Game extends ConnectionHandler {
 
     typeName = typeName.toLowerCase();
 
-    if (typeName === "weapon" && p.getWeapon() !== 0) {
+    if (typeName === 'weapon' && p.getWeapon() !== 0) {
       p.removeWeapon();
       return true;
     }
 
-    if (typeName === "armor" && p.getArmor() !== 0) {
+    if (typeName === 'armor' && p.getArmor() !== 0) {
       p.removeArmor();
       return true;
     }
 
-    p.sendString("<red><bold>Could not Remove item!</bold></red>");
+    p.sendString('<red><bold>Could not Remove item!</bold></red>');
     return false;
   }
 
   move(dir) {
     const p = this.player;
     if (!dir.hasOwnProperty('key')) {
-      p.sendString("<red>Invalid direction!</red>");
+      p.sendString('<red>Invalid direction!</red>');
       return;
     }
     const next = roomDb.findById(p.room.rooms[dir]);
     const previous = p.room;
 
     if (!next) {
-      Game.sendRoom("<red>" + p.name + " bumps into the wall to the " +
-                    dir.key + "!!!</red>", p.room);
+      Game.sendRoom('<red>' + p.name + ' bumps into the wall to the ' + dir.key + '!!!</red>', p.room);
       return;
     }
 
     previous.removePlayer(p);
 
-    Game.sendRoom("<green>"  + p.name + " leaves to the " +
-                  dir.key + ".</green>", previous);
-    Game.sendRoom("<green>"  + p.name + " enters from the " +
-                  this._oppositeDirection(dir) + ".</green>", next);
-    p.sendString("<green>You walk " + dir.key + ".</green>");
+    Game.sendRoom('<green>' + p.name + ' leaves to the ' + dir.key + '.</green>', previous);
+    Game.sendRoom('<green>' + p.name + ' enters from the ' + this._oppositeDirection(dir) + '.</green>', next);
+    p.sendString('<green>You walk ' + dir.key + '.</green>');
 
     p.room = next;
     next.addPlayer(p);
@@ -466,15 +452,15 @@ class Game extends ConnectionHandler {
     if (item[0] === '$') {
       // clear off the '$', and convert the result into a number.
       const money = parseInt(item.substr(1, item.length - 1));
-      if (!isNaN(money)) { // if valid money amount
+      if (!isNaN(money)) {
+        // if valid money amount
         // make sure there's enough money in the room
         if (money > p.room.money) {
           p.sendString("<red><bold>There isn't that much here!</bold></red>");
         } else {
           p.money += money;
           p.room.money -= money;
-          Game.sendRoom("<cyan><bold>" + p.name + " picks up $" +
-                        money + ".</bold></cyan>", p.room);
+          Game.sendRoom('<cyan><bold>' + p.name + ' picks up $' + money + '.</bold></cyan>', p.room);
         }
         return;
       }
@@ -493,8 +479,7 @@ class Game extends ConnectionHandler {
     }
 
     p.room.removeItem(i);
-    Game.sendRoom("<cyan><bold>" + p.name + " picks up " +
-                  i.name + ".</bold></cyan>", p.room);
+    Game.sendRoom('<cyan><bold>' + p.name + ' picks up ' + i.name + '.</bold></cyan>', p.room);
   }
 
   dropItem(item) {
@@ -503,15 +488,15 @@ class Game extends ConnectionHandler {
     if (item[0] === '$') {
       // clear off the '$', and convert the result into a number.
       const money = parseInt(item.substr(1, item.length - 1));
-      if (!isNaN(money)) { // if valid money amount
+      if (!isNaN(money)) {
+        // if valid money amount
         // make sure there's enough money in the room
         if (money > p.money) {
           p.sendString("<red><bold>You don't have that much!</bold></red>");
         } else {
           p.money -= money;
           p.room.money += money;
-          Game.sendRoom("<cyan><bold>" + p.name + " drops $" +
-                        money + ".</bold></cyan>", p.room);
+          Game.sendRoom('<cyan><bold>' + p.name + ' drops $' + money + '.</bold></cyan>', p.room);
         }
         return;
       }
@@ -524,8 +509,7 @@ class Game extends ConnectionHandler {
       return;
     }
 
-    Game.sendRoom("<cyan><bold>" + p.name + " drops " +
-                  p.inventory[i].name + ".</bold></cyan>", p.room);
+    Game.sendRoom('<cyan><bold>' + p.name + ' drops ' + p.inventory[i].name + '.</bold></cyan>', p.room);
     p.room.addItem(p.inventory[i]);
     p.dropItem(i);
   }
@@ -550,8 +534,7 @@ class Game extends ConnectionHandler {
     }
 
     p.money -= i.price;
-    Game.sendRoom("<cyan><bold>" + p.name + " buys a " +
-                  i.name +"</bold></cyan>", p.room);
+    Game.sendRoom('<cyan><bold>' + p.name + ' buys a ' + i.name + '</bold></cyan>', p.room);
   }
 
   sell(itemName) {
@@ -570,8 +553,7 @@ class Game extends ConnectionHandler {
     }
     p.dropItem(index);
     p.money += i.price;
-    Game.sendRoom("<cyan><bold>" + p.name + " sells a " +
-                  i.name + "</bold></cyan>", p.room);
+    Game.sendRoom('<cyan><bold>' + p.name + ' sells a ' + i.name + '</bold></cyan>', p.room);
   }
 
   playerAttack(enemyName) {
@@ -590,7 +572,7 @@ class Game extends ConnectionHandler {
       return;
     }
 
-        const weapon = p.getWeapon();
+    const weapon = p.getWeapon();
 
     let damage;
     if (weapon === 0) {
@@ -605,9 +587,8 @@ class Game extends ConnectionHandler {
     const A = Attribute;
     const e = enemy.tp;
 
-    if (randomInt(0,99) >= attr(A.ACCURACY) - e.dodging) {
-      Game.sendRoom("<white>" + p.name + " swings at " + e.name +
-                    " but misses!</white>", p.room);
+    if (randomInt(0, 99) >= attr(A.ACCURACY) - e.dodging) {
+      Game.sendRoom('<white>' + p.name + ' swings at ' + e.name + ' but misses!</white>', p.room);
       return;
     }
 
@@ -618,8 +599,7 @@ class Game extends ConnectionHandler {
 
     enemy.hitPoints -= damage;
 
-    Game.sendRoom("<red>" + p.name + " hits " + e.name + " for " +
-                  damage + " damage!</red>", p.room);
+    Game.sendRoom('<red>' + p.name + ' hits ' + e.name + ' for ' + damage + ' damage!</red>', p.room);
 
     if (enemy.hitPoints <= 0) {
       Game.enemyKilled(enemy, p);
@@ -638,7 +618,7 @@ class Game extends ConnectionHandler {
       damage = randomInt(1, 3);
       enemy.nextAttackTime = now + seconds(1);
     } else {
-      const weapon = (isNaN(e.weapon) ? e.weapon : itemDb.findById(e.weapon));
+      const weapon = isNaN(e.weapon) ? e.weapon : itemDb.findById(e.weapon);
       damage = randomInt(weapon.min, weapon.max);
       enemy.nextAttackTime = now + seconds(weapon.speed);
     }
@@ -646,9 +626,8 @@ class Game extends ConnectionHandler {
     const attr = p.GetAttr.bind(p);
     const A = Attribute;
 
-    if (randomInt(0,99) >= e.accuracy - attr(A.DODGING)) {
-      Game.sendRoom("<white>" + e.name + " swings at " + p.name +
-                    " but misses!</white>", enemy.room);
+    if (randomInt(0, 99) >= e.accuracy - attr(A.DODGING)) {
+      Game.sendRoom('<white>' + e.name + ' swings at ' + p.name + ' but misses!</white>', enemy.room);
       return;
     }
 
@@ -659,8 +638,7 @@ class Game extends ConnectionHandler {
 
     p.addHitPoints(-damage);
 
-    Game.sendRoom("<red>" + e.name + " hits " + p.name + " for " +
-                  damage + " damage!</red>", enemy.room);
+    Game.sendRoom('<red>' + e.name + ' hits ' + p.name + ' for ' + damage + ' damage!</red>', enemy.room);
 
     if (p.hitPoints <= 0) {
       Game.playerKilled(p);
@@ -670,15 +648,13 @@ class Game extends ConnectionHandler {
   static playerKilled(player) {
     const p = player;
 
-    Game.sendRoom("<red><bold>" + p.name +
-                  " has died!</bold></red>", p.room);
+    Game.sendRoom('<red><bold>' + p.name + ' has died!</bold></red>', p.room);
     // drop the money
     const money = Math.floor(p.money / 10);
     if (money > 0) {
       p.room.money += money;
       p.money -= money;
-      Game.sendRoom("<cyan>$" + money +
-                    " drops to the ground.</cyan>", p.room);
+      Game.sendRoom('<cyan>$' + money + ' drops to the ground.</cyan>', p.room);
     }
 
     // drop an item
@@ -687,8 +663,7 @@ class Game extends ConnectionHandler {
       const item = p.inventory[index];
       p.room.addItem(item);
       p.dropItem(index);
-      Game.sendRoom("<cyan>" + item.name + " drops to the ground." +
-                    "</cyan>", p.room);
+      Game.sendRoom('<cyan>' + item.name + ' drops to the ground.' + '</cyan>', p.room);
     }
 
     // subtract 10% experience
@@ -703,46 +678,38 @@ class Game extends ConnectionHandler {
     // set the hitpoints to 70%
     p.setHitPoints(Math.floor(p.GetAttr(Attribute.MAXHITPOINTS) * 0.7));
 
-    p.sendString("<white><bold>You have died, " +
-                 "but have been ressurected in " +
-                 p.room.name + "</bold></white>");
+    p.sendString('<white><bold>You have died, ' + 'but have been ressurected in ' + p.room.name + '</bold></white>');
 
-    p.sendString("<red><bold>You have lost " +
-                 exp + " experience!</bold></red>");
+    p.sendString('<red><bold>You have lost ' + exp + ' experience!</bold></red>');
 
-    Game.sendRoom("<white><bold>" + p.name +
-                  " appears out of nowhere!!</bold></white>", p.room);
+    Game.sendRoom('<white><bold>' + p.name + ' appears out of nowhere!!</bold></white>', p.room);
   }
 
   static enemyKilled(enemy, player) {
     const e = enemy.tp;
     const p = player;
 
-    Game.sendRoom("<cyan><bold>" + e.name +
-                  " has died!</bold></cyan>", enemy.room);
+    Game.sendRoom('<cyan><bold>' + e.name + ' has died!</bold></cyan>', enemy.room);
 
     // drop the money
     const money = randomInt(e.moneyMin, e.moneyMax);
     if (money > 0) {
       enemy.room.money += money;
-      Game.sendRoom("<cyan>$" + money + " drops to the ground." +
-                    "</cyan>", enemy.room);
+      Game.sendRoom('<cyan>$' + money + ' drops to the ground.' + '</cyan>', enemy.room);
     }
 
     // drop all the items
-    e.loot.forEach(loot => {
-      if (randomInt(0,99) < loot.chance) {
+    e.loot.forEach((loot) => {
+      if (randomInt(0, 99) < loot.chance) {
         const item = itemDb.findById(loot.itemId);
         enemy.room.addItem(item);
-        Game.sendRoom("<cyan>" + item.name + " drops to the ground." +
-                      "</cyan>", enemy.room);
+        Game.sendRoom('<cyan>' + item.name + ' drops to the ground.' + '</cyan>', enemy.room);
       }
     });
 
     // add experience to the player who killed it
     p.experience += e.experience;
-    p.sendString("<cyan><bold>You gain " + e.experience +
-                 " experience.</bold></cyan>");
+    p.sendString('<cyan><bold>You gain ' + e.experience + ' experience.</bold></cyan>');
 
     // remove the enemy from the game
     enemyDb.delete(enemy);
@@ -757,7 +724,7 @@ class Game extends ConnectionHandler {
   }
 
   static sendRoom(text, room) {
-    room.players.forEach(player => {
+    room.players.forEach((player) => {
       player.sendString(text);
     });
   }
@@ -770,28 +737,22 @@ class Game extends ConnectionHandler {
   }
 
   static logoutMessage(reason) {
-    Game.sendGame("<red><bold>" + reason + "</bold></red>");
+    Game.sendGame('<red><bold>' + reason + '</bold></red>');
   }
 
   static announce(announcement) {
-    Game.sendGlobal("<cyan><bold>" + announcement + "</bold></cyan>");
+    Game.sendGlobal('<cyan><bold>' + announcement + '</bold></cyan>');
   }
 
   whisper(msg, playerName) {
     const player = playerDb.findActive(playerName);
     if (!player) {
-      this.player.sendString(
-        "<red><bold>Error, cannot find user</bold></red>");
+      this.player.sendString('<red><bold>Error, cannot find user</bold></red>');
     } else {
-      player.sendString(
-        "<yellow>" + this.player.name +
-        " whispers to you: </yellow>" + msg);
-      this.player.sendString(
-        "<yellow>You whisper to " + player.name +
-        ": </yellow>" + msg);
+      player.sendString('<yellow>' + this.player.name + ' whispers to you: </yellow>' + msg);
+      this.player.sendString('<yellow>You whisper to ' + player.name + ': </yellow>' + msg);
     }
   }
-
 }
 
 module.exports = Game;

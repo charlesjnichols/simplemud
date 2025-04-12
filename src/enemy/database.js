@@ -15,7 +15,7 @@ function createEnemyTemplateDatabase() {
   const load = () => {
     console.log('[DB] Loading enemy templates...');
     const dataArray = jsonfile.readFileSync(fileTemplate);
-    dataArray.forEach(data => {
+    dataArray.forEach((data) => {
       const template = createEnemyTemplate(data);
       db.add(template);
     });
@@ -47,7 +47,7 @@ function createEnemyDatabase(roomDb, enemyTemplateDb) {
   const load = () => {
     console.log('[DB] Loading enemies...');
     const dataArray = jsonfile.readFileSync(fileData);
-    _.forEach(dataArray, data => {
+    _.forEach(dataArray, (data) => {
       const enemy = createEnemy({}, enemyTemplateDb, roomDb);
       enemy.loadData(data);
       enemy.room.addEnemy(enemy);
@@ -57,7 +57,7 @@ function createEnemyDatabase(roomDb, enemyTemplateDb) {
   };
 
   const save = () => {
-    const dataArray = db.values().map(e => e.serialize());
+    const dataArray = db.values().map((e) => e.serialize());
     jsonfile.writeFileSync(fileData, dataArray, { spaces: 2 });
     console.log(`[DB] Saved ${dataArray.length} enemies.`);
   };

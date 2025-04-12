@@ -1,72 +1,88 @@
-const { padRight, printSection, printTwoCol, redBold, whiteBold, cyanBold, divider, green, cyan, yellow, white, padLeft } = require('../utils/formatting');
 const { Attribute, PlayerRank } = require('../attributes');
 const { tostring } = require('../utils/strings');
+const {
+  padRight,
+  printSection,
+  printTwoCol,
+  redBold,
+  whiteBold,
+  cyanBold,
+  divider,
+  green,
+  cyan,
+  red,
+  yellow,
+  white,
+  padLeft,
+} = require('../utils/formatting');
 
 const createPlayerMessages = (player) => {
-
   function printExperience(options = {}) {
     const nextXP = player.needForLevel(player.level + 1);
-    const percent = Math.round(100 * player.experience / nextXP);
+    const percent = Math.round((100 * player.experience) / nextXP);
 
     const experience = [
-      printTwoCol("Level:", player.level),
-      printTwoCol("Experience:", `${player.experience}/${nextXP} (${percent}%)`)
+      printTwoCol('Level:', player.level),
+      printTwoCol('Experience:', `${player.experience}/${nextXP} (${percent}%)`),
     ];
-    return printSection("Your Experience", experience, options);
+    return printSection('Your Experience', experience, options);
   }
 
   function printInventory(options = {}) {
-    const items = player.inventory.map(item => item.name).join(', ') || "None";
-    const weapon = player.getWeapon() ? player.getWeapon().name : "NONE!";
-    const armor = player.getArmor() ? player.getArmor().name : "NONE!";
+    const items = player.inventory.map((item) => item.name).join(', ') || 'None';
+    const weapon = player.getWeapon() ? player.getWeapon().name : 'NONE!';
+    const armor = player.getArmor() ? player.getArmor().name : 'NONE!';
     const money = `$${player.money}`;
 
     const lines = [
-      printTwoCol("Items:", items),
-      printTwoCol("Weapon:", weapon),
-      printTwoCol("Armor:", armor),
-      printTwoCol("Money:", money)
+      printTwoCol('Items:', items),
+      printTwoCol('Weapon:', weapon),
+      printTwoCol('Armor:', armor),
+      printTwoCol('Money:', money),
     ];
 
-    return printSection("Your Inventory", lines, options);
+    return printSection('Your Inventory', lines, options);
   }
 
   function printStats() {
     const attr = player.GetAttr.bind(player);
 
     const identity = [
-      printTwoCol("Name:", player.name),
-      printTwoCol("Rank:", player.rank.toString()),
-      printTwoCol("HP/Max:", `${player.hitPoints}/${attr(Attribute.get("Attribute.MAXHITPOINTS"))} (${Math.round(100 * player.hitPoints / attr(Attribute.get("Attribute.MAXHITPOINTS")) || 1)}%)`)
+      printTwoCol('Name:', player.name),
+      printTwoCol('Rank:', player.rank.toString()),
+      printTwoCol(
+        'HP/Max:',
+        `${player.hitPoints}/${attr(Attribute.get('Attribute.MAXHITPOINTS'))} (${Math.round((100 * player.hitPoints) / attr(Attribute.get('Attribute.MAXHITPOINTS')) || 1)}%)`,
+      ),
     ];
 
     const experience = [
-      printTwoCol("Level:", player.level),
-      printTwoCol("Experience:", `${player.experience}/${player.needForLevel(player.level + 1)} (${Math.round(100 * player.experience / (player.needForLevel(player.level + 1) || 1))}%)`)
+      printTwoCol('Level:', player.level),
+      printTwoCol(
+        'Experience:',
+        `${player.experience}/${player.needForLevel(player.level + 1)} (${Math.round((100 * player.experience) / (player.needForLevel(player.level + 1) || 1))}%)`,
+      ),
     ];
 
     const attributes = [
-      printTwoCol("Strength:", tostring(attr(Attribute.get("STRENGTH")))),
-      printTwoCol("Accuracy:", tostring(attr(Attribute.get("ACCURACY")))),
-      printTwoCol("Health:", tostring(attr(Attribute.get("HEALTH")))),
-      printTwoCol("Dodging:", tostring(attr(Attribute.get("DODGING")))),
-      printTwoCol("Agility:", tostring(attr(Attribute.get("AGILITY")))),
-      printTwoCol("Strike Damage:", tostring(attr(Attribute.get("STRIKEDAMAGE")))),
-      printTwoCol("StatPoints:", tostring(player.statPoints)),
-      printTwoCol("Damage Absorb:", tostring(attr(Attribute.get("DAMAGEABSORB")))),
+      printTwoCol('Strength:', tostring(attr(Attribute.get('STRENGTH')))),
+      printTwoCol('Accuracy:', tostring(attr(Attribute.get('ACCURACY')))),
+      printTwoCol('Health:', tostring(attr(Attribute.get('HEALTH')))),
+      printTwoCol('Dodging:', tostring(attr(Attribute.get('DODGING')))),
+      printTwoCol('Agility:', tostring(attr(Attribute.get('AGILITY')))),
+      printTwoCol('Strike Damage:', tostring(attr(Attribute.get('STRIKEDAMAGE')))),
+      printTwoCol('StatPoints:', tostring(player.statPoints)),
+      printTwoCol('Damage Absorb:', tostring(attr(Attribute.get('DAMAGEABSORB')))),
     ];
 
     return (
-      printSection("Your Stats", identity, { bottom: false }) +
-      printSection("Your Experience", experience, { bottom: false }) +
-      printSection("Your Attributes", attributes)
+      printSection('Your Stats', identity, { bottom: false }) +
+      printSection('Your Experience', experience, { bottom: false }) +
+      printSection('Your Attributes', attributes)
     );
   }
 
-
-
   const printHelp = () => {
-
     const commands = [
       cyan(padRight(' /, /repeat', 28)) + '  ' + padLeft('Repeat your last command exactly.', 48),
       cyan(padRight(' chat "msg"', 28)) + '  ' + padLeft('Broadcast a message to all players.', 48),
@@ -93,50 +109,45 @@ const createPlayerMessages = (player) => {
       cyan(padRight(' attack "enemy"', 28)) + '  ' + padLeft('Initiate an attack on an enemy.', 48),
     ];
 
-    const god = player.rank >= PlayerRank.GOD ? [
-      '',
-      whiteBold('GOD COMMANDS'),
-      yellow(padRight(' kick', 28)) + '  ' + padLeft('Remove a player from the realm', 48),
-    ] : [];
+    const god =
+      player.rank >= PlayerRank.GOD
+        ? [
+            '',
+            whiteBold('GOD COMMANDS'),
+            yellow(padRight(' kick', 28)) + '  ' + padLeft('Remove a player from the realm', 48),
+          ]
+        : [];
 
-    const admin = player.rank >= PlayerRank.ADMIN ? [
-      '',
-      whiteBold('ADMIN COMMANDS'),
-      green(padRight(' announce ', 28)) + '  ' + padLeft('Broadcast a system-wide message', 48),
-      green(padRight(' changerank', 28)) + '  ' + padLeft(" Update a player's rank", 48),
-      green(padRight(' reload   ', 28)) + '  ' + padLeft('Reload game databases (items, rooms, etc.)', 48),
-      green(padRight(' shutdown ', 28)) + '  ' + padLeft('Shutdown the game server', 48),
-    ] : [];
+    const admin =
+      player.rank >= PlayerRank.ADMIN
+        ? [
+            '',
+            whiteBold('ADMIN COMMANDS'),
+            green(padRight(' announce ', 28)) + '  ' + padLeft('Broadcast a system-wide message', 48),
+            green(padRight(' changerank', 28)) + '  ' + padLeft(" Update a player's rank", 48),
+            green(padRight(' reload   ', 28)) + '  ' + padLeft('Reload game databases (items, rooms, etc.)', 48),
+            green(padRight(' shutdown ', 28)) + '  ' + padLeft('Shutdown the game server', 48),
+          ]
+        : [];
 
-    const full = [
-      ...commands,
-      ...god,
-      ...admin,
-    ];
+    const full = [...commands, ...god, ...admin];
 
-    return printSection("Help", full);
+    return printSection('Help', full);
   };
 
   const printWhoList = (mode, playerDb) => {
-    const filterFn = mode === 'all'
-      ? () => true
-      : (p) => p.loggedIn;
+    const filterFn = mode === 'all' ? () => true : (p) => p.loggedIn;
 
     const header = whiteBold('NAME              | LEVEL     | STATUS    | RANK');
-    const rows = playerDb.values()
+    const rows = playerDb
+      .values()
       .filter(filterFn)
-      .map(p => {
+      .map((p) => {
         const name = padRight(p.name, 18);
         const level = padRight(p.level.toString(), 10);
-        const status = p.active
-          ? green('Online   ')
-          : p.loggedIn
-            ? yellow('Inactive ')
-            : red('Offline  ');
+        const status = p.active ? green('Online   ') : p.loggedIn ? yellow('Inactive ') : red('Offline  ');
 
-        const rankColor =
-          p.rank === PlayerRank.ADMIN ? green :
-            p.rank === PlayerRank.GOD ? yellow : white;
+        const rankColor = p.rank === PlayerRank.ADMIN ? green : p.rank === PlayerRank.GOD ? yellow : white;
 
         const rank = rankColor(p.rank.toString());
 
@@ -147,7 +158,7 @@ const createPlayerMessages = (player) => {
   };
 
   return {
-    death: () => redBold("You have died!"),
+    death: () => redBold('You have died!'),
     resurrect: (roomName) => whiteBold(`You have died, but have been resurrected in ${roomName}`),
     xpLoss: (amount) => redBold(`You have lost ${amount} experience!`),
     xpGain: (amount) => cyanBold(`You gain ${amount} experience.`),
@@ -159,9 +170,9 @@ const createPlayerMessages = (player) => {
     printStats,
     printHelp,
     printWhoList,
-  }
-}
+  };
+};
 
 module.exports = {
-  createPlayerMessages
+  createPlayerMessages,
 };

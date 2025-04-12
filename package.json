@@ -5,7 +5,9 @@
   "main": "./src/server.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "start": "nodemon ./src/server.js --legacy-watch  --watch ./src --polling-interval 2000"
+    "start": "nodemon ./src/server.js --legacy-watch  --watch ./src --polling-interval 2000",
+    "lint": "eslint .",
+    "format": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -39,8 +41,12 @@
     "@eslint/js": "^9.24.0",
     "chai": "^4.0.1",
     "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.0.0",
     "mocha": "^11.1.0",
+    "prettier": "^3.5.3",
     "sinon": "^2.3.2"
   }
 }

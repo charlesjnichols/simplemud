@@ -12,23 +12,23 @@ const createEntityDatabase = () => {
 
   const findByNameFull = (name, filter) => {
     const lower = name.toLowerCase();
-    return _.find([...map.values()], e => e.name?.toLowerCase() === lower && (!filter || filter(e))) ?? null;
+    return _.find([...map.values()], (e) => e.name?.toLowerCase() === lower && (!filter || filter(e))) ?? null;
   };
 
   const findByNamePartial = (name, filter) => {
     const lower = name.toLowerCase();
-    return _.find([...map.values()], e => e.name?.toLowerCase().includes(lower) && (!filter || filter(e))) ?? null;
+    return _.find([...map.values()], (e) => e.name?.toLowerCase().includes(lower) && (!filter || filter(e))) ?? null;
   };
 
   const findByRank = (rank, filter) => {
-    return _.find([...map.values()], e => e.rank === rank && (!filter || filter(e))) ?? null;
+    return _.find([...map.values()], (e) => e.rank === rank && (!filter || filter(e))) ?? null;
   };
 
   const hasId = (id) => map.has(id);
   const hasNameFull = (name) => Boolean(findByNameFull(name));
   const hasNamePartial = (name) => Boolean(findByNamePartial(name));
 
-  const findOpenId = () => _.find(_.range(1, Number.MAX_SAFE_INTEGER), id => !map.has(id)) ?? 1;
+  const findOpenId = () => _.find(_.range(1, Number.MAX_SAFE_INTEGER), (id) => !map.has(id)) ?? 1;
 
   const clear = () => map.clear();
   const values = () => [...map.values()];
@@ -49,7 +49,7 @@ const createEntityDatabase = () => {
     clear,
     values,
     keys,
-    size
+    size,
   };
 };
 

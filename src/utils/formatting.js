@@ -25,6 +25,7 @@ const white = (txt) => tag('white', txt);
 const yellow = (txt) => tag('yellow', txt);
 const cyan = (txt) => tag('cyan', txt);
 const green = (txt) => tag('green', txt);
+const red = (txt) => tag('red', txt);
 const whiteBold = (txt) => `<white><bold>${txt}</bold></white>`;
 const redBold = (txt) => `<red><bold>${txt}</bold></red>`;
 const cyanBold = (txt) => `<cyan><bold>${txt}</bold></cyan>`;
@@ -38,14 +39,14 @@ const printTwoCol = (label, value, width = 40) => {
   const cleanLabel = stripTags(label);
   const pad = ' '.repeat(Math.max(0, width - cleanLabel.length));
   return label + pad + value;
-}
+};
 
 const printSection = (title, lines, { width = 80, bottom = true } = {}) => {
   const divider = '-'.repeat(width);
   const decoratedTitle = title
     ? '-'.repeat(Math.floor((width - 3 - title.length - 4) / 2)) +
-    ` [ ${title} ] ` +
-    '-'.repeat(Math.ceil((width - 3 - title.length - 4) / 2))
+      ` [ ${title} ] ` +
+      '-'.repeat(Math.ceil((width - 3 - title.length - 4) / 2))
     : divider;
 
   const content = lines.join('\r\n');
@@ -61,6 +62,7 @@ module.exports = {
   white,
   yellow,
   cyan,
+  red,
   green,
   whiteBold,
   redBold,
@@ -70,5 +72,5 @@ module.exports = {
   yellowBold,
   divider,
   printSection,
-  printTwoCol
+  printTwoCol,
 };

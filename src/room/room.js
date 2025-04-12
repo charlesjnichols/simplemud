@@ -4,7 +4,7 @@ const { RoomType, Direction } = require('../attributes');
 // eslint-disable-next-line no-unused-vars
 const { matchFull, matchPartial } = require('../utils/matcher');
 
-const { createRoomMessages } = require("./messages");
+const { createRoomMessages } = require('./messages');
 
 function createRoom(data = {}) {
   const rooms = Direction.enums.reduce((acc, dir) => {
@@ -24,7 +24,7 @@ function createRoom(data = {}) {
     items: [],
     money: 0,
     players: [],
-    enemies: []
+    enemies: [],
   };
 
   room.messages = createRoomMessages(room);
@@ -32,8 +32,7 @@ function createRoom(data = {}) {
   // ---------- Behavior ----------
 
   const _findIn = (collection, name) => {
-    const match = (fn) =>
-      collection.find(obj => obj?.[fn]?.call(obj, name)) || 0;
+    const match = (fn) => collection.find((obj) => obj?.[fn]?.call(obj, name)) || 0;
     return match('matchFull') || match('matchPartial');
   };
 
@@ -43,16 +42,14 @@ function createRoom(data = {}) {
       room.players.push(player);
     },
 
-    removePlayer: (player) =>
-      room.players = room.players.filter(p => p !== player),
+    removePlayer: (player) => (room.players = room.players.filter((p) => p !== player)),
 
     addItem: (item) => {
       if (room.items.length >= 32) room.items.shift();
       room.items.push(item);
     },
 
-    removeItem: (item) =>
-      room.items = room.items.filter(i => i !== item),
+    removeItem: (item) => (room.items = room.items.filter((i) => i !== item)),
 
     findItem: (name) => _findIn(room.items, name),
 
@@ -61,8 +58,7 @@ function createRoom(data = {}) {
       enemy.room = room;
     },
 
-    removeEnemy: (enemy) =>
-      room.enemies = room.enemies.filter(e => e !== enemy),
+    removeEnemy: (enemy) => (room.enemies = room.enemies.filter((e) => e !== enemy)),
 
     findEnemy: (name) => _findIn(room.enemies, name),
 
@@ -72,7 +68,7 @@ function createRoom(data = {}) {
       room.description = dataObject.DESCRIPTION;
       room.type = RoomType.get(dataObject.TYPE);
       room.data = parseInt(dataObject.DATA);
-      Direction.enums.forEach(dir => {
+      Direction.enums.forEach((dir) => {
         room.rooms[dir] = parseInt(dataObject[dir.key]);
       });
       room.spawnWhich = parseInt(dataObject.ENEMY);
@@ -82,7 +78,7 @@ function createRoom(data = {}) {
     loadData: (dataObject, itemDb) => {
       if (!room.id) room.id = parseInt(dataObject.ROOMID);
       room.items = [];
-      dataObject.ITEMS.split(' ').forEach(idStr => {
+      dataObject.ITEMS.split(' ').forEach((idStr) => {
         const id = parseInt(idStr);
         if (!id) return;
         const item = itemDb.findById(id);
@@ -93,7 +89,7 @@ function createRoom(data = {}) {
 
     serialize: () => ({
       ROOMID: room.id,
-      ITEMS: room.items.map(i => i.id).join(' '),
+      ITEMS: room.items.map((i) => i.id).join(' '),
       MONEY: room.money,
     }),
   });

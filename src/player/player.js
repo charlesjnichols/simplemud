@@ -1,5 +1,5 @@
 const { Attribute, PlayerRank } = require('../attributes');
-const { matchFull, matchPartial } = require("../utils/matcher")
+const { matchFull, matchPartial } = require('../utils/matcher');
 const { encryptPassword, isEncrypted } = require('../utils/password-vault');
 
 const { createPlayerMessages } = require('./messages');
@@ -8,14 +8,15 @@ const PLAYERITEMS = 16;
 
 function createPlayer(data = {}) {
   const get = (key) =>
-    Attribute.get(key)?.value ?? (() => { throw new Error(`Unknown attribute key: ${key}`); })();
+    Attribute.get(key)?.value ??
+    (() => {
+      throw new Error(`Unknown attribute key: ${key}`);
+    })();
 
   const player = {};
 
   player.name = data.name || 'UNKNOWN';
-  player.password = isEncrypted(data.password)
-    ? data.password
-    : encryptPassword(data.password);
+  player.password = isEncrypted(data.password) ? data.password : encryptPassword(data.password);
   player.connection = data.connection || null;
   player.id = data.id || null;
   player.rank = typeof data.rank === 'string' ? PlayerRank.get(data.rank) : (data.rank ?? PlayerRank.get('REGULAR'));
@@ -48,7 +49,7 @@ function createPlayer(data = {}) {
     const base = player.baseAttributes[attrKey] || 0;
     const bonus = player.attributes[attrKey] || 0;
     const total = base + bonus;
-    const isCore = ['STRENGTH', 'AGILITY', 'HEALTH'].map(k => get(k)).includes(attrKey);
+    const isCore = ['STRENGTH', 'AGILITY', 'HEALTH'].map((k) => get(k)).includes(attrKey);
     return isCore ? Math.max(1, total) : total;
   };
 
@@ -99,9 +100,9 @@ function createPlayer(data = {}) {
   };
 
   player.getItemIndex = (name) => {
-    const matches = player.inventory.findIndex(item => item?.matchFull?.(name));
+    const matches = player.inventory.findIndex((item) => item?.matchFull?.(name));
     if (matches !== -1) return matches;
-    return player.inventory.findIndex(item => item?.matchPartial?.(name));
+    return player.inventory.findIndex((item) => item?.matchPartial?.(name));
   };
 
   player.useWeapon = (index) => {
@@ -138,7 +139,7 @@ function createPlayer(data = {}) {
 
   player.addBonuses = (item) => {
     if (!item) return;
-    Attribute.enums.forEach(attr => {
+    Attribute.enums.forEach((attr) => {
       player.baseAttributes[attr.value] += item.attributes[attr.value] || 0;
     });
     player.recalculateStats();
@@ -146,7 +147,7 @@ function createPlayer(data = {}) {
 
   player.addDynamicBonuses = (item) => {
     if (!item) return;
-    Attribute.enums.forEach(attr => {
+    Attribute.enums.forEach((attr) => {
       player.attributes[attr.value] += item.attributes[attr.value] || 0;
     });
   };
@@ -179,11 +180,9 @@ function createPlayer(data = {}) {
     return player.needForLevel(player.level + 1) - player.experience;
   };
 
-  player.getWeapon = () =>
-    player.weapon === -1 ? 0 : player.inventory[player.weapon];
+  player.getWeapon = () => (player.weapon === -1 ? 0 : player.inventory[player.weapon]);
 
-  player.getArmor = () =>
-    player.armor === -1 ? 0 : player.inventory[player.armor];
+  player.getArmor = () => (player.armor === -1 ? 0 : player.inventory[player.armor]);
 
   player.getMaxItems = () => PLAYERITEMS; // or use a shared constant if preferred
 
@@ -215,7 +214,7 @@ function createPlayer(data = {}) {
       DAMAGEABSORB: player.baseAttributes[get('DAMAGEABSORB')],
       HPREGEN: player.baseAttributes[get('HPREGEN')],
     },
-    inventory: player.inventory.map(i => i.id),
+    inventory: player.inventory.map((i) => i.id),
   });
 
   player.matchFull = (str) => matchFull(player.name, str);

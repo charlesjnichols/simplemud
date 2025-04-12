@@ -12,7 +12,7 @@ const State = {
   ENTER_NEW_PASSWORD: 'enter-new-password',
 };
 
-const createLogonHandler = ({connection, playerDb}) => {
+const createLogonHandler = ({ connection, playerDb }) => {
   const state = { value: State.ENTER_NAME };
   const context = {
     name: '',
@@ -21,21 +21,21 @@ const createLogonHandler = ({connection, playerDb}) => {
   };
 
   function enter() {
-    connection.sendMessage("<bold><green>What is your name? </green></bold>");
+    connection.sendMessage('<bold><green>What is your name? </green></bold>');
   }
 
   function handle(input) {
     const data = input.trim();
 
     if (++context.numErrors > 5) {
-      connection.sendMessage("<red><bold>Too many failed attempts. Disconnecting.</bold></red>");
+      connection.sendMessage('<red><bold>Too many failed attempts. Disconnecting.</bold></red>');
       connection.close();
       return;
     }
 
     if (state.value === State.ENTER_NAME) {
       if (!isValidName(data)) {
-        connection.sendMessage("<red><bold>Invalid name. Try again: </bold></red>");
+        connection.sendMessage('<red><bold>Invalid name. Try again: </bold></red>');
         return;
       }
 
@@ -43,10 +43,10 @@ const createLogonHandler = ({connection, playerDb}) => {
       const existing = playerDb.findByNameFull(context.name);
 
       if (existing) {
-        connection.sendMessage("<green>Welcome back! Enter your password: </green>");
+        connection.sendMessage('<green>Welcome back! Enter your password: </green>');
         state.value = State.ENTER_PASSWORD;
       } else {
-        connection.sendMessage("<green>New player detected. Create a password: </green>");
+        connection.sendMessage('<green>New player detected. Create a password: </green>');
         state.value = State.ENTER_NEW_PASSWORD;
         context.isNewPlayer = true;
       }
@@ -57,12 +57,12 @@ const createLogonHandler = ({connection, playerDb}) => {
     if (state.value === State.ENTER_PASSWORD) {
       const player = playerDb.findByNameFull(context.name);
       if (!player || decryptPassword(player.password) !== data) {
-        connection.sendMessage("<red><bold>Incorrect password. Try again:</bold></red>");
+        connection.sendMessage('<red><bold>Incorrect password. Try again:</bold></red>');
         return;
       }
 
       player.connection = connection;
-      
+
       connection.removeHandler();
       connection.addHandler(new Game(connection, player));
       return;
@@ -70,7 +70,7 @@ const createLogonHandler = ({connection, playerDb}) => {
 
     if (state.value === State.ENTER_NEW_PASSWORD) {
       if (!data || data.includes(' ')) {
-        connection.sendMessage("<red><bold>Invalid password. Try again:</bold></red>");
+        connection.sendMessage('<red><bold>Invalid password. Try again:</bold></red>');
         return;
       }
 
@@ -83,13 +83,13 @@ const createLogonHandler = ({connection, playerDb}) => {
 
       playerDb.addPlayer(player);
 
-      connection.sendMessage("<green>Character created! Starting character creation...</green>");
+      connection.sendMessage('<green>Character created! Starting character creation...</green>');
       connection.removeHandler();
       connection.addHandler(createCreateCharacter(player));
     }
   }
 
-  function leave() { }
+  function leave() {}
   function hungup() {
     console.log(`[Logon] Disconnected: ${context.name || 'unknown user'}`);
   }
@@ -100,7 +100,7 @@ const createLogonHandler = ({connection, playerDb}) => {
     leave,
     hungup,
   };
-}
+};
 
 // Helpers
 function isValidName(name) {
@@ -108,5 +108,5 @@ function isValidName(name) {
 }
 
 module.exports = {
-  createLogonHandler
+  createLogonHandler,
 };

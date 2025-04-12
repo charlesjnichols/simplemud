@@ -1,7 +1,6 @@
 'use strict';
 
 class connection {
-
   constructor(socket, protocol) {
     this.socket = socket;
     this.protocol = protocol;
@@ -25,7 +24,7 @@ class connection {
 
   sendMessage(message) {
     try {
-      if (this.socket && !this.socket.destroyed && this.socket.writable){
+      if (this.socket && !this.socket.destroyed && this.socket.writable) {
         this.socket.write(this.protocol.translate(message));
       }
     } catch {
@@ -54,15 +53,14 @@ class connection {
 
   _receivedData(data) {
     // Fix for Putty Telnet client
-    if (data.includes(Buffer.from('fffb1f', 'hex')))
-      return;
+    if (data.includes(Buffer.from('fffb1f', 'hex'))) return;
 
     // Fix for Microsoft Telnet client
     const dataStr = data.toString();
     if (!this.buffer.length && dataStr.match(/[\b]/)) {
       this.socket.write(' ');
     }
-    this.buffer += (dataStr.match(/[\b]/) ? '' : dataStr);
+    this.buffer += dataStr.match(/[\b]/) ? '' : dataStr;
     if (this.buffer.length && dataStr !== ' \b' && dataStr.match(/[\b]/)) {
       this.buffer = this.buffer.substr(0, this.buffer.length - 1);
       this.socket.write(' \b');
@@ -79,7 +77,6 @@ class connection {
     this.clearHandlers();
     this.isClosed = true;
   }
-
 }
 
 module.exports = connection;

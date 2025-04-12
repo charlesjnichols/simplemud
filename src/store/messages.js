@@ -5,7 +5,7 @@ const { whiteBold, cyanBold, yellow, center, green, padRight, padLeft, cyan, whi
 
 const createStoreMessages = (store) => {
   const printStoreList = () => {
-    const divider = "-".repeat(80);
+    const divider = '-'.repeat(80);
     const columnWidthName = 33;
     const columnWidthPrice = 10;
 
@@ -13,12 +13,11 @@ const createStoreMessages = (store) => {
       divider,
       center(green(`Welcome to ${store.name}!`), 80),
       divider,
-      padRight(cyan("Item"), columnWidthName) + " | " +
-      padLeft(cyan("Price"), columnWidthPrice),
-      divider
+      padRight(cyan('Item'), columnWidthName) + ' | ' + padLeft(cyan('Price'), columnWidthPrice),
+      divider,
     ];
 
-    const itemLines = store.items.map(item => {
+    const itemLines = store.items.map((item) => {
       const name = yellow(padRight(item.name, columnWidthName));
       const price = white(padLeft(`$${item.price}`, columnWidthPrice));
       return ` ${name} | ${price}`;
@@ -26,10 +25,8 @@ const createStoreMessages = (store) => {
 
     const footerLine = divider;
 
-    return whiteBold(
-      [...headerLines, ...itemLines, footerLine].join("\r\n")
-    );
-  }
+    return whiteBold([...headerLines, ...itemLines, footerLine].join('\r\n'));
+  };
 
   return {
     buy: (playerName, itemName) => cyanBold(`${playerName} buys a ${itemName}`),
@@ -39,10 +36,9 @@ const createStoreMessages = (store) => {
     pickUpMoney: (playerName, amount) => cyanBold(`${playerName} picks up $${amount}.`),
     dropMoney: (playerName, amount) => cyanBold(`${playerName} drops $${amount}.`),
     printStoreList,
-  }
-
+  };
 };
 
 module.exports = {
-  createStoreMessages
+  createStoreMessages,
 };

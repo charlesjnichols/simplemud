@@ -29,4 +29,3 @@ const gameLoop = new GameLoop();
 const connectionManager = createConnectionManager({ playerDb: gameLoop.db.playerDb });
 
 setInterval(gameLoop.loop.bind(gameLoop), 1000);
-

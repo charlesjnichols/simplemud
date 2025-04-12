@@ -5,16 +5,16 @@ const path = require('path');
 
 const { Attribute } = require('./attributes');
 
-const {seconds, minutes} = require('./utils/time');
+const { seconds, minutes } = require('./utils/time');
 const DB = require('./databases');
 const Game = require('./game');
 
 const timer = Game.getTimer();
 
-const DBSAVETIME = minutes( 15 );
-const ROUNDTIME  = seconds( 1 );
-const REGENTIME  = minutes( 2 );
-const HEALTIME   = minutes( 1 );
+const DBSAVETIME = minutes(15);
+const ROUNDTIME = seconds(1);
+const REGENTIME = minutes(2);
+const HEALTIME = minutes(1);
 
 const file = path.join(__dirname, '..', 'data', 'gamedata.json');
 
@@ -29,12 +29,12 @@ class GameLoop {
     };
     const dataObject = jsonfile.readFileSync(file);
     if (!isEmpty(dataObject)) {
-      const gameTime = parseInt(dataObject["GAMETIME"]);
+      const gameTime = parseInt(dataObject['GAMETIME']);
       timer.reset(gameTime);
-      this.saveDbTime = parseInt(dataObject["SAVEDATABASES"]);
-      this.nextRound = parseInt(dataObject["NEXTROUND"]);
-      this.nextRegen = parseInt(dataObject["NEXTREGEN"]);
-      this.nextHeal = parseInt(dataObject["NEXTHEAL"]);
+      this.saveDbTime = parseInt(dataObject['SAVEDATABASES']);
+      this.nextRound = parseInt(dataObject['NEXTROUND']);
+      this.nextRegen = parseInt(dataObject['NEXTREGEN']);
+      this.nextHeal = parseInt(dataObject['NEXTHEAL']);
     } else {
       timer.reset();
       this.saveDbTime = DBSAVETIME;
@@ -47,13 +47,13 @@ class GameLoop {
 
   save() {
     const dataObject = {
-      "GAMETIME": Game.getTimer().getMS(),
-      "SAVEDATABASES": this.saveDbTime,
-      "NEXTROUND": this.nextRound,
-      "NEXTREGEN": this.nextRegen,
-      "NEXTHEAL": this.nextHeal
-    }
-    jsonfile.writeFileSync(file, dataObject, {spaces: 2});
+      GAMETIME: Game.getTimer().getMS(),
+      SAVEDATABASES: this.saveDbTime,
+      NEXTROUND: this.nextRound,
+      NEXTREGEN: this.nextRegen,
+      NEXTHEAL: this.nextHeal,
+    };
+    jsonfile.writeFileSync(file, dataObject, { spaces: 2 });
   }
 
   loadDatabases() {
@@ -87,9 +87,8 @@ class GameLoop {
 
   performRound() {
     const now = timer.getMS();
-    for(const enemy of DB.enemyDb.values()) {
-      if (now >= enemy.nextAttackTime &&
-          enemy.room.players.length > 0) {
+    for (const enemy of DB.enemyDb.values()) {
+      if (now >= enemy.nextAttackTime && enemy.room.players.length > 0) {
         Game.enemyAttack(enemy);
       }
     }
@@ -97,12 +96,10 @@ class GameLoop {
 
   performRegen() {
     for (const room of DB.roomDb.values()) {
-      if (room.spawnWhich !== 0 &&
-          room.enemies.length < room.maxEnemies) {
+      if (room.spawnWhich !== 0 && room.enemies.length < room.maxEnemies) {
         const template = DB.enemyTpDb.findById(room.spawnWhich);
         const enemy = DB.enemyDb.create(template, room);
-        Game.sendRoom("<red><bold>" + enemy.name +
-                      " enters the room!</bold></red>", room);
+        Game.sendRoom('<red><bold>' + enemy.name + ' enters the room!</bold></red>', room);
       }
     }
   }
@@ -115,7 +112,6 @@ class GameLoop {
       }
     }
   }
-
 }
 
 module.exports = GameLoop;

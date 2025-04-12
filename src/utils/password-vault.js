@@ -7,7 +7,6 @@ const NodeRSA = require('node-rsa');
 const publicKeyPath = path.join(process.cwd(), 'keys', 'public.pem');
 const privateKeyPath = path.join(process.cwd(), 'keys', 'private.pem');
 
-
 const publicKey = new NodeRSA(fs.readFileSync(publicKeyPath), 'pkcs8-public-pem', {
   encryptionScheme: 'pkcs1_oaep',
 });

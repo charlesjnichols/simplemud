@@ -25,7 +25,7 @@ const createConnectionManager = ({ playerDb }) => {
 
   const removeConnection = (socket) => {
     const conn = findConnection(socket);
-    const index = connections.indexOf(conn)
+    const index = connections.indexOf(conn);
     if (index !== -1) connections.splice(index, 1);
   };
 
@@ -34,9 +34,9 @@ const createConnectionManager = ({ playerDb }) => {
   };
 
   const findConnection = (socket) => {
-    const conn = connections.filter(conn => conn.socket === socket);
+    const conn = connections.filter((conn) => conn.socket === socket);
     return conn.length ? conn[0] : 0;
-  }
+  };
 
   return {
     getConnection,
@@ -44,11 +44,10 @@ const createConnectionManager = ({ playerDb }) => {
     closeConnection,
     removeConnection,
     totalConnections,
-    findConnection
+    findConnection,
   };
-
 };
 
 module.exports = {
-  createConnectionManager
+  createConnectionManager,
 };

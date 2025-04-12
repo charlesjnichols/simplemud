@@ -1,7 +1,7 @@
 'use strict';
 
-const HtmlParser = require("htmlparser2");
-const Tree = require("tree");
+const HtmlParser = require('htmlparser2');
+const Tree = require('tree');
 const { wrap } = require('./utils/strings');
 
 const Telnet = {
@@ -11,7 +11,7 @@ const Telnet = {
     parser.parseComplete(sourceText);
     return wrap(unsanitize(parsedText));
   },
-  cc: (code) => cc[code]
+  cc: (code) => cc[code],
 };
 
 module.exports = Telnet;
@@ -23,9 +23,9 @@ const initParser = () => {
   root = new Tree.Root();
   openNode = null;
   depth = 0;
-}
+};
 
-const isValidCode= (code) => {
+const isValidCode = (code) => {
   return cc.hasOwnProperty(code);
 };
 
@@ -48,10 +48,10 @@ const isBackColor = (code) => {
 
 const isSelfClosing = (code) => {
   return !isForeColor(code) && !isBackColor(code) && code !== 'bold';
-}
+};
 
 const TelnetParser = {
-  onopentag: function(tag, attribs){
+  onopentag: function (tag, attribs) {
     parsedText += cc[tag];
     if (isSelfClosing(tag)) return;
     const node = new Tree.Node(null, tag);
@@ -64,37 +64,35 @@ const TelnetParser = {
     openNode = node;
     depth++;
   },
-  ontext: function(text){
+  ontext: function (text) {
     parsedText += text;
   },
-  onclosetag: function(tag){
+  onclosetag: function (tag) {
     if (isSelfClosing(tag)) return;
     depth--;
     parsedText += cc['reset'];
     openNode = openNode.parent;
     if (depth !== 0 && openNode) {
       parsedText += cc[openNode.data];
-      const isForeColorMatch = (node1, node2) =>
-        isForeColor(node1.data) && isForeColor(node2.data);
-      const isBackColorMatch = (node1, node2) =>
-        isBackColor(node1.data) && isBackColor(node2.data);
+      const isForeColorMatch = (node1, node2) => isForeColor(node1.data) && isForeColor(node2.data);
+      const isBackColorMatch = (node1, node2) => isBackColor(node1.data) && isBackColor(node2.data);
       let node = openNode.parent;
-      while(node) {
-        if (!(isForeColorMatch(openNode, node) ||
-             isBackColorMatch(openNode, node))) {
+      while (node) {
+        if (!(isForeColorMatch(openNode, node) || isBackColorMatch(openNode, node))) {
           parsedText += cc[node.data];
         }
         node = node.parent;
       }
     }
-  }
+  },
 };
 
-const sanitize = (text) => { // sanitize invalid codes
-  let result = text.replace(/\r?\n/g, "<newline/>");
+const sanitize = (text) => {
+  // sanitize invalid codes
+  let result = text.replace(/\r?\n/g, '<newline/>');
   const matches = text.match(/<\/?([\w'\/\s]+)\/?>/g); // looking for <code>, </code>, and <code/>
   if (matches instanceof Array) {
-    matches.forEach(code => {
+    matches.forEach((code) => {
       const strippedCode = code.replace(/[<\/>]/g, '');
       let replacement = code;
       if (!isValidCode(strippedCode)) {
@@ -105,45 +103,45 @@ const sanitize = (text) => { // sanitize invalid codes
     });
   }
   return result;
-}
+};
 
 const unsanitize = (text) => {
   let result = text.replace(/&#60;/g, '<');
   result = result.replace(/&#62;/g, '>');
   return result;
-}
+};
 
 const parser = new HtmlParser.Parser(TelnetParser);
 
 // Telnet control codes
 const cc = {
-  reset: "\x1B[0m",
-  bold: "\x1B[1m",
-  dim: "\x1B[2m",
-  under: "\x1B[4m",
-  reverse: "\x1B[7m",
-  hide: "\x1B[8m",
+  reset: '\x1B[0m',
+  bold: '\x1B[1m',
+  dim: '\x1B[2m',
+  under: '\x1B[4m',
+  reverse: '\x1B[7m',
+  hide: '\x1B[8m',
 
-  clearscreen: "\x1B[2J",
-  clearline: "\x1B[2K",
+  clearscreen: '\x1B[2J',
+  clearline: '\x1B[2K',
 
-  black: "\x1B[30m",
-  red: "\x1B[31m",
-  green: "\x1B[32m",
-  yellow: "\x1B[33m",
-  blue: "\x1B[34m",
-  magenta: "\x1B[35m",
-  cyan: "\x1B[36m",
-  white: "\x1B[37m",
+  black: '\x1B[30m',
+  red: '\x1B[31m',
+  green: '\x1B[32m',
+  yellow: '\x1B[33m',
+  blue: '\x1B[34m',
+  magenta: '\x1B[35m',
+  cyan: '\x1B[36m',
+  white: '\x1B[37m',
 
-  bblack: "\x1B[40m",
-  bred: "\x1B[41m",
-  bgreen: "\x1B[42m",
-  byellow: "\x1B[43m",
-  bblue: "\x1B[44m",
-  bmagenta: "\x1B[45m",
-  bcyan: "\x1B[46m",
-  bwhite: "\x1B[47m",
+  bblack: '\x1B[40m',
+  bred: '\x1B[41m',
+  bgreen: '\x1B[42m',
+  byellow: '\x1B[43m',
+  bblue: '\x1B[44m',
+  bmagenta: '\x1B[45m',
+  bcyan: '\x1B[46m',
+  bwhite: '\x1B[47m',
 
-  newline: "\r\n"
+  newline: '\r\n',
 };

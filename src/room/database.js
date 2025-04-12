@@ -17,11 +17,11 @@ function createRoomDatabase() {
   function loadTemplates(storeDb) {
     db.clear();
     const dataArray = jsonfile.readFileSync(fileMap);
-    dataArray.forEach(data => {
+    dataArray.forEach((data) => {
       const room = createRoom();
       room.loadTemplate(data);
 
-      if (room.type === RoomType.get("STORE")) {
+      if (room.type === RoomType.get('STORE')) {
         room.store = storeDb.findById(room.data);
         console.log(`[DB] Linked store '${room.store?.name || 'UNKNOWN'}' to store room '${room.name}'`);
       }
@@ -33,7 +33,7 @@ function createRoomDatabase() {
 
   function loadData(itemDb) {
     const dataArray = jsonfile.readFileSync(fileMapData);
-    dataArray.forEach(data => {
+    dataArray.forEach((data) => {
       const roomId = parseInt(data.ROOMID);
       const room = db.findById(roomId);
       if (room) {
@@ -44,14 +44,14 @@ function createRoomDatabase() {
   }
 
   function saveData() {
-    const roomsToSave = db.values().filter(r => r.items.length || r.money > 0);
-    const dataArray = roomsToSave.map(room => room.serialize());
+    const roomsToSave = db.values().filter((r) => r.items.length || r.money > 0);
+    const dataArray = roomsToSave.map((room) => room.serialize());
     jsonfile.writeFileSync(fileMapData, dataArray, { spaces: 2 });
     console.log('[DB] Room data saved.');
   }
 
   return {
-    ..._.pick(db, ['values','findById']),
+    ..._.pick(db, ['values', 'findById']),
     loadTemplates,
     loadData,
     saveData,

@@ -4,11 +4,7 @@ const createItemDatabase = require('./item/database');
 const createPlayerDatabase = require('./player/database');
 const createRoomDatabase = require('./room/database');
 const createStoreDatabase = require('./store/database');
-const {
-  createEnemyTemplateDatabase,
-  createEnemyDatabase
-} = require('./enemy/database');
-
+const { createEnemyTemplateDatabase, createEnemyDatabase } = require('./enemy/database');
 
 // Instantiate all databases
 const itemDb = createItemDatabase();

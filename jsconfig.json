@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "skipLibCheck": true,
-    "downlevelIteration": true,
+    "downlevelIteration": true
   },
   "include": ["**/*.js"]
 }

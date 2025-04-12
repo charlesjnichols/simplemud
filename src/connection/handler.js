@@ -10,8 +10,7 @@ class ConnectionHandler {
    * Called when data is received from the socket.
    * Override this in child handlers.
    */
-  handle() {
-  }
+  handle() {}
 
   /**
    * Called when the handler becomes active (e.g., new connection or state change)

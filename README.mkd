@@ -9,21 +9,21 @@ author of _MUD Game Programming_ book.
 
 ## Demo
 
-  WebTelnet: http://smud.ourmmo.com
+WebTelnet: http://smud.ourmmo.com
 
-  Telnet: smud.ourmmo.com 3000
+Telnet: smud.ourmmo.com 3000
 
 ## Highlights
 
-* Physical data (Items, Players, Rooms, Enemy Templates) are stored in JSON files
-* Dynamic game data (Timers, Enemies, Room's Loots) are also stored in JSON files
-* Every major functionality is fully unit-tested (189 total test cases)
-* Total lines of code for implementation is 2265
-* Total lines of code for unit tests is 3032  
+- Physical data (Items, Players, Rooms, Enemy Templates) are stored in JSON files
+- Dynamic game data (Timers, Enemies, Room's Loots) are also stored in JSON files
+- Every major functionality is fully unit-tested (189 total test cases)
+- Total lines of code for implementation is 2265
+- Total lines of code for unit tests is 3032
 
 ## Requirements
 
-* Node.js >= v6.4.0
+- Node.js >= v6.4.0
 
 ## To Run Server
 
