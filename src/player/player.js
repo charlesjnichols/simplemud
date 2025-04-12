@@ -1,5 +1,6 @@
 const { Attribute, PlayerRank } = require('../attributes');
 const { matchFull, matchPartial } = require("../utils/matcher")
+const { encryptPassword, isEncrypted } = require('../utils/password-vault');
 
 const PLAYERITEMS = 16;
 
@@ -10,7 +11,9 @@ function createPlayer(data = {}) {
   const player = {};
 
   player.name = data.name || 'UNKNOWN';
-  player.password = data.password || 'UNDEFINED';
+  player.password = isEncrypted(data.password)
+    ? data.password
+    : encryptPassword(data.password);
   player.connection = data.connection || null;
   player.id = data.id || null;
   player.rank = typeof data.rank === 'string' ? PlayerRank.get(data.rank) : (data.rank ?? PlayerRank.get('REGULAR'));

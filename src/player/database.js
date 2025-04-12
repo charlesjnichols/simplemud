@@ -11,56 +11,52 @@ const createPlayer = require('./player');
 
 const { v4: uuidv4 } = require('uuid');
 
-const dataPath = path.join(process.cwd(), 'data', 'players');
+const PLAYER_DIR = path.resolve(process.cwd(), 'data/players');
 
 function createPlayerDatabase() {
   const db = createEntityDatabase();
 
   const save = () => {
-    const file = path.join(dataPath, '_players.json');
-    const dataArray = [];
-
     console.log('[DB] Saving all players...');
     db.values().forEach(player => {
       player.id = uuidv4();
-      dataArray.push(player.name);
       savePlayer(player);
     });
-
-    jsonfile.writeFileSync(file, dataArray, { spaces: 2 });
-    console.log(`[DB] Saved player registry to ${file}`);
+    console.log('[DB] Saved all players to individual files.');
     return true;
-  }
-
+  };
 
   const load = (itemDb, roomDb) => {
     db.clear();
-    const file = path.join(dataPath, '_players.json');
-
-    if (!fs.existsSync(file)) {
-      console.warn('[DB] Warning: _players.json not found.');
+  
+    if (!fs.existsSync(PLAYER_DIR)) {
+      console.warn('[DB] Warning: player data directory not found.');
       return false;
     }
-
-    console.log('[DB] Loading all players...');
-    const dataArray = jsonfile.readFileSync(file);
-    dataArray.forEach(name => {
-      const p = loadPlayer(name, itemDb, roomDb);
-      if (p) {
-        console.log(`[DB] Loaded player '${p.name}' '${p.id}'`);
-        db.add(p);
-      } else {
-        console.warn(`[DB] Failed to load player '${name}'`);
-      }
-    });
+  
+    console.log('[DB] Scanning player directory...');
+    const files = fs.readdirSync(PLAYER_DIR);
+  
+    _(files)
+      .filter(f => f.endsWith('.json') && !f.startsWith('_'))
+      .map(f => path.basename(f, '.json'))
+      .forEach(name => {
+        const p = loadPlayer(name, itemDb, roomDb);
+        if (p) {
+          console.log(`[DB] Loaded player '${p.name}' '${p.id}'`);
+          db.add(p);
+        } else {
+          console.warn(`[DB] Failed to load player '${name}'`);
+        }
+      });
+  
     console.log(`[DB] Loaded ${db.size()} players.`);
     return true;
-  }
-
+  };
 
   const loadPlayer = (name, itemDb, roomDb) => {
     try {
-      const file = path.join(dataPath, `${name}.json`);
+      const file = path.join(PLAYER_DIR, `${name}.json`);
       const data = jsonfile.readFileSync(file);
 
       const player = createPlayer(data);
@@ -89,7 +85,7 @@ function createPlayerDatabase() {
   }
 
   const savePlayer = (player) => {
-    const file = path.join(dataPath, `${player.name}.json`);
+    const file = path.join(PLAYER_DIR, `${player.name}.json`);
     jsonfile.writeFileSync(file, player.toJSON(), { spaces: 2 });
     console.log(`[DB] Saved player '${player.name}' to ${file}`);
   }
@@ -105,14 +101,12 @@ function createPlayerDatabase() {
   const removePlayer = (player) => {
     if (!db.hasId(player.id)) return false;
 
-    const file = path.join(dataPath, `${player.name}.json`);
+    const file = path.join(PLAYER_DIR, `${player.name}.json`);
     db.delete(player.id);
-    save();
 
     if (fs.existsSync(file)) {
       fs.unlinkSync(file);
     }
-
     return true;
   }
 
