@@ -1,5 +1,7 @@
 'use strict';
 
+const debug = require('debug')('mud:gameloop');
+
 const jsonfile = require('jsonfile');
 const path = require('path');
 const { Temporal } = require('@js-temporal/polyfill');
@@ -7,12 +9,12 @@ const { Temporal } = require('@js-temporal/polyfill');
 const { Attribute } = require('./attributes');
 const { sendRoom } = require('./game/broadcast');
 const { redBold } = require('./utils/formatting');
-const debug = require('debug')('mud:gameloop');
+const { performAutoAttack } = require('./combat/auto-attack');
 
 // Millisecond-based constants
 const DBSAVETIME = 15 * 60 * 1000; // 15 minutes
 const ROUNDTIME = 1000; // 1 second
-const REGENTIME = 60 * 1000; // 1 minutes
+const REGENTIME = 10 * 1000; // 1 minutes
 const HEALTIME = 60 * 1000; // 1 minutes
 
 const file = path.join(__dirname, '..', 'data', 'gamedata.json');
@@ -79,21 +81,22 @@ class GameLoop {
     const now = this.getElapsedMs();
 
     if (now >= this.nextRound) {
+      // debug('Enemy round triggered');
       this.performRound();
       this.nextRound += ROUNDTIME;
     }
     if (now >= this.nextRegen) {
-      debug('Enemy regen triggered');
+      // debug('Enemy regen triggered');
       this.performRegen();
       this.nextRegen += REGENTIME;
     }
     if (now >= this.nextHeal) {
-      debug('Player healing triggered');
+      // debug('Player healing triggered');
       this.performHeal();
       this.nextHeal += HEALTIME;
     }
     if (now >= this.saveDbTime) {
-      debug('Saving databases');
+      // debug('Saving databases');
       this.saveDatabases();
       this.saveDbTime += DBSAVETIME;
     }
@@ -101,10 +104,17 @@ class GameLoop {
 
   performRound() {
     const now = this.getElapsedMs();
+    debug(this.databases.enemyDb.values().length);
     for (const enemy of this.databases.enemyDb.values()) {
       if (now >= enemy.nextAttackTime && enemy.room.players.length > 0) {
-        debug(`Enemy '${enemy.name}' is attacking in room '${enemy.room.title}'`);
-        // Game.enemyAttack(enemy);
+        debug(`Enemy '${enemy.name}' is attacking in room '${enemy.room.name}'`);
+        performAutoAttack(enemy, enemy.room.players[0], now, this.databases);
+      }
+    }
+    for (const player of this.databases.playerDb.values()) {
+      if (now >= player.nextAttackTime && player.room.enemies.length > 0) {
+        debug(`Player '${player.name}' is attacking in room '${player.room.name}'`);
+        performAutoAttack(player, player.room.enemies[0], now, this.databases);
       }
     }
   }
@@ -115,7 +125,7 @@ class GameLoop {
         const template = this.databases.enemyTpDb.findById(room.spawnWhich);
         const enemy = this.databases.enemyDb.create(template, room, this.databases);
         sendRoom(room, `${redBold(enemy.name)} enters the room!`);
-        debug(`Spawned enemy '${enemy.name}' in room '${room.name}'`);
+        debug(`Spawned enemy '${enemy.name}' in room '${room.name}' ${room.id}`);
       }
     }
   }

@@ -34,10 +34,12 @@ const createEntityDatabase = () => {
   const values = () => [...map.values()];
   const keys = () => map.keys();
   const size = () => map.size;
+  const remove = (key) => map.delete(key);
 
   return {
     add,
     get,
+    delete: remove,
     findById,
     findByNameFull,
     findByNamePartial,

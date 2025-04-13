@@ -115,6 +115,7 @@ const parser = new HtmlParser.Parser(TelnetParser);
 
 // Telnet control codes
 const cc = {
+  // Control codes
   reset: '\x1B[0m',
   bold: '\x1B[1m',
   dim: '\x1B[2m',
@@ -122,9 +123,12 @@ const cc = {
   reverse: '\x1B[7m',
   hide: '\x1B[8m',
 
+  // Screen & cursor
   clearscreen: '\x1B[2J',
   clearline: '\x1B[2K',
+  newline: '\r\n',
 
+  // Standard Foreground Colors
   black: '\x1B[30m',
   red: '\x1B[31m',
   green: '\x1B[32m',
@@ -134,6 +138,17 @@ const cc = {
   cyan: '\x1B[36m',
   white: '\x1B[37m',
 
+  // Bright Foreground Colors
+  brightBlack: '\x1B[90m',
+  brightRed: '\x1B[91m',
+  brightGreen: '\x1B[92m',
+  brightYellow: '\x1B[93m',
+  brightBlue: '\x1B[94m',
+  brightMagenta: '\x1B[95m',
+  brightCyan: '\x1B[96m',
+  brightWhite: '\x1B[97m',
+
+  // Background Colors
   bblack: '\x1B[40m',
   bred: '\x1B[41m',
   bgreen: '\x1B[42m',
@@ -143,5 +158,20 @@ const cc = {
   bcyan: '\x1B[46m',
   bwhite: '\x1B[47m',
 
-  newline: '\r\n',
+  // Bright Background Colors
+  bbrightBlack: '\x1B[100m',
+  bbrightRed: '\x1B[101m',
+  bbrightGreen: '\x1B[102m',
+  bbrightYellow: '\x1B[103m',
+  bbrightBlue: '\x1B[104m',
+  bbrightMagenta: '\x1B[105m',
+  bbrightCyan: '\x1B[106m',
+  bbrightWhite: '\x1B[107m',
+
+  // Custom Color Tags (approximated using available ANSI codes)
+  // Custom Color Tags (extended ANSI 256-color)
+  grey: '\x1B[38;5;245m',
+  orange: '\x1B[38;5;208m',
+  purple: '\x1B[38;5;135m',
+  teal: '\x1B[38;5;37m',
 };

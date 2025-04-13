@@ -8,9 +8,9 @@
   "experience": 0,
   "money": 999999998,
   "statPoints": 0,
-  "hitPoints": 0,
+  "hitPoints": 693,
   "nextAttackTime": 0,
-  "room": 17,
+  "room": 12,
   "weapon": -1,
   "armor": -1,
   "attributes": {
@@ -22,7 +22,7 @@
     "DODGING": 0,
     "STRIKEDAMAGE": 0,
     "DAMAGEABSORB": 0,
-    "HPREGEN": 0
+    "HPREGEN": 100
   },
   "inventory": [
     57

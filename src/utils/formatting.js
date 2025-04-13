@@ -20,18 +20,44 @@ const padLeft = (str, width) => {
 };
 
 const tag = (name, content) => `<${name}>${content}</${name}>`;
+const tagBold = (name, content) => `<${name}><bold>${content}</bold></${name}>`;
 
 const white = (txt) => tag('white', txt);
 const yellow = (txt) => tag('yellow', txt);
 const cyan = (txt) => tag('cyan', txt);
 const green = (txt) => tag('green', txt);
 const red = (txt) => tag('red', txt);
-const whiteBold = (txt) => `<white><bold>${txt}</bold></white>`;
-const redBold = (txt) => `<red><bold>${txt}</bold></red>`;
-const cyanBold = (txt) => `<cyan><bold>${txt}</bold></cyan>`;
-const magentaBold = (txt) => `<magenta><bold>${txt}</bold></magenta>`;
-const greenBold = (txt) => `<green><bold>${txt}</bold></green>`;
-const yellowBold = (txt) => `<yellow><bold>${txt}</bold></yellow>`;
+const magenta = (txt) => tag('magenta', txt);
+const grey = (txt) => tag('grey', txt);
+
+const whiteBold = (txt) => tagBold('white', txt);
+const yellowBold = (txt) => tagBold('yellow', txt);
+const cyanBold = (txt) => tagBold('cyan', txt);
+const greenBold = (txt) => tagBold('green', txt);
+const redBold = (txt) => tagBold('red', txt);
+const magentaBold = (txt) => tagBold('magenta', txt);
+const greyBold = (txt) => tagBold('grey', txt);
+
+const blue = (txt) => tag('blue', txt);
+const blueBold = (txt) => tagBold('blue', txt);
+
+const orange = (txt) => tag('orange', txt);
+const orangeBold = (txt) => tagBold('orange', txt);
+
+const purple = (txt) => tag('purple', txt);
+const purpleBold = (txt) => tagBold('purple', txt);
+
+const teal = (txt) => tag('teal', txt);
+const tealBold = (txt) => tagBold('teal', txt);
+
+const brightRed = (txt) => tag('brightRed', txt);
+const brightRedBold = (txt) => tagBold('brightRed', txt);
+
+const brightGreen = (txt) => tag('brightGreen', txt);
+const brightGreenBold = (txt) => tagBold('brightGreen', txt);
+
+const brightYellow = (txt) => tag('brightYellow', txt);
+const brightYellowBold = (txt) => tagBold('brightYellow', txt);
 
 const divider = (char = '-', width = 80) => char.repeat(width);
 
@@ -59,18 +85,37 @@ module.exports = {
   padRight,
   padLeft,
   stripTags,
-  white,
-  yellow,
-  cyan,
-  red,
-  green,
-  whiteBold,
-  redBold,
-  cyanBold,
-  magentaBold,
-  greenBold,
-  yellowBold,
   divider,
   printSection,
   printTwoCol,
+  tag,
+  tagBold,
+  white,
+  yellow,
+  cyan,
+  green,
+  red,
+  magenta,
+  grey,
+  blue,
+  orange,
+  purple,
+  teal,
+  brightRed,
+  brightRedBold,
+  brightGreen,
+  brightGreenBold,
+  brightYellow,
+  brightYellowBold,
+  whiteBold,
+  yellowBold,
+  cyanBold,
+  greenBold,
+  redBold,
+  magentaBold,
+  greyBold,
+  blueBold,
+  orangeBold,
+  purpleBold,
+  tealBold,
 };

@@ -28,6 +28,7 @@
   "homepage": "https://github.com/lnguyenfx/simplemud#readme",
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",
+    "chalk": "^5.4.1",
     "debug": "^4.4.0",
     "enum": "^2.4.0",
     "fuse.js": "^7.1.0",

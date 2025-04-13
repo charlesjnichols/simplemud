@@ -16,6 +16,7 @@ function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
 
   const player = {};
 
+  player.isPlayer = () => true;
   player.name = data.name || 'UNKNOWN';
   player.password = isEncrypted(data.password) ? data.password : encryptPassword(data.password);
   player.connection = data.connection || null;
@@ -161,6 +162,8 @@ function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
   player.addHitPoints = (hp) => {
     player.setHitPoints(player.hitPoints + hp);
   };
+
+  player.isAlive = () => player.hitPoints > 0;
 
   player.train = () => {
     if (player.needForNextLevel() <= 0) {

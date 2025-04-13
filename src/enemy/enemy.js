@@ -1,6 +1,7 @@
 'use strict';
 
 const { matchFull, matchPartial } = require('../utils/matcher');
+const { v4: uuidv4 } = require('uuid');
 
 function createEnemyTemplate(data = {}) {
   const template = {
@@ -30,14 +31,18 @@ function createEnemy(data = {}, { enemyTpDb, roomDb }) {
   const room = roomDb.findById(roomId);
 
   const enemy = {
-    id: data.ID ?? null,
+    id: data.ID ?? uuidv4(),
     name: tp?.name || 'Unnamed Enemy',
     hitPoints: Number(data.HITPOINTS) || tp?.hitPoints || 0,
+    accuracy: tp?.accuracy,
     tp,
     room,
     nextAttackTime: Number(data.NEXTATTACKTIME) || 0,
     matchFull: (str) => matchFull(tp?.name || '', str),
     matchPartial: (str) => matchPartial(tp?.name || '', str),
+
+    isAlive: () => enemy.hitPoints > 0,
+    addHitPoints: (hp) => (enemy.hitPoints += hp),
 
     loadTemplate: (template) => {
       if (!template) throw new Error('Enemy template is undefined or null');
