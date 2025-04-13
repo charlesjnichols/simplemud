@@ -4,7 +4,7 @@ const Game = require('./game');
 const createCreateCharacter = require('./create-character');
 const createPlayer = require('../../player/player');
 const { v4: uuidv4 } = require('uuid');
-const { decryptPassword } = require('../../utils/password-vault');
+const { decryptPassword, isEncrypted } = require('../../utils/password-vault');
 
 const State = {
   ENTER_NAME: 'enter-name',
@@ -57,7 +57,11 @@ const createLogonHandler = (connection, databases) => {
 
     if (state.value === State.ENTER_PASSWORD) {
       const player = playerDb.findByNameFull(context.name);
-      if (!player || decryptPassword(player.password) !== data) {
+      const isMatch =
+        player &&
+        ((!isEncrypted(player.password) && player.password === data) || decryptPassword(player.password) === data);
+
+      if (!isMatch) {
         connection.sendMessage('<red><bold>Incorrect password. Try again:</bold></red>');
         return;
       }

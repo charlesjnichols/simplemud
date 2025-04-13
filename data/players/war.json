@@ -17,7 +17,7 @@
     "STRENGTH": 0,
     "HEALTH": 10,
     "AGILITY": 0,
-    "MAXHITPOINTS": 0,
+    "MAXHITPOINTS": 100,
     "ACCURACY": 0,
     "DODGING": 0,
     "STRIKEDAMAGE": 0,

@@ -23,7 +23,7 @@ function createEnemyTemplate(data = {}) {
   return template;
 }
 
-function createEnemy(data = {}, enemyTpDb, roomDb) {
+function createEnemy(data = {}, { enemyTpDb, roomDb }) {
   const templateId = Number(data.TEMPLATEID);
   const roomId = Number(data.ROOM);
   const tp = enemyTpDb.findById(templateId);

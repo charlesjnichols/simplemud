@@ -2,29 +2,35 @@
 
 const jsonfile = require('jsonfile');
 const path = require('path');
+const { Temporal } = require('@js-temporal/polyfill');
 
 const { Attribute } = require('./attributes');
-const { seconds, minutes } = require('./utils/time');
-const { createTimer } = require('./utils/time');
 const { sendRoom } = require('./game/broadcast');
 const { redBold } = require('./utils/formatting');
+const debug = require('debug')('mud:gameloop');
 
-const timer = createTimer();
-
-const DBSAVETIME = minutes(15);
-const ROUNDTIME = seconds(1);
-const REGENTIME = minutes(2);
-const HEALTIME = minutes(1);
+// Millisecond-based constants
+const DBSAVETIME = 15 * 60 * 1000; // 15 minutes
+const ROUNDTIME = 1000; // 1 second
+const REGENTIME = 60 * 1000; // 1 minutes
+const HEALTIME = 60 * 1000; // 1 minutes
 
 const file = path.join(__dirname, '..', 'data', 'gamedata.json');
 
+// Pure functional time tracker
+const createTimeTracker = (savedMs = 0) => {
+  const started = Temporal.Now.instant().subtract({ milliseconds: savedMs });
+  return () => Temporal.Now.instant().since(started).total('milliseconds');
+};
+
 class GameLoop {
-  constructor({ enemyDb, enemyTpDb, roomDb, playerDb, saveDatabases }) {
-    this.saveDatabases = saveDatabases;
-    this.enemyDb = enemyDb;
-    this.enemyTpDb = enemyTpDb;
-    this.roomDb = roomDb;
-    this.playerDb = playerDb;
+  constructor(databases) {
+    this.databases = databases;
+    this.getElapsedMs = createTimeTracker();
+    this.saveDbTime = DBSAVETIME;
+    this.nextRound = ROUNDTIME;
+    this.nextRegen = REGENTIME;
+    this.nextHeal = HEALTIME;
   }
 
   load() {
@@ -34,79 +40,94 @@ class GameLoop {
     const dataObject = jsonfile.readFileSync(file);
     if (!isEmpty(dataObject)) {
       const gameTime = parseInt(dataObject['GAMETIME']);
-      timer.reset(gameTime);
+      this.getElapsedMs = createTimeTracker(gameTime);
       this.saveDbTime = parseInt(dataObject['SAVEDATABASES']);
       this.nextRound = parseInt(dataObject['NEXTROUND']);
       this.nextRegen = parseInt(dataObject['NEXTREGEN']);
       this.nextHeal = parseInt(dataObject['NEXTHEAL']);
+      debug('Loaded game state from disk.');
     } else {
-      timer.reset();
+      this.getElapsedMs = createTimeTracker();
       this.saveDbTime = DBSAVETIME;
       this.nextRound = ROUNDTIME;
       this.nextRegen = REGENTIME;
       this.nextHeal = HEALTIME;
+      debug('Initialized new game state.');
     }
   }
 
   save() {
     const dataObject = {
-      GAMETIME: timer.getMS(),
+      GAMETIME: this.getElapsedMs(),
       SAVEDATABASES: this.saveDbTime,
       NEXTROUND: this.nextRound,
       NEXTREGEN: this.nextRegen,
       NEXTHEAL: this.nextHeal,
     };
     jsonfile.writeFileSync(file, dataObject, { spaces: 2 });
+    debug(`Game state saved to ${file}`);
+    debug('Saved data:', JSON.stringify(dataObject, null, 2));
   }
 
   saveDatabases() {
+    debug('Persisting all databases...');
     this.save();
     this.saveDatabases();
   }
 
   loop() {
-    if (timer.getMS() >= this.nextRound) {
+    const now = this.getElapsedMs();
+
+    if (now >= this.nextRound) {
       this.performRound();
       this.nextRound += ROUNDTIME;
     }
-    if (timer.getMS() >= this.nextRegen) {
+    if (now >= this.nextRegen) {
+      debug('Enemy regen triggered');
       this.performRegen();
       this.nextRegen += REGENTIME;
     }
-    if (timer.getMS() >= this.nextHeal) {
+    if (now >= this.nextHeal) {
+      debug('Player healing triggered');
       this.performHeal();
       this.nextHeal += HEALTIME;
     }
-    if (timer.getMS() >= this.saveDbTime) {
+    if (now >= this.saveDbTime) {
+      debug('Saving databases');
       this.saveDatabases();
       this.saveDbTime += DBSAVETIME;
     }
   }
 
   performRound() {
-    const now = timer.getMS();
-    for (const enemy of this.enemyDb.values()) {
+    const now = this.getElapsedMs();
+    for (const enemy of this.databases.enemyDb.values()) {
       if (now >= enemy.nextAttackTime && enemy.room.players.length > 0) {
-        Game.enemyAttack(enemy);
+        debug(`Enemy '${enemy.name}' is attacking in room '${enemy.room.title}'`);
+        // Game.enemyAttack(enemy);
       }
     }
   }
 
   performRegen() {
-    for (const room of this.roomDb.values()) {
+    for (const room of this.databases.roomDb.values()) {
       if (room.spawnWhich !== 0 && room.enemies.length < room.maxEnemies) {
-        const template = this.enemyTpDb.findById(room.spawnWhich);
-        const enemy = this.enemyDb.create(template, room);
+        const template = this.databases.enemyTpDb.findById(room.spawnWhich);
+        const enemy = this.databases.enemyDb.create(template, room, this.databases);
         sendRoom(room, `${redBold(enemy.name)} enters the room!`);
+        debug(`Spawned enemy '${enemy.name}' in room '${room.name}'`);
       }
     }
   }
 
   performHeal() {
-    for (const p of this.playerDb.values()) {
-      if (p.active) {
-        p.addHitPoints(p.GetAttr(Attribute.get('HPREGEN')));
-        p.printStatbar();
+    for (const player of this.databases.playerDb.values()) {
+      if (player.active) {
+        const before = player.hitPoints;
+        player.addHitPoints(player.GetAttr(Attribute.get('HPREGEN')));
+        const after = player.hitPoints;
+        player.printStatbar();
+        debug(`Healed player '${player.name}' from ${before} to ${after}`);
       }
     }
   }

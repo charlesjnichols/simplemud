@@ -28,11 +28,12 @@ function createEnemyTemplateDatabase() {
   };
 }
 
-function createEnemyDatabase(roomDb, enemyTemplateDb) {
+function createEnemyDatabase() {
   const db = createEntityDatabase();
 
-  const create = (template, room) => {
-    const enemy = createEnemy({}, enemyTemplateDb, roomDb);
+  const create = (template, room, databases) => {
+    const enemy = createEnemy({}, databases);
+    enemy.loadTemplate(template);
     enemy.room = room;
     room.addEnemy(enemy);
     db.add(enemy);
@@ -44,11 +45,11 @@ function createEnemyDatabase(roomDb, enemyTemplateDb) {
     db.get(enemy.id) && db.delete(enemy.id);
   };
 
-  const load = () => {
+  const load = (databases) => {
     console.log('[DB] Loading enemies...');
     const dataArray = jsonfile.readFileSync(fileData);
     _.forEach(dataArray, (data) => {
-      const enemy = createEnemy({}, enemyTemplateDb, roomDb);
+      const enemy = createEnemy({}, databases);
       enemy.loadData(data);
       enemy.room.addEnemy(enemy);
       db.add(enemy);

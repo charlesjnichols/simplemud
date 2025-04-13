@@ -5,7 +5,7 @@
   "main": "./src/server.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "start": "nodemon ./src/server.js --legacy-watch  --watch ./src --polling-interval 2000",
+    "start": "DEBUG=* nodemon ./src/server.js --legacy-watch  --watch ./src --polling-interval 2000",
     "lint": "eslint .",
     "format": "eslint . --fix"
   },
@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/lnguyenfx/simplemud#readme",
   "dependencies": {
+    "@js-temporal/polyfill": "^0.5.1",
+    "debug": "^4.4.0",
     "enum": "^2.4.0",
     "fuse.js": "^7.1.0",
     "htmlparser2": "^4.1.0",
