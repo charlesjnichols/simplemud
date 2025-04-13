@@ -6,10 +6,10 @@ const jsonfile = require('jsonfile');
 const path = require('path');
 const { Temporal } = require('@js-temporal/polyfill');
 
-const { Attribute } = require('./attributes');
-const { sendRoom } = require('./game/broadcast');
-const { redBold } = require('./utils/formatting');
-const { performAutoAttack } = require('./combat/auto-attack');
+const { Attribute } = require('../attributes');
+const { sendRoom } = require('./broadcast');
+const { redBold } = require('../utils/formatting');
+const { performAutoAttack } = require('../combat/auto-attack');
 
 // Millisecond-based constants
 const DBSAVETIME = 15 * 60 * 1000; // 15 minutes

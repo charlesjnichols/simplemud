@@ -59,7 +59,8 @@ const map = dungeon.getMap();
 const rooms = [];
 for (let y = 0; y < map.length; y++) {
   for (let x = 0; x < map[0].length; x++) {
-    if (map[y][x] === 1) { // Assuming '1' represents a room
+    if (map[y][x] === 1) {
+      // Assuming '1' represents a room
       rooms.push({ x, y });
     }
   }
@@ -67,7 +68,7 @@ for (let y = 0; y < map.length; y++) {
 
 // Define the starting room (e.g., top-left most room)
 const startRoom = rooms.reduce((prev, curr) => {
-  return (curr.x + curr.y < prev.x + prev.y) ? curr : prev;
+  return curr.x + curr.y < prev.x + prev.y ? curr : prev;
 });
 ```
 
@@ -102,8 +103,10 @@ function bfs(start, map) {
       const nKey = `${nx},${ny}`;
 
       if (
-        ny >= 0 && ny < map.length &&
-        nx >= 0 && nx < map[0].length &&
+        ny >= 0 &&
+        ny < map.length &&
+        nx >= 0 &&
+        nx < map[0].length &&
         (map[ny][nx] === 1 || map[ny][nx] === 2) && // Room or Path
         !visited.has(nKey)
       ) {
@@ -143,9 +146,7 @@ function distributeMobs(rooms, mobTypes, mobLimits) {
   const mobCounts = { rare: 0, magic: 0, normal: 0 };
 
   for (const room of shuffledRooms) {
-    const availableCategories = Object.keys(mobLimits).filter(
-      category => mobCounts[category] < mobLimits[category]
-    );
+    const availableCategories = Object.keys(mobLimits).filter((category) => mobCounts[category] < mobLimits[category]);
 
     if (availableCategories.length === 0) break;
 
@@ -166,19 +167,19 @@ distributeMobs(rooms, mobTypes, mobLimits);
 
 ```javascript
 // Calculate distances for all rooms
-const roomDistances = rooms.map(room => {
+const roomDistances = rooms.map((room) => {
   const key = `${room.x},${room.y}`;
   return { ...room, distance: distances[key] };
 });
 
 // Determine maximum distance
-const maxDistance = Math.max(...roomDistances.map(r => r.distance));
+const maxDistance = Math.max(...roomDistances.map((r) => r.distance));
 
 // Define minimum distance threshold (e.g., 60% of max distance)
 const minDistance = Math.floor(maxDistance * 0.6);
 
 // Filter rooms beyond the minimum distance
-const candidateRooms = roomDistances.filter(r => r.distance >= minDistance);
+const candidateRooms = roomDistances.filter((r) => r.distance >= minDistance);
 
 // Randomly select a room for the boss
 const bossRoom = chance.pickone(candidateRooms);
@@ -199,4 +200,4 @@ if (bossRoom) {
 
 ---
 
-Feel free to customize the parameters and logic to better fit the specific needs and mechanics of your game. If you have further questions or need assistance with additional features, don't hesitate to ask! 
+Feel free to customize the parameters and logic to better fit the specific needs and mechanics of your game. If you have further questions or need assistance with additional features, don't hesitate to ask!

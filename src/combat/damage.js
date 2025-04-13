@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+// eslint-disable-next-line no-unused-vars
 const calculateDamage = (attacker, target) => {
   if (attacker.isPlayer) return 100;
 

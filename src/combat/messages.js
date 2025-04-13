@@ -1,4 +1,4 @@
-const { grey, yellow, red, redBold, magenta } = require('../utils/formatting');
+const { yellow, redBold, magenta } = require('../utils/formatting');
 const { sendRoom } = require('../game/broadcast');
 
 const sendCombatMessage = (attacker, target, result) => {

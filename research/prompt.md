@@ -11,14 +11,15 @@ This document outlines the finalized design for the combat prompt system and fla
 ## 🧭 Prompt Design
 
 ### 1. **Labeled Corners Prompt (Static HUD)**
+
 A fixed-position, multi-line prompt displaying critical player and combat informatio.
 
 **Components:**
 
-- **HP/MP Bars:* Visual representation using block characters (e.g., `████░░`.
-- **Flask Counts:* Remaining Health (H), Mana (M), and Stamina (S) flask.
-- **Enemy Info:* Name and current health percentage of the targeted enem.
-- **Buffs/Debuffs:* Symbols indicating active buffs (`↑`) and debuffs (`↓`.
+- \*_HP/MP Bars:_ Visual representation using block characters (e.g., `████░░`.
+- \*_Flask Counts:_ Remaining Health (H), Mana (M), and Stamina (S) flask.
+- \*_Enemy Info:_ Name and current health percentage of the targeted enem.
+- \*_Buffs/Debuffs:_ Symbols indicating active buffs (`↑`) and debuffs (`↓`.
 
 **Example:**
 
@@ -32,17 +33,18 @@ This document outlines the finalized design for the combat prompt system and fla
 └────────────────────────────┘
 ```
 
-*Note: Colors can be applied to each line to signify status (e.g., red for low HP, blue for MP.
+\*Note: Colors can be applied to each line to signify status (e.g., red for low HP, blue for MP.
 
 ### 2. **Single-Line Compact Prompt**
+
 A concise, single-line prompt using symbols and color codes for quick readabilit.
 
 **Components:**
 
-- **HP/MP:* Heart (`♥`) and lightning bolt (`⚡`) symbols with percentage.
-- **Flasks:* Potion symbol (`⚗`) followed by coun.
-- **Enemy HP:* Skull (`☠`) symbol with enemy health percentag.
-- **Buffs/Debuffs:* Arrows indicating buffs (`↑`) and debuffs (`↓`.
+- \*_HP/MP:_ Heart (`♥`) and lightning bolt (`⚡`) symbols with percentage.
+- \*_Flasks:_ Potion symbol (`⚗`) followed by coun.
+- \*_Enemy HP:_ Skull (`☠`) symbol with enemy health percentag.
+- \*_Buffs/Debuffs:_ Arrows indicating buffs (`↑`) and debuffs (`↓`.
 
 **Example:**
 
@@ -56,21 +58,21 @@ This document outlines the finalized design for the combat prompt system and fla
 
 ### 1. **Manual Activation**
 
-- **Description:* Players manually activate flasks by pressing designated keys (e.g., number key).
-- **Pros:* Full player contrl.
-- **Cons:* May lead to "piano key" effect; requires constant attentin.
+- \*_Description:_ Players manually activate flasks by pressing designated keys (e.g., number key).
+- \*_Pros:_ Full player contrl.
+- \*_Cons:_ May lead to "piano key" effect; requires constant attentin.
 
 ### 2. **Auto-Use on Threshold**
 
-- **Description:* Flasks automatically activate when HP/MP/Stamina drop below set threshols.
-- **Pros:* Reduces need for manual input; ensures timely activatin.
-- **Cons:* Less player control; may consume flasks unnecessariy.
+- \*_Description:_ Flasks automatically activate when HP/MP/Stamina drop below set threshols.
+- \*_Pros:_ Reduces need for manual input; ensures timely activatin.
+- \*_Cons:_ Less player control; may consume flasks unnecessariy.
 
 ### 3. **Hybrid System**
 
-- **Description:* Combines manual activation with optional auto-use settins.
-- **Pros:* Offers flexibility; players can choose preferred methd.
-- **Cons:* Requires more complex implementatin.
+- \*_Description:_ Combines manual activation with optional auto-use settins.
+- \*_Pros:_ Offers flexibility; players can choose preferred methd.
+- \*_Cons:_ Requires more complex implementatin.
 
 ---
 
@@ -98,13 +100,14 @@ This document outlines the finalized design for the combat prompt system and fla
   ✅ Goblin defeated! XP gained: 120
   ```
 
-**Implementation Tips:*
+\*_Implementation Tips:_
 
 - Use distinctive symbols and colors to differentiate message ypes
 - Ensure messages are concise and appear only when relevant to avoid cltter
 - Allow players to customize which event messages they reeive.
+
 ---
 
 By integrating these prompt designs and flask automation options, you can create a responsive and user-friendly combat interface that enhances player engagement and situational awarness.
 
---- 
+---

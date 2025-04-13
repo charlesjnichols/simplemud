@@ -16,10 +16,7 @@
   // Use 'postCreateCommand' to run commands after the container is created.
   "customizations": {
     "vscode": {
-      "extensions": [
-        "ajhawkings.nodejs-extensions",
-        "esbenp.prettier-vscode"
-      ]
+      "extensions": ["ajhawkings.nodejs-extensions", "esbenp.prettier-vscode"]
     }
   }
 

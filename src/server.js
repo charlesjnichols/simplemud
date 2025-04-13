@@ -3,8 +3,8 @@
 const net = require('net');
 
 const { createConnectionManager } = require('./connection/manager');
-const GameLoop = require('./game-loop');
-const Telnet = require('./telnet');
+const GameLoop = require('./game/loop');
+const Telnet = require('./utils/telnet');
 
 const databases = require('./databases');
 

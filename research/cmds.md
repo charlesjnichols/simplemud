@@ -94,4 +94,4 @@ These commands aim to bridge the gap between traditional MUD gameplay and the fa
 
 *Note: Implementation of these commands may vary depending on the specific MUD server and its supported features.*
 
---- 
+---

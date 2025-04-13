@@ -6,7 +6,7 @@ module.exports = (player) => {
 
   const experience = [
     printTwoCol('Level:', player.level),
-    printTwoCol('Experience:', `${player.experience}/${nextXP} (${percent}%)`)
+    printTwoCol('Experience:', `${player.experience}/${nextXP} (${percent}%)`),
   ];
   player.send(printSection('Your Experience', experience));
 };

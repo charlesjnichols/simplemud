@@ -1,8 +1,6 @@
 const { Attribute, PlayerRank, RoomType } = require('../attributes');
 const { matchFull, matchPartial } = require('../utils/matcher');
 const { encryptPassword, isEncrypted } = require('../utils/password-vault');
-
-const { createPlayerMessages } = require('./messages');
 const { createController } = require('./controller');
 
 const PLAYERITEMS = 16;
