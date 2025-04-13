@@ -5,7 +5,7 @@ const _ = require('lodash');
 const path = require('path');
 const jsonfile = require('jsonfile');
 const createRoom = require('./room');
-const createEntityDatabase = require('../entity-database');
+const createEntityDatabase = require('../entity/database');
 const { RoomType } = require('../attributes');
 
 const fileMap = path.join(process.cwd(), 'data', 'map.json');

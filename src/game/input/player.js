@@ -1,4 +1,4 @@
-const dispatchCommand = require('../dispatchCommand');
+const dispatchCommand = require('./dispatcher');
 
 const createInput = (databases) => (player, input) => {
   const [verb, ...args] = input.trim().split(/\s+/);
@@ -13,5 +13,5 @@ const createInput = (databases) => (player, input) => {
 };
 
 module.exports = {
-  createInput
+  createInput,
 };

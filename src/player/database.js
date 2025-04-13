@@ -9,7 +9,7 @@ const jsonfile = require('jsonfile');
 
 const { v4: uuidv4 } = require('uuid');
 
-const createEntityDatabase = require('../entity-database');
+const createEntityDatabase = require('../entity/database');
 const createPlayer = require('./player');
 
 const { PlayerRank } = require('../attributes');

@@ -1,4 +1,3 @@
-const roomDb = require('../room/database');
 const { sendToActivePlayers } = require('../game/broadcast');
 const { red, green } = require('../utils/formatting');
 
@@ -8,7 +7,7 @@ const oppositeDirections = {
   east: 'west',
   west: 'east',
   up: 'down',
-  down: 'up'
+  down: 'up',
 };
 
 const createDirectionHandler = (direction) => {
@@ -25,7 +24,7 @@ const createDirectionHandler = (direction) => {
     sendToActivePlayers(previous.players, green(`${player.name} leaves to the ${direction}.`));
     sendToActivePlayers(
       next.players,
-      green(`${player.name} enters from the ${oppositeDirections[direction] || 'unknown'}.`)
+      green(`${player.name} enters from the ${oppositeDirections[direction] || 'unknown'}.`),
     );
     player.send(green(`You walk ${direction}.`));
 

@@ -4,16 +4,23 @@ const Fuse = require('fuse.js');
 
 const getAllCommands = (contexts) => {
   return contexts.flatMap((ctx) => {
-    const dir = path.join(__dirname, 'commands', ctx);
-    if (!fs.existsSync(dir)) return [];
-    return fs
-      .readdirSync(dir)
-      .filter((file) => file.endsWith('.js'))
-      .map((file) => ({
-        verb: path.basename(file, '.js'),
-        ctx,
-        file: path.join(dir, file),
-      }));
+    const dir = path.join(process.cwd(), 'src/commands', ctx);
+    console.log(`[getAllCommands] Searching directory: ${dir}`);
+
+    if (!fs.existsSync(dir)) {
+      console.warn(`[getAllCommands] Directory does not exist: ${dir}`);
+      return [];
+    }
+
+    const files = fs.readdirSync(dir).filter((file) => file.endsWith('.js'));
+
+    console.log(`[getAllCommands] Found ${files.length} command(s) in '${ctx}':`, files);
+
+    return files.map((file) => ({
+      verb: path.basename(file, '.js'),
+      ctx,
+      file: path.join(dir, file),
+    }));
   });
 };
 

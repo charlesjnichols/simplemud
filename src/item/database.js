@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const path = require('path');
 const jsonfile = require('jsonfile');
-const createEntityDatabase = require('../entity-database');
+const createEntityDatabase = require('../entity/database');
 const createItem = require('./item');
 
 const filePath = path.join(process.cwd(), 'data', 'items.json');

@@ -202,7 +202,6 @@ function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
     }
   };
 
-  player.messages = createPlayerMessages(player);
   player.controller = createController(player, { roomDb, playerDb });
 
   player.toJSON = () => ({

@@ -5,7 +5,7 @@ const _ = require('lodash');
 const path = require('path');
 const jsonfile = require('jsonfile');
 const createStore = require('./store');
-const createEntityDatabase = require('../entity-database');
+const createEntityDatabase = require('../entity/database');
 
 const file = path.join(process.cwd(), 'data', 'stores.json');
 

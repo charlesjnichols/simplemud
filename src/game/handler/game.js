@@ -1,8 +1,8 @@
 'use strict';
 
-const ConnectionHandler = require('../connection/handler');
-const { createInput } = require('./input');
-const { sendToLoggedInPlayers } = require('../game/broadcast');
+const ConnectionHandler = require('../../connection/handler');
+const { createInput } = require('../input/player');
+const { sendToLoggedInPlayers } = require('../broadcast');
 
 // Game Handler class
 class Game extends ConnectionHandler {

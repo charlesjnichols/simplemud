@@ -1,8 +1,8 @@
 'use strict';
 
 const Game = require('./game');
-const { playerDb } = require('../databases');
-const { resolveInput } = require('../utils/input');
+const { playerDb } = require('../../databases');
+const { resolveInput } = require('../../utils/input');
 
 const State = {
   CHOOSE_CLASS: 'choose-class',

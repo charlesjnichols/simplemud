@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const path = require('path');
 const jsonfile = require('jsonfile');
-const createEntityDatabase = require('../entity-database');
+const createEntityDatabase = require('../entity/database');
 const { createEnemyTemplate, createEnemy } = require('./enemy');
 
 const fileTemplate = path.join(process.cwd(), 'data', 'enemies.json');

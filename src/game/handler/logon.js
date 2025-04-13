@@ -1,15 +1,15 @@
 'use strict';
 
-const Game = require('./player/game');
-const createCreateCharacter = require('./player/player-login');
-const createPlayer = require('./player/player');
+const Game = require('./game');
+const createCreateCharacter = require('./create-character');
+const createPlayer = require('../../player/player');
 const { v4: uuidv4 } = require('uuid');
-const { decryptPassword } = require('./utils/password-vault');
+const { decryptPassword } = require('../../utils/password-vault');
 
 const State = {
   ENTER_NAME: 'enter-name',
   ENTER_PASSWORD: 'enter-password',
-  ENTER_NEW_PASSWORD: 'enter-new-password'
+  ENTER_NEW_PASSWORD: 'enter-new-password',
 };
 
 const createLogonHandler = (connection, databases) => {
@@ -18,7 +18,7 @@ const createLogonHandler = (connection, databases) => {
   const context = {
     name: '',
     numErrors: 0,
-    isNewPlayer: false
+    isNewPlayer: false,
   };
 
   function enter() {
@@ -80,9 +80,9 @@ const createLogonHandler = (connection, databases) => {
           name: context.name,
           password: data,
           connection: connection,
-          id: uuidv4()
+          id: uuidv4(),
         },
-        { roomDb, playerDb }
+        { roomDb, playerDb },
       );
 
       playerDb.addPlayer(player);
@@ -102,7 +102,7 @@ const createLogonHandler = (connection, databases) => {
     enter,
     handle,
     leave,
-    hungup
+    hungup,
   };
 };
 
@@ -112,5 +112,5 @@ function isValidName(name) {
 }
 
 module.exports = {
-  createLogonHandler
+  createLogonHandler,
 };
