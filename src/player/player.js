@@ -1,12 +1,13 @@
-const { Attribute, PlayerRank } = require('../attributes');
+const { Attribute, PlayerRank, RoomType } = require('../attributes');
 const { matchFull, matchPartial } = require('../utils/matcher');
 const { encryptPassword, isEncrypted } = require('../utils/password-vault');
 
 const { createPlayerMessages } = require('./messages');
+const { createController } = require('./controller');
 
 const PLAYERITEMS = 16;
 
-function createPlayer(data = {}) {
+function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
   const get = (key) =>
     Attribute.get(key)?.value ??
     (() => {
@@ -186,7 +187,23 @@ function createPlayer(data = {}) {
 
   player.getMaxItems = () => PLAYERITEMS; // or use a shared constant if preferred
 
+  player.isInStore = () => player.room.type === RoomType.STORE;
+
+  player.send = (message) => {
+    if (!player.connection || player.connection === 0) {
+      console.error(`Trying to send string to player ${player.name} but player is not connected.`);
+      return;
+    }
+
+    player.connection.sendMessage(message + '\n');
+
+    if (player.active && typeof player.printStatbar === 'function') {
+      player.printStatbar();
+    }
+  };
+
   player.messages = createPlayerMessages(player);
+  player.controller = createController(player, { roomDb, playerDb });
 
   player.toJSON = () => ({
     id: player.id,

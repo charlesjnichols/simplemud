@@ -3,7 +3,7 @@
 const connection = require('./connection');
 const { createLogonHandler } = require('../logon');
 
-const createConnectionManager = ({ playerDb }) => {
+const createConnectionManager = (databases) => {
   const connections = [];
 
   const getConnection = (index) => {
@@ -12,7 +12,7 @@ const createConnectionManager = ({ playerDb }) => {
 
   const newConnection = (socket, protocol, handler) => {
     const conn = new connection(socket, protocol);
-    const defaultHandler = handler || createLogonHandler({ connection: conn, playerDb });
+    const defaultHandler = handler || createLogonHandler(conn, databases);
     conn.addHandler(defaultHandler);
     connections.push(conn);
     socket.on('close', () => removeConnection(socket));

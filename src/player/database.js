@@ -37,6 +37,7 @@ function createPlayerDatabase() {
       const password = crypto.randomBytes(12).toString('base64');
       const encrypted = encryptPassword(password);
       const adminData = {
+        id: uuidv4(),
         name: 'admin',
         password: encrypted,
         rank: PlayerRank.get('ADMIN'),
@@ -44,7 +45,7 @@ function createPlayerDatabase() {
         stats: { hp: 100, mp: 50, level: 100, xp: 0 },
       };
 
-      const adminPlayer = createPlayer(adminData);
+      const adminPlayer = createPlayer(adminData, {});
       savePlayer(adminPlayer);
       db.add(adminPlayer);
 
@@ -52,7 +53,7 @@ function createPlayerDatabase() {
     }
   };
 
-  const load = (itemDb, roomDb) => {
+  const load = ({ itemDb, roomDb, playerDb }) => {
     db.clear();
 
     if (!fs.existsSync(PLAYER_DIR)) {
@@ -67,7 +68,7 @@ function createPlayerDatabase() {
       .filter((f) => f.endsWith('.json') && !f.startsWith('_'))
       .map((f) => path.basename(f, '.json'))
       .forEach((name) => {
-        const p = loadPlayer(name, itemDb, roomDb);
+        const p = loadPlayer(name, { itemDb, roomDb, playerDb });
         if (p) {
           console.log(`[DB] Loaded player '${p.name}' '${p.id}'`);
           db.add(p);
@@ -84,12 +85,12 @@ function createPlayerDatabase() {
     return true;
   };
 
-  const loadPlayer = (name, itemDb, roomDb) => {
+  const loadPlayer = (name, { itemDb, roomDb, playerDb }) => {
     try {
       const file = path.join(PLAYER_DIR, `${name}.json`);
       const data = jsonfile.readFileSync(file);
 
-      const player = createPlayer(data);
+      const player = createPlayer(data, { roomDb, playerDb });
 
       player.inventory = [];
       player.items = 0;

@@ -59,6 +59,8 @@ export default defineConfig([
       // 🧼 Prettier formatting enforcement
       'prettier/prettier': 'error',
 
+      'comma-dangle': ['error', 'always-multiline'],
+
       // ⛔ Disable conflicting ESLint formatting rules
       ...prettier.rules,
     },

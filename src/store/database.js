@@ -12,12 +12,12 @@ const file = path.join(process.cwd(), 'data', 'stores.json');
 function createStoreDatabase() {
   const db = createEntityDatabase();
 
-  function load(itemDb) {
+  function load({ itemDb }) {
     db.clear();
     const dataArray = jsonfile.readFileSync(file);
     dataArray.forEach((data) => {
       const store = createStore({});
-      store.load(data, itemDb);
+      store.load(data, { itemDb });
       db.add(store);
     });
     console.log('[DB] Store database loaded.');

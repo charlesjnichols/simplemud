@@ -23,10 +23,10 @@ const loadDatabases = () => {
     itemDb.load();
     enemyTpDb.load();
     enemyDb.load();
-    storeDb.load(itemDb);
-    roomDb.loadTemplates(storeDb);
-    roomDb.loadData(itemDb);
-    playerDb.load(itemDb, roomDb);
+    storeDb.load({ itemDb });
+    roomDb.loadTemplates({ storeDb });
+    roomDb.loadData({ itemDb });
+    playerDb.load({ itemDb, roomDb, playerDb });
     console.log('[DB] All databases loaded successfully.');
   } catch (err) {
     console.error(`[DB] Error loading databases: ${err.message}`);
@@ -59,6 +59,5 @@ module.exports = {
   storeDb,
   enemyTpDb,
   enemyDb,
-  loadDatabases,
   saveDatabases,
 };

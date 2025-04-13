@@ -9,7 +9,7 @@ function createStore(data = {}) {
     items: [],
   };
 
-  store.messages = createStoreMessages(store);
+  store.messages = createStoreMessages();
 
   const _findIn = (collection, name) => {
     const match = (fn) => collection.find((obj) => obj?.[fn]?.call(obj, name)) || 0;
@@ -19,7 +19,7 @@ function createStore(data = {}) {
   return Object.assign(store, {
     findItem: (itemName) => _findIn(store.items, itemName),
 
-    load: (dataObject, itemDb) => {
+    load: (dataObject, { itemDb }) => {
       store.id = parseInt(dataObject.ID);
       store.name = dataObject.NAME;
       store.items = [];

@@ -4,12 +4,12 @@ const jsonfile = require('jsonfile');
 const path = require('path');
 
 const { Attribute } = require('./attributes');
-
 const { seconds, minutes } = require('./utils/time');
-const DB = require('./databases');
-const Game = require('./game');
+const { createTimer } = require('./utils/time');
+const { sendRoom } = require('./game/broadcast');
+const { redBold } = require('./utils/formatting');
 
-const timer = Game.getTimer();
+const timer = createTimer();
 
 const DBSAVETIME = minutes(15);
 const ROUNDTIME = seconds(1);
@@ -19,8 +19,12 @@ const HEALTIME = minutes(1);
 const file = path.join(__dirname, '..', 'data', 'gamedata.json');
 
 class GameLoop {
-  constructor() {
-    this.db = DB;
+  constructor({ enemyDb, enemyTpDb, roomDb, playerDb, saveDatabases }) {
+    this.saveDatabases = saveDatabases;
+    this.enemyDb = enemyDb;
+    this.enemyTpDb = enemyTpDb;
+    this.roomDb = roomDb;
+    this.playerDb = playerDb;
   }
 
   load() {
@@ -42,12 +46,11 @@ class GameLoop {
       this.nextRegen = REGENTIME;
       this.nextHeal = HEALTIME;
     }
-    Game.setIsRunning(true);
   }
 
   save() {
     const dataObject = {
-      GAMETIME: Game.getTimer().getMS(),
+      GAMETIME: timer.getMS(),
       SAVEDATABASES: this.saveDbTime,
       NEXTROUND: this.nextRound,
       NEXTREGEN: this.nextRegen,
@@ -56,14 +59,9 @@ class GameLoop {
     jsonfile.writeFileSync(file, dataObject, { spaces: 2 });
   }
 
-  loadDatabases() {
-    this.load();
-    DB.loadDatabases();
-  }
-
   saveDatabases() {
     this.save();
-    DB.saveDatabases();
+    this.saveDatabases();
   }
 
   loop() {
@@ -87,7 +85,7 @@ class GameLoop {
 
   performRound() {
     const now = timer.getMS();
-    for (const enemy of DB.enemyDb.values()) {
+    for (const enemy of this.enemyDb.values()) {
       if (now >= enemy.nextAttackTime && enemy.room.players.length > 0) {
         Game.enemyAttack(enemy);
       }
@@ -95,19 +93,19 @@ class GameLoop {
   }
 
   performRegen() {
-    for (const room of DB.roomDb.values()) {
+    for (const room of this.roomDb.values()) {
       if (room.spawnWhich !== 0 && room.enemies.length < room.maxEnemies) {
-        const template = DB.enemyTpDb.findById(room.spawnWhich);
-        const enemy = DB.enemyDb.create(template, room);
-        Game.sendRoom('<red><bold>' + enemy.name + ' enters the room!</bold></red>', room);
+        const template = this.enemyTpDb.findById(room.spawnWhich);
+        const enemy = this.enemyDb.create(template, room);
+        sendRoom(room, `${redBold(enemy.name)} enters the room!`);
       }
     }
   }
 
   performHeal() {
-    for (const p of DB.playerDb.values()) {
+    for (const p of this.playerDb.values()) {
       if (p.active) {
-        p.addHitPoints(p.GetAttr(Attribute.HPREGEN));
+        p.addHitPoints(p.GetAttr(Attribute.get('HPREGEN')));
         p.printStatbar();
       }
     }

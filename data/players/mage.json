@@ -1,0 +1,28 @@
+{
+  "id": "7e125fb1-79e0-440c-837e-bdd2cdac610a",
+  "name": "mage",
+  "password": "ENC:BgAeshiOOwQvd6rR1RID/tlbcg4NHi6Gj9/855fHfWNkwRFz1+DhYliGXMBIqtSxoxjo7xOZcfN0XCVwlkDJlFIjpecVRT7kNK6XxtdyzN7+rDpQp6JNi9MfEY6EC8MmRQoR0EL5L3N7atp8nutFZ3QEhmLPRia4GzjDLLz9NTxbvjRjoNr7Wuhup8BAk5WRpFzOAsGx4jKvV8ocrRcPipwoo7veKUmoKGdmJg1MptbBhQq+Gmh+wf4RJtcY+oxhdqpcmyhCw7RFhlUd7N3aFgmTWvUbG8AtZd6WS3BxNzDyMfZHTLwRuT08I6qDi8TXA1xjlqpbIf8ydSnaDT7yWg==",
+  "rank": "REGULAR",
+  "class": null,
+  "level": 1,
+  "experience": 0,
+  "money": 0,
+  "statPoints": 0,
+  "hitPoints": 0,
+  "nextAttackTime": 0,
+  "room": 1,
+  "weapon": -1,
+  "armor": -1,
+  "attributes": {
+    "STRENGTH": 0,
+    "HEALTH": 0,
+    "AGILITY": 0,
+    "MAXHITPOINTS": 0,
+    "ACCURACY": 0,
+    "DODGING": 0,
+    "STRIKEDAMAGE": 0,
+    "DAMAGEABSORB": 0,
+    "HPREGEN": 0
+  },
+  "inventory": []
+}

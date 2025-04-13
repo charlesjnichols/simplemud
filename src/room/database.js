@@ -14,7 +14,7 @@ const fileMapData = path.join(process.cwd(), 'data', 'mapdata.json');
 function createRoomDatabase() {
   const db = createEntityDatabase();
 
-  function loadTemplates(storeDb) {
+  function loadTemplates({ storeDb }) {
     db.clear();
     const dataArray = jsonfile.readFileSync(fileMap);
     dataArray.forEach((data) => {
@@ -31,7 +31,7 @@ function createRoomDatabase() {
     console.log(`[DB] Loaded ${db.size()} rooms templates.`);
   }
 
-  function loadData(itemDb) {
+  function loadData({ itemDb }) {
     const dataArray = jsonfile.readFileSync(fileMapData);
     dataArray.forEach((data) => {
       const roomId = parseInt(data.ROOMID);

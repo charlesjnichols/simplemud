@@ -1,6 +1,6 @@
 'use strict';
 
-const Game = require('../game');
+const Game = require('./game');
 const { playerDb } = require('../databases');
 const { resolveInput } = require('../utils/input');
 
