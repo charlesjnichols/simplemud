@@ -7,9 +7,9 @@ const createInput = (databases) => (player, input) => {
 
   // Determine contexts based on player's state
   if (player.isInStore()) contexts.push('store');
-  if (player.rank === PlayerRank.get('ADMIN')) contexts.push('admin');
-  contexts.push('movement');
+  if (player.rank === PlayerRank.ADMIN) contexts.push('admin');
   contexts.push('global');
+  contexts.push('movement');
 
   dispatchCommand(contexts, verb.toLowerCase(), args, player, databases);
 };

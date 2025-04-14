@@ -23,9 +23,8 @@ const createRoomMessages = (room) => {
   };
 
   const getExits = () =>
-    Direction.enums
-      .filter((dir) => room.rooms[dir] !== 0)
-      .map((dir) => dir.key)
+    Object.keys(Direction)
+      .filter((dir) => room.rooms[Direction[dir]] !== 0)
       .join('  ');
 
   const getRoomItems = () => {

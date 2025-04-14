@@ -1,16 +1,14 @@
 'use strict';
 
 const { Attribute, ItemType } = require('../attributes');
-const { matchFull, matchPartial } = require('../utils/matcher');
 
 function createItem(data = {}) {
   const type = ItemType.get(data.TYPE) || ItemType.get('WEAPON');
 
-  const attributes = Attribute.enums.reduce((acc, attr) => {
-    const val = parseInt(data[attr.key]);
-    acc[attr.value] = isNaN(val) ? 0 : val;
-    return acc;
-  }, []);
+  const attributes = _.mapValues(Attribute, (key) => {
+    const val = parseInt(data[key]);
+    return isNaN(val) ? 0 : val;
+  });
 
   const item = {
     id: data.ID,
@@ -21,8 +19,6 @@ function createItem(data = {}) {
     speed: parseInt(data.SPEED) || 0,
     price: parseInt(data.PRICE) || 0,
     attributes,
-    matchFull: (str) => matchFull(data.NAME || '', str),
-    matchPartial: (str) => matchPartial(data.NAME || '', str),
   };
 
   return item;

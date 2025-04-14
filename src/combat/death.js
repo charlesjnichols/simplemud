@@ -15,7 +15,7 @@ const handleDeath = (attacker, target, { enemyDb, roomDb, itemDb }) => {
     target.room = roomDb.findById(1);
     target.room.addPlayer(target);
 
-    target.setHitPoints(Math.floor(target.GetAttr(Attribute.MAXHITPOINTS) * 0.7));
+    target.setHitPoints(Math.floor(target.maxHp * 0.7));
 
     target.send(target.room, whiteBold(`You have died, but have been ressurected in ${target.room.name}`));
     sendRoom(target.room, whiteBold(`${target.name} appears out of nowhere!!`));

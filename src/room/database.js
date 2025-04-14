@@ -1,6 +1,9 @@
 'use strict';
 
 const _ = require('lodash');
+const debug = require('debug');
+const log = debug('db:room');
+const error = debug('db:room:error');
 
 const path = require('path');
 const jsonfile = require('jsonfile');
@@ -15,39 +18,60 @@ function createRoomDatabase() {
   const db = createEntityDatabase();
 
   function loadTemplates({ storeDb }) {
-    db.clear();
-    const dataArray = jsonfile.readFileSync(fileMap);
-    dataArray.forEach((data) => {
-      const room = createRoom();
-      room.loadTemplate(data);
+    try {
+      log('Loading room templates from %s', fileMap);
+      db.clear();
+      const dataArray = jsonfile.readFileSync(fileMap);
+      dataArray.forEach((data) => {
+        const room = createRoom();
+        room.loadTemplate(data);
 
-      if (room.type === RoomType.get('STORE')) {
-        room.store = storeDb.findById(room.data);
-        console.log(`[DB] Linked store '${room.store?.name || 'UNKNOWN'}' to store room '${room.name}'`);
-      }
+        if (room.type === RoomType.STORE) {
+          room.store = storeDb.findById(room.data);
+          log(`Linked store '${room.store?.name || 'UNKNOWN'}' to store room '${room.name}'`);
+        }
 
-      db.add(room);
-    });
-    console.log(`[DB] Loaded ${db.size()} rooms templates.`);
+        db.add(room);
+      });
+      log(`Loaded ${db.size()} room templates.`);
+    } catch (err) {
+      error(`Failed to load room templates: ${err.message}`, err);
+      process.exit(1);
+      throw err;
+    }
   }
 
   function loadData({ itemDb }) {
-    const dataArray = jsonfile.readFileSync(fileMapData);
-    dataArray.forEach((data) => {
-      const roomId = parseInt(data.ROOMID);
-      const room = db.findById(roomId);
-      if (room) {
-        room.loadData(data, itemDb);
-      }
-    });
-    console.log(`[DB] Loaded ${db.size()} rooms.`);
+    try {
+      log('Loading room data from %s', fileMapData);
+      const dataArray = jsonfile.readFileSync(fileMapData);
+      dataArray.forEach((data) => {
+        const roomId = parseInt(data.ROOMID);
+        const room = db.findById(roomId);
+        if (room) {
+          room.loadData(data, itemDb);
+        } else {
+          log(`No room found for ID ${roomId}, skipping.`);
+        }
+      });
+      log(`Loaded data for ${db.size()} rooms.`);
+    } catch (err) {
+      error(`Failed to load room data: ${err.message}\n${err.stack}`);
+      throw err;
+    }
   }
 
   function saveData() {
-    const roomsToSave = db.values().filter((r) => r.items.length || r.money > 0);
-    const dataArray = roomsToSave.map((room) => room.serialize());
-    jsonfile.writeFileSync(fileMapData, dataArray, { spaces: 2 });
-    console.log('[DB] Room data saved.');
+    try {
+      log('Saving room data to %s', fileMapData);
+      const roomsToSave = db.values().filter((r) => r.items.length || r.money > 0);
+      const dataArray = roomsToSave.map((room) => room.serialize());
+      jsonfile.writeFileSync(fileMapData, dataArray, { spaces: 2 });
+      log(`Saved ${roomsToSave.length} rooms.`);
+    } catch (err) {
+      error(`Failed to save room data: ${err.message}\n${err.stack}`);
+      throw err;
+    }
   }
 
   return {

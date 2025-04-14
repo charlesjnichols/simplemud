@@ -1,28 +1,15 @@
 {
-  "id": "7603ac94-62ba-4b56-bb36-5182ec1643fb",
+  "id": "a6499799-f213-466d-9f47-c4fda1f6f069",
   "name": "admin",
-  "password": "admin",
+  "password": "ENC:I+FPoYkTF5HdBQks7GHJjT6EdMz62V3FbFIzxGhhxwtotcvx7h68wm4wZ/TCgjXyyeUkzIkeFHrXn3IJFOGhR7B3StTBOs/GCK175YNR6Tj5sVV2jeuQBgouRgNHijsVwnSaLB6JBISm4/mPZsdEE6MA1uJLuR4+SC7CtMIHGuclJzsbmB7ueASxP7AtS/Slu9PxDtnzSxe4ECQGnaA86f0Es0m8DBL1BG8Pym9MzTdIg2OXgJAbwcwVjAt5iEmQ+ev1AeE1Gv8Y/L1jHQRiSj32diBws0emQcpU404GQa0ulnnEfg8Oqz94r5mRzanAdmo1xgGWpRzhKQckSTFM+w==",
   "rank": "ADMIN",
-  "class": null,
   "level": 1,
   "experience": 0,
-  "money": 0,
-  "statPoints": 0,
-  "hitPoints": 0,
+  "hitPoints": 1,
+  "maxHp": 100,
   "nextAttackTime": 0,
   "room": 1,
   "weapon": -1,
   "armor": -1,
-  "attributes": {
-    "STRENGTH": 0,
-    "HEALTH": 0,
-    "AGILITY": 0,
-    "MAXHITPOINTS": 0,
-    "ACCURACY": 0,
-    "DODGING": 0,
-    "STRIKEDAMAGE": 0,
-    "DAMAGEABSORB": 0,
-    "HPREGEN": 0
-  },
   "inventory": []
 }

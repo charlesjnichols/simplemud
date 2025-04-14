@@ -93,7 +93,7 @@ const createLogonHandler = (connection, databases) => {
 
       connection.sendMessage('<green>Character created! Starting character creation...</green>');
       connection.removeHandler();
-      connection.addHandler(createCreateCharacter(player));
+      connection.addHandler(createCreateCharacter(player, databases));
     }
   }
 

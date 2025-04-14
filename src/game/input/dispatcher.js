@@ -46,7 +46,7 @@ const dispatchCommand = (contexts, verb, args, player, databases, options = {}) 
 
   if (options.reload) return;
 
-  const command = commands.find((c) => c.verb === verb || c.verb.startsWith(verb));
+  const command = commands.find((c) => c.verb === verb);
 
   if (command) {
     delete require.cache[require.resolve(command.file)];

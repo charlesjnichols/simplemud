@@ -1,13 +1,7 @@
-const { logoutMessage, sendToActivePlayers } = require('../game/broadcast');
+const { sendToActivePlayers } = require('../game/broadcast');
 const { yellowBold } = require('../utils/formatting');
-const Train = require('../train');
 
 const createController = (player, { roomDb, playerDb }) => {
-  const leaveToTrain = () => {
-    logoutMessage(`${player.name} leaves to edit stats`);
-    player.connection.addHandler(new Train(player.connection, player));
-  };
-
   const enter = () => {
     player.active = true;
     player.loggedIn = true;
@@ -18,14 +12,10 @@ const createController = (player, { roomDb, playerDb }) => {
       player.room = roomDb.findById(player.room);
     }
 
-    player.room.addPlayer(player);
     sendToActivePlayers(playerDb.values(), yellowBold(`${player.name} has entered the realm.`));
 
-    if (player.newbie) {
-      leaveToTrain();
-    } else {
-      player.sendString(player.room.messages.printRoom());
-    }
+    player.room.addPlayer(player);
+    player.sendString(player.room.messages.printRoom());
   };
 
   const leave = () => {

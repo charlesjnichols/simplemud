@@ -10,7 +10,7 @@ const State = {
   DONE: 'done',
 };
 
-function createCreateCharacter(player) {
+function createCreateCharacter(player, databases) {
   const stateHolder = {
     state: State.CHOOSE_CLASS,
   };
@@ -57,7 +57,7 @@ function createCreateCharacter(player) {
       initializePlayer(player);
       playerDb.addPlayer(player);
       stateHolder.state = State.DONE;
-      player.connection.addHandler(new Game(player.connection, player));
+      player.connection.addHandler(new Game(player.connection, player, databases));
     }
   };
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const debug = require('debug')('mud:gameloop');
+const debug = require('debug')('mud:game:gameloop');
 
 const jsonfile = require('jsonfile');
 const path = require('path');
@@ -104,7 +104,6 @@ class GameLoop {
 
   performRound() {
     const now = this.getElapsedMs();
-    debug(this.databases.enemyDb.values().length);
     for (const enemy of this.databases.enemyDb.values()) {
       if (now >= enemy.nextAttackTime && enemy.room.players.length > 0) {
         debug(`Enemy '${enemy.name}' is attacking in room '${enemy.room.name}'`);

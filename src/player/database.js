@@ -1,6 +1,10 @@
 'use strict';
 
 const _ = require('lodash');
+const debug = require('debug');
+const log = debug('db:player');
+const warn = debug('db:player:warn');
+const error = debug('db:player:error');
 
 const crypto = require('crypto');
 const fs = require('fs');
@@ -21,17 +25,17 @@ function createPlayerDatabase() {
   const db = createEntityDatabase();
 
   const save = () => {
-    console.log('[DB] Saving all players...');
+    log('Saving all players...');
     db.values().forEach((player) => {
       player.id = uuidv4();
       savePlayer(player);
     });
-    console.log('[DB] Saved all players to individual files.');
+    log('Saved all players to individual files.');
     return true;
   };
 
   const ensureAdminPlayer = () => {
-    const hasAdmin = db.findByRank(PlayerRank.get('ADMIN'));
+    const hasAdmin = db.findByRank(PlayerRank.ADMIN);
 
     if (!hasAdmin) {
       const password = crypto.randomBytes(12).toString('base64');
@@ -40,7 +44,7 @@ function createPlayerDatabase() {
         id: uuidv4(),
         name: 'admin',
         password: encrypted,
-        rank: PlayerRank.get('ADMIN'),
+        rank: PlayerRank.ADMIN,
         inventory: [],
         stats: { hp: 100, mp: 50, level: 100, xp: 0 },
       };
@@ -49,7 +53,7 @@ function createPlayerDatabase() {
       savePlayer(adminPlayer);
       db.add(adminPlayer);
 
-      console.log(`[DB] Inof: No admin found. Created default admin with password: ${password}`);
+      log(`No admin found. Created default admin with password: ${password}`);
     }
   };
 
@@ -57,11 +61,11 @@ function createPlayerDatabase() {
     db.clear();
 
     if (!fs.existsSync(PLAYER_DIR)) {
-      console.warn('[DB] Warning: player data directory not found.');
+      warn('Player data directory not found.');
       return false;
     }
 
-    console.log('[DB] Scanning player directory...');
+    log('Scanning player directory...');
     const files = fs.readdirSync(PLAYER_DIR);
 
     _(files)
@@ -70,16 +74,15 @@ function createPlayerDatabase() {
       .forEach((name) => {
         const p = loadPlayer(name, { itemDb, roomDb, playerDb });
         if (p) {
-          console.log(`[DB] Loaded player '${p.name}' '${p.id}'`);
+          log(`Loaded player '${p.name}' '${p.id}'`);
           db.add(p);
         } else {
-          console.warn(`[DB] Failed to load player '${name}'`);
+          warn(`Failed to load player '${name}'`);
         }
       });
 
-    console.log(`[DB] Loaded ${db.size()} players.`);
-
-    console.log('[DB] Ensuring an admin exists...');
+    log(`Loaded ${db.size()} players.`);
+    log('Ensuring an admin exists...');
     ensureAdminPlayer();
 
     return true;
@@ -103,14 +106,12 @@ function createPlayerDatabase() {
         }
       });
 
-      // Restore room as object if available
       const roomId = typeof data.room === 'number' ? data.room : 1;
       player.room = roomDb.findById(roomId) || roomId;
 
-      player.recalculateStats();
       return player;
     } catch (err) {
-      console.error(`[DB] Failed to load player '${name}': ${err.message}`);
+      error(`Failed to load player '${name}': ${err.message}`);
       return null;
     }
   };
@@ -118,7 +119,7 @@ function createPlayerDatabase() {
   const savePlayer = (player) => {
     const file = path.join(PLAYER_DIR, `${player.name}.json`);
     jsonfile.writeFileSync(file, player.toJSON(), { spaces: 2 });
-    console.log(`[DB] Saved player '${player.name}' to ${file}`);
+    log(`Saved player '${player.name}' to ${file}`);
   };
 
   const addPlayer = (player) => {
@@ -136,6 +137,7 @@ function createPlayerDatabase() {
 
     if (fs.existsSync(file)) {
       fs.unlinkSync(file);
+      log(`Deleted player file: ${file}`);
     }
     return true;
   };
@@ -151,13 +153,9 @@ function createPlayerDatabase() {
     return true;
   };
 
-  const findActive = (name) => {
-    return findByNameWithFilter(name, (p) => p.active);
-  };
+  const findActive = (name) => findByNameWithFilter(name, (p) => p.active);
 
-  const findLoggedIn = (name) => {
-    return findByNameWithFilter(name, (p) => p.loggedIn);
-  };
+  const findLoggedIn = (name) => findByNameWithFilter(name, (p) => p.loggedIn);
 
   const findByNameWithFilter = (name, fn) => {
     return db.findByNameFull(name, fn) || db.findByNamePartial(name, fn);

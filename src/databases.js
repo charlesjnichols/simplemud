@@ -1,5 +1,9 @@
 'use strict';
 
+const debug = require('debug');
+const log = debug('db:load');
+const error = debug('db:error');
+
 const createItemDatabase = require('./item/database');
 const createPlayerDatabase = require('./player/database');
 const createRoomDatabase = require('./room/database');
@@ -19,17 +23,32 @@ const enemyDb = createEnemyDatabase();
  */
 const loadDatabases = () => {
   try {
-    console.log('[DB] Loading databases...');
+    log('Loading databases...');
+
+    log('Loading itemDb...');
     itemDb.load();
+
+    log('Loading enemyTpDb...');
     enemyTpDb.load();
+
+    log('Loading enemyDb...');
     enemyDb.load();
+
+    log('Loading storeDb...');
     storeDb.load({ itemDb });
+
+    log('Loading roomDb templates...');
     roomDb.loadTemplates({ storeDb });
+
+    log('Loading roomDb data...');
     roomDb.loadData({ itemDb });
+
+    log('Loading playerDb...');
     playerDb.load({ itemDb, roomDb, playerDb });
-    console.log('[DB] All databases loaded successfully.');
+
+    log('All databases loaded successfully.');
   } catch (err) {
-    console.error(`[DB] Error loading databases: ${err.message}`);
+    error(`Error loading databases: ${err.message}\n${err.stack}`);
     process.exit(1);
   }
 };
@@ -39,13 +58,13 @@ const loadDatabases = () => {
  */
 const saveDatabases = () => {
   try {
-    console.log('[DB] Saving databases...');
+    log('Saving databases...');
     playerDb.save();
     roomDb.saveData();
     enemyDb.save();
-    console.log('[DB] All databases saved successfully.');
+    log('All databases saved successfully.');
   } catch (err) {
-    console.error(`[DB] Error saving databases: ${err.message}`);
+    error(`Error saving databases: ${err.message}\n${err.stack}`);
   }
 };
 
