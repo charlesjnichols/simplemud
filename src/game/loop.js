@@ -13,7 +13,7 @@ const { performAutoAttack } = require('../combat/auto-attack');
 // Millisecond-based constants
 const DBSAVETIME = 15 * 60 * 1000; // 15 minutes
 const ROUNDTIME = 1000; // 1 second
-const REGENTIME = 10 * 1000; // 1 minutes
+const REGENTIME = 60 * 1000; // 1 minutes
 
 const file = path.join(__dirname, '..', 'data', 'gamedata.json');
 
@@ -93,16 +93,16 @@ class GameLoop {
 
   performRound() {
     const now = this.getElapsedMs();
-    for (const enemy of this.databases.enemyDb.values()) {
-      if (now >= enemy.nextAttackTime && enemy.room.players.length > 0) {
-        debug(`Enemy '${enemy.name}' is attacking in room '${enemy.room.name}'`);
-        performAutoAttack(enemy, enemy.room.players[0], now, this.databases);
-      }
-    }
     for (const player of this.databases.playerDb.values()) {
       if (now >= player.nextAttackTime && player.room.enemies.length > 0) {
         debug(`Player '${player.name}' is attacking in room '${player.room.name}'`);
         performAutoAttack(player, player.room.enemies[0], now, this.databases);
+      }
+    }
+    for (const enemy of this.databases.enemyDb.values()) {
+      if (now >= enemy.nextAttackTime && enemy.room.players.length > 0) {
+        debug(`Enemy '${enemy.name}' is attacking in room '${enemy.room.name}'`);
+        performAutoAttack(enemy, enemy.room.players[0], now, this.databases);
       }
     }
   }

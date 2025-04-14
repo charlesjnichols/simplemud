@@ -24,7 +24,7 @@ const createRoomMessages = (room) => {
 
   const getExits = () =>
     Object.keys(Direction)
-      .filter((dir) => room.rooms[Direction[dir]] !== 0)
+      .filter((dir) => room.rooms[dir] !== 0)
       .join('  ');
 
   const getRoomItems = () => {
