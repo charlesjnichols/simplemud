@@ -1,14 +1,8 @@
 'use strict';
-
-const { Attribute, ItemType } = require('../attributes');
+const _ = require('lodash');
 
 function createItem(data = {}) {
-  const type = ItemType.get(data.TYPE) || ItemType.get('WEAPON');
-
-  const attributes = _.mapValues(Attribute, (key) => {
-    const val = parseInt(data[key]);
-    return isNaN(val) ? 0 : val;
-  });
+  const type = data.TYPE;
 
   const item = {
     id: data.ID,
@@ -18,7 +12,6 @@ function createItem(data = {}) {
     max: parseInt(data.MAX) || 0,
     speed: parseInt(data.SPEED) || 0,
     price: parseInt(data.PRICE) || 0,
-    attributes,
   };
 
   return item;

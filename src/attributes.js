@@ -1,11 +1,5 @@
 'use strict';
 
-const Attribute = {
-  STRENGTH: 'STRENGTH',
-  DEXTERITY: 'DEXTERITY',
-  INTELLIGENCE: 'INTELLIGENCE',
-};
-
 const ItemType = {
   WEAPON: 'WEAPON',
   ARMOR: 'ARMOR',
@@ -30,7 +24,6 @@ const Direction = {
 };
 
 module.exports = {
-  Attribute,
   ItemType,
   PlayerRank,
   RoomType,

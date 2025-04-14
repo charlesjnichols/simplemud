@@ -5,7 +5,7 @@
   "rank": "ADMIN",
   "level": 1,
   "experience": 0,
-  "hitPoints": 1,
+  "hitPoints": 100,
   "maxHp": 100,
   "nextAttackTime": 0,
   "room": 1,

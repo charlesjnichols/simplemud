@@ -1,4 +1,4 @@
-const { Attribute, PlayerRank, RoomType } = require('../attributes');
+const { PlayerRank, RoomType } = require('../attributes');
 const { encryptPassword, isEncrypted } = require('../utils/password-vault');
 const { createController } = require('./controller');
 
@@ -19,10 +19,15 @@ function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
   player.room = data.room || 1;
   player.weapon = data.weapon ?? -1;
   player.armor = data.armor ?? -1;
-  player.hitPoints = data.hitPoints || 1;
+  player.hitPoints = data.hitPoints || 100;
   player.maxHp = data.maxHp || 100;
   player.nextAttackTime = data.nextAttackTime || 0;
   player.inventory = [];
+  player.attributes = {
+    STRENGTH: 1,
+    DEXTERITY: 1,
+    INTELLIGENCE: 1,
+  };
 
   if (roomDb) {
     player.room = roomDb.findById(player.room);
@@ -88,31 +93,6 @@ function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
   player.removeArmor = () => {
     player.armor = -1;
     player.recalculateStats();
-  };
-
-  player.setBaseAttr = (attr, val) => {
-    player.baseAttributes[attr] = val;
-    player.recalculateStats();
-  };
-
-  player.addToBaseAttr = (attr, val) => {
-    player.baseAttributes[attr] += val;
-    player.recalculateStats();
-  };
-
-  player.addBonuses = (item) => {
-    if (!item) return;
-    Attribute.enums.forEach((attr) => {
-      player.baseAttributes[attr.value] += item.attributes[attr.value] || 0;
-    });
-    player.recalculateStats();
-  };
-
-  player.addDynamicBonuses = (item) => {
-    if (!item) return;
-    Attribute.enums.forEach((attr) => {
-      player.attributes[attr.value] += item.attributes[attr.value] || 0;
-    });
   };
 
   player.setHitPoints = (hp) => {

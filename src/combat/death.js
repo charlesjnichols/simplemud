@@ -1,4 +1,3 @@
-const { Attribute } = require('../attributes');
 const { sendRoom } = require('../game/broadcast');
 const { redBold, whiteBold, cyanBold, cyan } = require('../utils/formatting');
 const { randomInt } = require('../utils/math');

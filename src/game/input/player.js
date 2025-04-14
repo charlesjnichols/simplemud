@@ -1,5 +1,5 @@
 const { PlayerRank } = require('../../attributes');
-const dispatchCommand = require('./dispatcher');
+const dispatchCommand = require('../../commands/dispatcher');
 
 const createInput = (databases) => (player, input) => {
   const [verb, ...args] = input.trim().split(/\s+/);
