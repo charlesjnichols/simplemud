@@ -1,4 +1,4 @@
-const { PlayerRank } = require('../../attributes');
+const { PlayerRank } = require('../../enums');
 const dispatchCommand = require('../../commands/dispatcher');
 
 const createInput = (databases) => (player, input) => {

@@ -5,7 +5,7 @@ const debug = require('debug');
 const log = debug('db:room:entity');
 const error = debug('db:room:entity:error');
 
-const { RoomType, Direction } = require('../attributes');
+const { RoomType, Direction } = require('../enums');
 const { createRoomMessages } = require('./messages');
 
 function createRoom(data = {}) {

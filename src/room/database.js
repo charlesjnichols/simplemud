@@ -9,7 +9,7 @@ const path = require('path');
 const jsonfile = require('jsonfile');
 const createRoom = require('./room');
 const createEntityDatabase = require('../entity/database');
-const { RoomType } = require('../attributes');
+const { RoomType } = require('../enums');
 
 const fileMap = path.join(process.cwd(), 'data', 'map.json');
 const fileMapData = path.join(process.cwd(), 'data', 'mapdata.json');

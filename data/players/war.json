@@ -4,12 +4,17 @@
   "password": "ENC:aeHishaVQS6Jo5ppcNrWtAKjCEGHieU/CgNt7T8hywpOEFHxNa3O/rCoItb4BlxAYxOYiL623aAWRODGglQ4L1E4sGtw9xPLmv+lsbMrFm7hnVf0V4gXU6CyaV1G5uLZ2G+lMhj6NLYNF9+zapukmLE6r6xwkNh3/7CZnahiTAJd97ZY5Jv7/o09A9nRQ65stiwDgKHA+qXez2HogJtJrndhycbT0ppVDFpNhnNQAPIP6NH22Ox5xhw5wvybRhYqzJmO1nh5kN80gfHzGfjtSdPAiYilRLDYpnxFMEKkKJCmTtqnHiRe+58dk3OzfrvmIkZXeaXqNbIT+gvLhxHIAw==",
   "rank": "REGULAR",
   "level": 1,
-  "experience": 0,
-  "hitPoints": 100,
+  "experience": 9,
+  "hitPoints": 92,
   "maxHp": 100,
-  "nextAttackTime": 0,
-  "room": 1,
+  "nextAttackTime": 33033.032474,
+  "room": 12,
   "weapon": -1,
   "armor": -1,
+  "attributes": {
+    "STRENGTH": 1,
+    "DEXTERITY": 1,
+    "INTELLIGENCE": 1
+  },
   "inventory": []
 }

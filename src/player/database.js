@@ -16,7 +16,7 @@ const { v4: uuidv4 } = require('uuid');
 const createEntityDatabase = require('../entity/database');
 const createPlayer = require('./player');
 
-const { PlayerRank } = require('../attributes');
+const { PlayerRank } = require('../enums');
 const { encryptPassword } = require('../utils/password-vault');
 
 const PLAYER_DIR = path.resolve(process.cwd(), 'data/players');

@@ -14,7 +14,6 @@ const { performAutoAttack } = require('../combat/auto-attack');
 const DBSAVETIME = 15 * 60 * 1000; // 15 minutes
 const ROUNDTIME = 1000; // 1 second
 const REGENTIME = 10 * 1000; // 1 minutes
-const HEALTIME = 60 * 1000; // 1 minutes
 
 const file = path.join(__dirname, '..', 'data', 'gamedata.json');
 
@@ -31,7 +30,6 @@ class GameLoop {
     this.saveDbTime = DBSAVETIME;
     this.nextRound = ROUNDTIME;
     this.nextRegen = REGENTIME;
-    this.nextHeal = HEALTIME;
   }
 
   load() {
@@ -45,14 +43,12 @@ class GameLoop {
       this.saveDbTime = parseInt(dataObject['SAVEDATABASES']);
       this.nextRound = parseInt(dataObject['NEXTROUND']);
       this.nextRegen = parseInt(dataObject['NEXTREGEN']);
-      this.nextHeal = parseInt(dataObject['NEXTHEAL']);
       debug('Loaded game state from disk.');
     } else {
       this.getElapsedMs = createTimeTracker();
       this.saveDbTime = DBSAVETIME;
       this.nextRound = ROUNDTIME;
       this.nextRegen = REGENTIME;
-      this.nextHeal = HEALTIME;
       debug('Initialized new game state.');
     }
   }
@@ -63,7 +59,6 @@ class GameLoop {
       SAVEDATABASES: this.saveDbTime,
       NEXTROUND: this.nextRound,
       NEXTREGEN: this.nextRegen,
-      NEXTHEAL: this.nextHeal,
     };
     jsonfile.writeFileSync(file, dataObject, { spaces: 2 });
     debug(`Game state saved to ${file}`);
@@ -88,11 +83,6 @@ class GameLoop {
       // debug('Enemy regen triggered');
       this.performRegen();
       this.nextRegen += REGENTIME;
-    }
-    if (now >= this.nextHeal) {
-      // debug('Player healing triggered');
-      this.performHeal();
-      this.nextHeal += HEALTIME;
     }
     if (now >= this.saveDbTime) {
       // debug('Saving databases');
@@ -124,18 +114,6 @@ class GameLoop {
         const enemy = this.databases.enemyDb.create(template, room, this.databases);
         sendRoom(room, `${redBold(enemy.name)} enters the room!`);
         debug(`Spawned enemy '${enemy.name}' in room '${room.name}' ${room.id}`);
-      }
-    }
-  }
-
-  performHeal() {
-    for (const player of this.databases.playerDb.values()) {
-      if (player.active) {
-        const before = player.hitPoints;
-        player.addHitPoints(player.GetAttr(Attribute.get('HPREGEN')));
-        const after = player.hitPoints;
-        player.printStatbar();
-        debug(`Healed player '${player.name}' from ${before} to ${after}`);
       }
     }
   }

@@ -1,5 +1,5 @@
 const { whiteBold, magentaBold, greenBold, yellowBold, cyanBold, redBold } = require('../utils/formatting');
-const { Direction } = require('../attributes');
+const { Direction } = require('../enums');
 
 const createRoomMessages = (room) => {
   const printRoom = () => {

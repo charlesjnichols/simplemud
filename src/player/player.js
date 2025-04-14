@@ -1,8 +1,9 @@
-const { PlayerRank, RoomType } = require('../attributes');
+const { PlayerRank, RoomType } = require('../enums');
 const { encryptPassword, isEncrypted } = require('../utils/password-vault');
 const { createController } = require('./controller');
 
 const PLAYERITEMS = 16;
+const STATBAR_INTERVAL_MS = 5000; // 10 seconds
 
 function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
   const player = {};
@@ -20,6 +21,8 @@ function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
   player.weapon = data.weapon ?? -1;
   player.armor = data.armor ?? -1;
   player.hitPoints = data.hitPoints || 100;
+  player.lastSentHp = 0;
+  player.lastStatbarTime = 0;
   player.maxHp = data.maxHp || 100;
   player.nextAttackTime = data.nextAttackTime || 0;
   player.inventory = [];
@@ -133,6 +136,8 @@ function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
   player.isInStore = () => player.room.type === RoomType.STORE;
 
   player.send = (message) => {
+    const now = Date.now();
+
     if (!player.connection || player.connection === 0) {
       console.error(`Trying to send string to player ${player.name} but player is not connected.`);
       return;
@@ -140,8 +145,15 @@ function createPlayer(data = {}, { roomDb = null, playerDb = null } = {}) {
 
     player.connection.sendMessage(message + '\n');
 
-    if (player.active && typeof player.printStatbar === 'function') {
-      player.printStatbar();
+    if (player.active && typeof player.printStatbar) {
+      const hpChanged = player.lastHP == null || player.hitPoints !== player.lastHP;
+      const timeElapsed = player.lastStatbarTime == null || now - player.lastStatbarTime >= STATBAR_INTERVAL_MS;
+
+      if (hpChanged || timeElapsed) {
+        player.lastHP = player.hitPoints;
+        player.lastStatbarTime = now;
+        player.printStatbar();
+      }
     }
   };
 
