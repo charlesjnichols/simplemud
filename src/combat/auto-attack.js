@@ -10,8 +10,6 @@ const performAutoAttack = (attacker, target, timeNow, databases) => {
   const result = resolveAttack(attacker, target, databases);
   sendCombatMessage(attacker, target, result);
   attacker.nextAttackTime = timeNow + attackSpeed;
-
-  console.log(attacker.nextAttackTime);
 };
 
 module.exports = {

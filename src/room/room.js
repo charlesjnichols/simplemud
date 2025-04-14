@@ -38,34 +38,34 @@ function createRoom(data = {}) {
     addPlayer: (player) => {
       if (room.players.length >= 32) room.players.shift();
       room.players.push(player);
-      log(`Player added to room '${room.name}': ${player.name}`);
+      log(`Player '${player.name}' added to room '${room.name}': ${player.name}`);
     },
 
     removePlayer: (player) => {
       room.players = room.players.filter((p) => p !== player);
-      log(`Player removed from room '${room.name}': ${player.name}`);
+      log(`Player '${player.name}' removed from room '${room.name}': ${player.name}`);
     },
 
     addItem: (item) => {
       if (room.items.length >= 32) room.items.shift();
       room.items.push(item);
-      log(`Item added to room '${room.name}': ${item.name}`);
+      log(`Item '${item.name}' added to room '${room.name}': ${item.name}`);
     },
 
     removeItem: (item) => {
       room.items = room.items.filter((i) => i !== item);
-      log(`Item removed from room '${room.name}': ${item.name}`);
+      log(`Item '${item.name}' removed from room '${room.name}': ${item.name}`);
     },
 
     addEnemy: (enemy) => {
       room.enemies.push(enemy);
       enemy.room = room;
-      log(`Enemy added to room '${room.name}': ${enemy.name}`);
+      log(`Enemy '${enemy.name}' added to room '${room.name}': ${enemy.name}`);
     },
 
     removeEnemy: (enemy) => {
       room.enemies = room.enemies.filter((e) => e !== enemy);
-      log(`Enemy removed from room '${room.name}': ${enemy.name}`);
+      log(`Enemy '${enemy.name}' removed from room '${room.name}': ${enemy.name}`);
     },
 
     loadTemplate: (dataObject) => {
