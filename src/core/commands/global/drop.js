@@ -1,0 +1,40 @@
+const _ = require('lodash');
+const Fuse = require('fuse.js');
+
+const { redBold, cyanBold } = require('../../../utils/formatting');
+const { send_to_room } = require('../../functions/world');
+const { send, dropItem } = require('../../functions/player');
+const { add_item } = require('../../functions/room');
+
+module.exports = (player, args) => {
+  const { roomRepository } = require('../../datastores').get();
+  if (!player.inventory) {
+    send(player, redBold("You don't have that!"));
+  }
+
+  // @ts-ignore
+  const fuse = new Fuse(player.inventory, {
+    keys: ['name'],
+    threshold: 0.4,
+  });
+
+  const matches = fuse.search(args.join(' '));
+  if (matches.length === 0) {
+    send(player, redBold("You don't see that here!!"));
+    return;
+  }
+
+  if (matches.length > 1) {
+    const options = matches.map((m, i) => `  ${i + 1}. ${m.item.name}`).join('\n');
+    send(player, redBold('Multiple matches found:\n') + options + '\nPlease be more specific.');
+    return;
+  }
+
+  const item = _.first(matches).item;
+  const room = roomRepository.get(player.room);
+
+  add_item(room, item);
+  dropItem(player, item);
+
+  send_to_room(player, cyanBold(`${player.name} drops ${item.name}.`));
+};

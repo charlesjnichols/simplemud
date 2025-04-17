@@ -1,0 +1,29 @@
+{
+  "id": "8c7a9ce3-ca6a-460f-a9c0-7fdb8bbe030d",
+  "name": "mage",
+  "password": "ENC:JwrmmfBxNkXJ5IciNnvES9sOdw/zFw0v3FAzO4+IiCtn59bgx09zXZ4hwmRqu4x5aDYHCzjfngxUzK9Q+DWPXCma7HkdAeNLLPwkv4T3tkg41zfPMKnuca8AOjOFaBpcXwraPtni9nFcEWOGXEyLvG0UqUP4NSEilKw86RD15sEyZ0gOD+F0eV7gBgc/A/Mj9BcBosMtJOt9nzEGInzrHF4lMah7lWZYyzmYlNx2tabmD1pifkMCCLbq7vngssB4KywpIL8wtG8VMA6CRF1k88nXV95/vA+sFgoITmH7jFnQNLSeDNQaeSo+1+hUoqrWoyY7gtPp1ysVG2GWC2oakg==",
+  "rank": "REGULAR",
+  "experience": 0,
+  "level": 1,
+  "class": "mage",
+  "room": "4",
+  "weapon": null,
+  "armor": {
+    "id": "8",
+    "name": "Tattered Robes",
+    "type": "ARMOR",
+    "min": 0,
+    "max": 0,
+    "speed": 0,
+    "price": 2
+  },
+  "hp": 100,
+  "maxHp": 100,
+  "money": 10000,
+  "inventory": [],
+  "attributes": {
+    "STRENGTH": 1,
+    "DEXTERITY": 1,
+    "INTELLIGENCE": 1
+  }
+}

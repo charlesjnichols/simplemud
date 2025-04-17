@@ -49,16 +49,6 @@ const purpleBold = (txt) => tagBold('purple', txt);
 
 const teal = (txt) => tag('teal', txt);
 const tealBold = (txt) => tagBold('teal', txt);
-
-const brightRed = (txt) => tag('brightRed', txt);
-const brightRedBold = (txt) => tagBold('brightRed', txt);
-
-const brightGreen = (txt) => tag('brightGreen', txt);
-const brightGreenBold = (txt) => tagBold('brightGreen', txt);
-
-const brightYellow = (txt) => tag('brightYellow', txt);
-const brightYellowBold = (txt) => tagBold('brightYellow', txt);
-
 const divider = (char = '-', width = 80) => char.repeat(width);
 
 const printTwoCol = (label, value, width = 40) => {
@@ -101,12 +91,6 @@ module.exports = {
   orange,
   purple,
   teal,
-  brightRed,
-  brightRedBold,
-  brightGreen,
-  brightGreenBold,
-  brightYellow,
-  brightYellowBold,
   whiteBold,
   yellowBold,
   cyanBold,

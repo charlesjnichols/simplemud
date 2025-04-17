@@ -1,0 +1,36 @@
+'use strict';
+
+const _ = require('lodash');
+const store_model = require('../../models/store');
+
+/**
+ * @typedef {import('../../models/store').Store} Store
+ */
+
+/**
+ * Creates a new store instance by deep-cloning the base store model
+ * and applying the provided data overrides. Also initializes runtime-only
+ * fields such as `inventory`, `last_refreshed`, and `refresh_interval`.
+ *
+ * @param {Partial<Store>} [data={}] - Optional overrides to apply to the base store model.
+ * @returns {Store & {
+ *   inventory: number[],
+ *   last_refreshed: number,
+ *   refresh_interval: number
+ * }} A fully initialized store instance sealed against extension.
+ */
+function create_store(data = {}) {
+  const store = _.cloneDeep(store_model);
+
+  // Populate with values or defaults
+  Object.assign(store, data);
+
+  store.inventory = [];
+  store.last_refreshed = -1;
+  store.refresh_interval = 10 * 60 * 1000; // 10 minutes
+
+  // @ts-ignore
+  return Object.seal(store);
+}
+
+module.exports = { create_store };

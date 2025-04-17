@@ -1,0 +1,33 @@
+'use strict';
+
+const _ = require('lodash');
+const room_model = require('../../models/room');
+
+/**
+ * @typedef {import('../../models/room').Room} Room
+ */
+
+/**
+ * Creates a new room instance by cloning the base room model and applying overrides.
+ * Ensures default runtime fields are present and seals the object to prevent additional properties.
+ *
+ * @param {Partial<Room>} [data={}] - Optional override data for the room (e.g. name, description, connections).
+ * @returns {Room} Fully initialized and sealed room object with attached behavior methods.
+ */
+function create_room(data = {}) {
+  const room = _.cloneDeep(room_model);
+  Object.assign(room, data);
+
+  // Ensure required structural defaults
+  room.items = room.items || [];
+  room.enemies = room.enemies || [];
+  room.lastSpawnedAt = room.lastSpawnedAt || 0;
+
+  // TypeScript may not recognize attached runtime fields, so we suppress errors here.
+  // @ts-ignore
+  return Object.seal(room);
+}
+
+module.exports = {
+  create_room,
+};

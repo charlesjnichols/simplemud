@@ -1,0 +1,46 @@
+const _ = require('lodash');
+const Fuse = require('fuse.js');
+
+const { send, useWeapon, useArmor } = require('../../functions/player');
+const { redBold } = require('../../../utils/formatting');
+const { ItemType } = require('../../../utils/enums');
+
+module.exports = (player, args) => {
+  const { playerRepository } = require('../../datastores').get();
+
+  if (!player.inventory) {
+    send(player, redBold('You have nothing to equip!'));
+  }
+
+  // @ts-ignore
+  const fuse = new Fuse(player.inventory, {
+    keys: ['name'],
+    threshold: 0.4,
+  });
+
+  const matches = fuse.search(args.join(' '));
+  if (matches.length === 0) {
+    send(player, redBold("You don't see that here!!"));
+    return;
+  }
+
+  if (matches.length > 1) {
+    const options = matches.map((m, i) => `  ${i + 1}. ${m.item.name}`).join('\n');
+    send(player, redBold('Multiple matches found:\n') + options + '\nPlease be more specific.');
+    return;
+  }
+
+  const item = _.first(matches).item;
+
+  if (item.type === ItemType.ARMOR) {
+    useArmor(player, item);
+  } else if (item.type === ItemType.WEAPON) {
+    useWeapon(player, item);
+  } else {
+    send(player, redBold(`${item.name} isn't a weapon or armor`));
+    return;
+  }
+
+  send(player, `You equip ${item.name}`);
+  playerRepository.save(player.id);
+};

@@ -1,20 +1,30 @@
 {
-  "id": "101641c3-19ae-4641-909c-e9972285debe",
+  "id": "2150bf78-3a52-43d3-b38f-5e9eca024160",
   "name": "war",
-  "password": "ENC:aeHishaVQS6Jo5ppcNrWtAKjCEGHieU/CgNt7T8hywpOEFHxNa3O/rCoItb4BlxAYxOYiL623aAWRODGglQ4L1E4sGtw9xPLmv+lsbMrFm7hnVf0V4gXU6CyaV1G5uLZ2G+lMhj6NLYNF9+zapukmLE6r6xwkNh3/7CZnahiTAJd97ZY5Jv7/o09A9nRQ65stiwDgKHA+qXez2HogJtJrndhycbT0ppVDFpNhnNQAPIP6NH22Ox5xhw5wvybRhYqzJmO1nh5kN80gfHzGfjtSdPAiYilRLDYpnxFMEKkKJCmTtqnHiRe+58dk3OzfrvmIkZXeaXqNbIT+gvLhxHIAw==",
+  "password": "ENC:ikSf4MvvUFWeH/OENzrFVDXHp/7/h90m7y8nnAD2rwgrHKtPJJTHq16Ne45iHxaXzkz3uVBummfodT3N4BykuDBRtBvqknPV1nAGtXD05faU7qmwn1AHN2grwz6nR90fSmjxMOyjaXtJy7DKKUrRLeq+qWwlrZqW+rqSexTChD3rrMG+kFf2U6KkPU1xbqSCYz82gsvK8y0HDBC1BgwJnTJXxRLJRrReYV3nVHnVw3bSl8GVdRVm54vRqQo/oQkxPzyfvooeFRmBTtebgcw3JbdeZGNjtSVzSOm9TwUqCSgSM2BkeDDR0rCcGs9Pmz/aFpiYirBa1BvqbmoqOqtftQ==",
   "rank": "REGULAR",
+  "experience": 0,
   "level": 1,
-  "experience": 9,
-  "hitPoints": 92,
+  "class": null,
+  "type": "PLAYER",
+  "room": "4",
+  "weapon": null,
+  "armor": {
+    "id": "7",
+    "name": "Leather Armor",
+    "type": "ARMOR",
+    "min": 0,
+    "max": 0,
+    "speed": 0,
+    "price": 40
+  },
+  "hp": 100,
   "maxHp": 100,
-  "nextAttackTime": 33033.032474,
-  "room": 12,
-  "weapon": -1,
-  "armor": -1,
+  "money": 10000,
+  "inventory": [],
   "attributes": {
     "STRENGTH": 1,
     "DEXTERITY": 1,
     "INTELLIGENCE": 1
-  },
-  "inventory": []
+  }
 }

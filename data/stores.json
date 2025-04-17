@@ -1,27 +1,20 @@
 [
   {
-    "ID": 1,
-    "NAME": "Bobs Weapon Shop",
-    "ITEMS": "40 41 42 43 44 58 59 60 61 62 63 64 65 66 67 68"
+    "id": "1",
+    "name": "Bobs Weapon Shop",
+    "itemsToOffer": 2,
+    "items": ["1", "2", "3", "4", "5"]
   },
   {
-    "ID": 2,
-    "NAME": "Samuels Armorsmith",
-    "ITEMS": "57 45 46 47 48 49 50 51 52 53 54 55 56"
+    "id": "2",
+    "name": "Samuels Armorsmith",
+    "itemsToOffer": 2,
+    "items": ["6", "7", "8"]
   },
   {
-    "ID": 3,
-    "NAME": "The Insane Alchemist's Workshop",
-    "ITEMS": "35 36 37 38 39"
-  },
-  {
-    "ID": 4,
-    "NAME": "The Little Shop of Freaky Stuff",
-    "ITEMS": "1 0"
-  },
-  {
-    "ID": 5,
-    "NAME": "Sea Shanty",
-    "ITEMS": "69 70 71 72"
+    "id": "3",
+    "name": "The Insane Alchemist's Workshop",
+    "itemsToOffer": 8,
+    "items": ["1", "2", "3", "4", "5", "6", "7", "8"]
   }
 ]

@@ -1,0 +1,20 @@
+'use strict';
+
+const debugAdd = require('debug')('mud:core:functions:room:add_item');
+const debugRemove = require('debug')('mud:core:functions:room:remove_item');
+
+const add_item = (room, item) => {
+  if (room.items.length >= 32) room.items.shift();
+  room.items.push(item);
+  debugAdd(`Item '${item.name}' added to room '${room.name}': ${item.name}`);
+};
+
+const remove_item = (room, item) => {
+  room.items = room.items.filter((i) => i !== item);
+  debugRemove(`Item '${item.name}' removed from room '${room.name}': ${item.name}`);
+};
+
+module.exports = {
+  add_item,
+  remove_item,
+};

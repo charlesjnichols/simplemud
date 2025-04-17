@@ -1,0 +1,18 @@
+const directions = [
+  { keys: ['n', 'north'], file: './movement/north.js' },
+  { keys: ['s', 'south'], file: './movement/south.js' },
+  { keys: ['e', 'east'], file: './movement/east.js' },
+  { keys: ['w', 'west'], file: './movement/west.js' },
+];
+
+const directionMap = directions.reduce((acc, { keys, file }) => {
+  keys.forEach((k) => {
+    acc[k] = file;
+  });
+  return acc;
+}, {});
+
+module.exports = {
+  is_direction: (verb) => Object.prototype.hasOwnProperty.call(directionMap, verb),
+  get_command_function: (verb) => directionMap[verb],
+};

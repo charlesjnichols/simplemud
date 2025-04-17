@@ -10,7 +10,7 @@
     "strict": false,
     "skipLibCheck": true,
     "downlevelIteration": true,
-    "noEmit": true,
+    "noEmit": true
   },
   "include": ["src/**/*"]
 }

@@ -15,5 +15,5 @@
   "js/ts.implicitProjectConfig.checkJs": true,
   "eslint.enable": true,
   "eslint.validate": ["javascript"],
-  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.workingDirectories": [{ "mode": "auto" }]
 }

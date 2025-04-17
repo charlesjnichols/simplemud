@@ -1,0 +1,28 @@
+const { roomRepository, storeRepository } = require('../../datastores').get();
+const { send } = require('../../functions/player');
+const { whiteBold, center, padRight, padLeft, white, greenBold, cyanBold, grey } = require('../../../utils/formatting');
+
+module.exports = (player) => {
+  const room = roomRepository.get(player.room);
+  const store = storeRepository.get(room.store);
+
+  const divider = grey('-'.repeat(80));
+  const columnWidthName = 20;
+  const columnWidthPrice = 20;
+
+  const headerLines = [
+    divider,
+    center(whiteBold(`Welcome to ${store.name}!`), 80),
+    divider,
+    padRight(cyanBold('Item'), columnWidthName) + grey(' | ') + padLeft(cyanBold('Price'), columnWidthPrice),
+    divider,
+  ];
+
+  const itemLines = store.inventory.map((item) => {
+    const name = white(padRight(item.name, columnWidthName));
+    const price = greenBold(padLeft(`$${item.price}`, columnWidthPrice));
+    return ` ${name} ${grey('|')} ${price}`;
+  });
+
+  send(player, whiteBold([...headerLines, ...itemLines, divider].join('\r\n')));
+};
