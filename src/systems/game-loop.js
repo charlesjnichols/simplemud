@@ -1,0 +1,20 @@
+'use strict';
+
+const TICK_INTERVAL = 1000;
+
+const create_game_loop = () => {
+  function start() {
+    setInterval(() => {
+      const { eventBus } = require('../events/event-bus').get();
+
+      eventBus.emit('tick', { now: Date.now() });
+    }, TICK_INTERVAL);
+  }
+  return {
+    start,
+  };
+};
+
+module.exports = {
+  create_game_loop,
+};

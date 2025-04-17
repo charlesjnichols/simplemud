@@ -1,0 +1,36 @@
+'use strict';
+
+const net = require('net');
+const Telnet = require('./utils/telnet');
+
+const log = require('debug')('mud:app');
+const connect = require('debug')('mud:app:connect');
+const error = require('debug')('mud:app:error');
+
+require('./repository/repositories').load();
+require('./events/event-bus').init();
+
+const { create_game_loop } = require('./systems/game-loop');
+const { create_connection_manager } = require('./connections/connection-manager');
+
+const PORT = parseInt(process.argv[2]) || 3000;
+const HOST = process.argv[3] || '0.0.0.0';
+
+const gameLoop = create_game_loop();
+const connectionManager = create_connection_manager();
+
+gameLoop.start();
+
+const server = net.createServer((socket) => {
+  connect(`New connection from ${socket.remoteAddress}:${socket.remotePort}`);
+  connectionManager.newConnection(socket, Telnet);
+});
+
+server.on('error', (err) => {
+  error(`Server error: ${err.message}`);
+  process.exit(1);
+});
+
+server.listen(PORT, HOST, () => {
+  log(`SimpleMUD server listening on ${HOST}:${PORT}`);
+});

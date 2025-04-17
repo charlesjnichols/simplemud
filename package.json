@@ -5,7 +5,7 @@
   "main": "./src/server.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "start": "DEBUG=* nodemon ./src/server.js --legacy-watch  --watch ./src --polling-interval 2000",
+    "start": "DEBUG=* nodemon ./src/app.js --legacy-watch  --watch ./src --polling-interval 2000",
     "lint": "eslint .",
     "format": "eslint . --fix"
   },
