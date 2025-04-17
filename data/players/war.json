@@ -7,7 +7,7 @@
   "level": 1,
   "class": null,
   "type": "PLAYER",
-  "room": "4",
+  "room": "2",
   "weapon": null,
   "armor": {
     "id": "7",
@@ -18,8 +18,8 @@
     "speed": 0,
     "price": 40
   },
-  "hp": 100,
-  "maxHp": 100,
+  "hp": 150,
+  "maxHp": 150,
   "money": 10000,
   "inventory": [],
   "attributes": {

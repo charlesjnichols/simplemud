@@ -5,8 +5,8 @@
  *
  * Handles automatic store refresh behavior on tick events.
  *
- * @typedef {import('../../../models/store').Store} Store
- * @typedef {import('../../../models/item').Item} Item
+ * @typedef {import('../models/store').Store} Store
+ * @typedef {import('../models/item').Item} Item
  * @typedef {Object} TickEvent
  * @property {number} now - The current timestamp in milliseconds
  */
@@ -14,10 +14,10 @@
 const _ = require('lodash');
 const debug = require('debug')('mud:store-events');
 
-const { create_item } = require('../../functions/item/create-item');
-const { pickUpItem } = require('../../functions/player');
-const { send_to_room } = require('../../functions/world');
-const { cyanBold } = require('../../../utils/formatting');
+const { create_item } = require('../functions/item/create-item');
+const { pickUpItem } = require('../functions/player');
+const { send_to_room } = require('../functions/world');
+const { cyanBold } = require('../../utils/formatting');
 
 /**
  * Registers store-related listeners on the global event bus.
@@ -27,8 +27,8 @@ const { cyanBold } = require('../../../utils/formatting');
  * - `store.refreshed`: When a store's inventory is updated.
  */
 const register_store_events = () => {
-  const { eventBus } = require('../../game-bus').get();
-  const { storeRepository, itemRepository } = require('../../datastores').get();
+  const { eventBus } = require('../game-bus').get();
+  const { storeRepository, itemRepository } = require('../datastores').get();
 
   eventBus.on('tick', ({ now }) => {
     for (const store of storeRepository.values()) {

@@ -1,9 +1,6 @@
 const dispatchCommand = require('./command-dispatcher');
-
 const { PlayerRank } = require('../../utils/enums');
-
 const { is_in_store } = require('../functions/room');
-
 const { roomRepository } = require('../datastores').get();
 
 const create_input = () => {

@@ -7,13 +7,13 @@
  * logging in, or leaving the world.
  */
 
-const { send } = require('../../functions/player');
+const { send } = require('../functions/player');
 
 /**
  * Registers player-related event listeners onto the global event bus.
  */
 const register_inventory_events = () => {
-  const { eventBus } = require('../../game-bus').get();
+  const { eventBus } = require('../game-bus').get();
 
   eventBus.on('player.item.picked_up', ({ player, item, source }) => {
     send(player, `You received ${item.name} from ${source}.`);

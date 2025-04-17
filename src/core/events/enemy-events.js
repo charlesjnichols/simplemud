@@ -3,20 +3,20 @@
  *
  * Spawns enemies into eligible rooms during the game tick.
  *
- * @typedef {import('../../models/room').Room} Room
- * @typedef {import('../../models/enemy').Enemy} Enemy
- * @typedef {import('../../models/player').Player} Player
+ * @typedef {import('../models/room').Room} Room
+ * @typedef {import('../models/enemy').Enemy} Enemy
+ * @typedef {import('../models/player').Player} Player
  */
 
 'use strict';
 
 const _ = require('lodash');
 
-const { redBold, cyan, cyanBold } = require('../../../utils/formatting');
-const { create_enemy } = require('../../functions/enemy/create-enemy');
-const { send_to_roomId, send_to_room } = require('../../functions/world');
-const { add_item } = require('../../functions/room');
-const { send } = require('../../functions/player');
+const { redBold, cyan, cyanBold } = require('../../utils/formatting');
+const { create_enemy } = require('../functions/enemy/create-enemy');
+const { send_to_roomId, send_to_room } = require('../functions/world');
+const { add_item } = require('../functions/room');
+const { send } = require('../functions/player');
 
 const debug = require('debug')('mud:core:bus:event:spawn-enemies-events');
 
@@ -27,8 +27,8 @@ const SPAWN_COOLDOWN = 60 * 1000;
  *
  */
 function register_enemy_events() {
-  const { enemyRepository, roomRepository, itemRepository } = require('../../datastores').get();
-  const { eventBus } = require('../../game-bus').get();
+  const { enemyRepository, roomRepository, itemRepository } = require('../datastores').get();
+  const { eventBus } = require('../game-bus').get();
 
   eventBus.on('tick', ({ now }) => {
     for (const room of roomRepository.values()) {
@@ -60,9 +60,7 @@ function register_enemy_events() {
         send_to_room(enemy.room, cyan(`${item.name} drops to the ground.`));
       }
     });
-
-    attacker.experience += enemy.experience;
-    send(attacker, cyanBold(`You gain ${enemy.experience} experience.`));
+    eventBus.emit('player.xp.gain', { player: attacker, amount: enemy.experience });
     enemyRepository.delete(enemy.id);
   });
 }

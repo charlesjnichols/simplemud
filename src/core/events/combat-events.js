@@ -3,9 +3,9 @@
  *
  * Spawns enemies into eligible rooms during the game tick.
  *
- * @typedef {import('../../models/room').Room} Room
- * @typedef {import('../../models/enemy').Enemy} Enemy
- * @typedef {import('../../models/player').Player} Player
+ * @typedef {import('../models/room').Room} Room
+ * @typedef {import('../models/enemy').Enemy} Enemy
+ * @typedef {import('../models/player').Player} Player
  */
 
 'use strict';
@@ -13,15 +13,15 @@
 const _ = require('lodash');
 const debug = require('debug')('mud:core:bus:event:spawn-enemies-events');
 
-const { perform_auto_attack } = require('../../functions/combat');
+const { perform_auto_attack } = require('../functions/combat');
 
 /**
  * Registers enemy spawn logic on tick.
  *
  */
 function register_combat_events() {
-  const { playerRepository, enemyRepository, roomRepository } = require('../../datastores').get();
-  const { eventBus } = require('../../game-bus').get();
+  const { playerRepository, enemyRepository, roomRepository } = require('../datastores').get();
+  const { eventBus } = require('../game-bus').get();
 
   eventBus.on('tick', ({ now }) => {
     for (const room of roomRepository.values()) {

@@ -7,18 +7,19 @@
  * logging in, or leaving the world.
  */
 
-const error = require('debug')('mud:player:player-events');
+const info = require('debug')('mud:player:player-events');
+const error = require('debug')('mud:player:player-events:error');
 
-const { send_to, send_announcement, send_to_room } = require('../../functions/world');
-const { cyan, yellowBold, redBold, cyanBold } = require('../../../utils/formatting');
-const { send } = require('../../functions/player');
+const { send_to, send_announcement, send_to_room } = require('../functions/world');
+const { cyan, yellowBold, redBold, cyanBold, greenBold } = require('../../utils/formatting');
+const { send, needForNextLevel } = require('../functions/player');
 
 /**
  * Registers player-related event listeners onto the global event bus.
  */
 const register_player_events = () => {
-  const { eventBus } = require('../../game-bus').get();
-  const { connectionRepository, roomRepository } = require('../../datastores').get();
+  const { eventBus } = require('../game-bus').get();
+  const { connectionRepository, roomRepository, playerRepository } = require('../datastores').get();
 
   eventBus.on('player.enteredRealm', ({ player }) => {
     const connection = connectionRepository.getConnection(player.id);
@@ -58,6 +59,31 @@ const register_player_events = () => {
 
     send(player, yellowBold(`You have died, but have been ressurected`));
     eventBus.emit('player.enteredRoom', { player, to: player.room });
+  });
+
+  eventBus.on('player.xp.gain', ({ player, amount }) => {
+    player.experience += amount;
+
+    send(player, cyanBold(`You gain ${amount} experience.`));
+
+    const required = needForNextLevel(player);
+    if (player.experience >= required) {
+      player.level += 1;
+      player.experience -= required;
+
+      eventBus.emit('player.level_up', { player });
+    }
+    playerRepository.save(player.id);
+  });
+
+  eventBus.on('player.level_up', ({ player }) => {
+    player.maxHp += 10 * player.level;
+    player.hp = player.maxHp;
+
+    send(player, greenBold(`You have reached level ${player.level}!`));
+    send(player, cyanBold(`Your max HP is now ${player.maxHp}.`));
+
+    info(`${player.name} leveled up to ${player.level}`);
   });
 };
 

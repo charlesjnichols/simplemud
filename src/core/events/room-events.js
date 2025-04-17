@@ -1,16 +1,16 @@
 'use strict';
 
-const { cyan } = require('../../../utils/formatting');
-const { send } = require('../../functions/player');
-const { render_room } = require('../../functions/room');
-const { send_to_room, send_to_roomId } = require('../../functions/world');
+const { cyan } = require('../../utils/formatting');
+const { send } = require('../functions/player');
+const { render_room } = require('../functions/room');
+const { send_to_room, send_to_roomId } = require('../functions/world');
 
 /**
  * @module systems/room-events
  *
  * Handles player movement between rooms.
  *
- * @typedef {import('../../../models/player').Player} Player
+ * @typedef {import('../models/player').Player} Player
  *
  * @typedef {Object} MoveEvent
  * @property {Player} player
@@ -24,7 +24,7 @@ const { send_to_room, send_to_roomId } = require('../../functions/world');
  * @property {string} from | to
  */
 const register_room_events = () => {
-  const { eventBus } = require('../../game-bus').get();
+  const { eventBus } = require('../game-bus').get();
 
   eventBus.on('player.leftRoom', ({ player, from, direction }) => {
     send(player, `You walk ${direction}.`);

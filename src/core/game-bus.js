@@ -10,7 +10,8 @@
 
 'use strict';
 
-const { register_events, create_event_bus } = require('./bus');
+const { create_event_bus } = require('./bus');
+const registerEvents = require('./events');
 
 /**
  * Internal state holder for the singleton event bus.
@@ -34,9 +35,7 @@ const init = () => {
   }
 
   state.eventBus = create_event_bus();
-
-  register_events();
-
+  registerEvents();
   return state.eventBus;
 };
 
