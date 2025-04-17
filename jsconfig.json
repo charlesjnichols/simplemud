@@ -7,8 +7,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": false,
-    "skipLibCheck": true,
+    "strict": true,
+    "skipLibCheck": false,
     "downlevelIteration": true,
     "noEmit": true
   },

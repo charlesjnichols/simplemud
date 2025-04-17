@@ -1,4 +1,5 @@
-import { builtinModules } from 'module';
+/* eslint-disable */
+import { builtinModules, createRequire } from 'node:module';
 
 import js from '@eslint/js';
 import { defineConfig } from 'eslint/config';
@@ -7,6 +8,14 @@ import eslintPluginPrettier from 'eslint-plugin-prettier';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 
+const require = createRequire(import.meta.url);
+const pluginImport = require('eslint-plugin-import');
+
+function stripLegacyPluginConfig(plugin) {
+  const { configs: _, ...rest } = plugin;
+  return rest;
+}
+
 export default defineConfig([
   {
     files: ['**/*.{js,mjs,cjs}'],
@@ -14,17 +23,12 @@ export default defineConfig([
       js,
       prettier: eslintPluginPrettier,
       'simple-import-sort': simpleImportSort,
+      import: stripLegacyPluginConfig(pluginImport),
     },
     extends: ['js/recommended'],
     rules: {
       'no-var': 'error',
-      'prefer-const': [
-        'error',
-        {
-          destructuring: 'all',
-          ignoreReadBeforeAssign: false,
-        },
-      ],
+      'prefer-const': ['error', { destructuring: 'all', ignoreReadBeforeAssign: false }],
       'no-restricted-syntax': [
         'error',
         {
@@ -32,36 +36,24 @@ export default defineConfig([
           message: "Use 'const' instead of 'let'.",
         },
       ],
-
-      // 📦 Import sorting (grouped)
       'simple-import-sort/imports': [
         'error',
         {
           groups: [
-            // 🔷 Node.js built-ins
             [`^node:`, `^(${builtinModules.join('|')})(/|$)`],
-            // 📦 External packages
             ['^@?\\w'],
-            // 💎 Internal modules
             ['^(@|src|utils|lib|components)(/.*|$)'],
-            // 🔍 Side effect imports
             ['^\\u0000'],
-            // 🏃 Relative imports
             ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
             ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
-            // 🎨 Styles
             ['^.+\\.s?css$'],
           ],
         },
       ],
       'simple-import-sort/exports': 'error',
-
-      // 🧼 Prettier formatting enforcement
       'prettier/prettier': 'error',
-
       'comma-dangle': ['error', 'always-multiline'],
-
-      // ⛔ Disable conflicting ESLint formatting rules
+      'import/no-unresolved': 'error',
       ...prettier.rules,
     },
   },

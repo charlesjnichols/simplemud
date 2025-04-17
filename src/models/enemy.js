@@ -13,8 +13,8 @@ const { ActorType } = require('../config');
  * @property {number|null} hp - Current hit points of the enemy.
  * @property {ActorType|null} type - type of Actor.
  * @property {number} maxHp - Maximum hit points.
- * @property {number} weapon - Index of equipped weapon in inventory (-1 if none).
- * @property {number} armor - Index of equipped armor in inventory (-1 if none).
+ * @property {Item} weapon - Index of equipped weapon in inventory (-1 if none)
+ * @property {Item} armor - Index of equipped armor in inventory (-1 if none)
  * @property {number} experience - xp to gain
  * @property {Item[]} loot - List of loot item templates dropped on death.
  * Runtime-Only Properties:

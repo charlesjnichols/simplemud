@@ -1,7 +1,7 @@
 /**
- * @module systems/enemy-spawn-events
+ * @module systems/enemy-events
  *
- * Spawns enemies into eligible rooms during the game tick.
+ * Spawns enemies into eligible rooms during the game tick and handles enemy death events.
  *
  * @typedef {import('../models/room').Room} Room
  * @typedef {import('../models/enemy').Enemy} Enemy
@@ -22,13 +22,29 @@ const debug = require('debug')('mud:core:bus:event:spawn-enemies-events');
 const SPAWN_COOLDOWN = 60 * 1000;
 
 /**
- * Registers enemy spawn logic on tick.
+ * Registers two event handlers:
  *
+ * 1. **'tick' event**: Spawns new enemies into eligible rooms if the spawn cooldown has passed
+ *    and the current number of enemies is below the room's max.
+ *    - Selects a random enemy type from the room's `spawns`.
+ *    - Sends an announcement to the room.
+ *
+ * 2. **'enemy.died' event**: Handles loot drop and XP gain upon an enemy’s death.
+ *    - Drops items from the enemy's loot table with a chance roll.
+ *    - Emits a `player.xp.gain` event to award XP to the attacker.
+ *    - Deletes the enemy from the repository.
+ *
+ * @returns {void}
  */
 function register_enemy_events() {
   const { enemyRepository, roomRepository, itemRepository } = require('../repository/repositories').get();
   const { eventBus } = require('./event-bus').get();
 
+  /**
+   * Handles the `tick` event to check and refresh stores.
+   *
+   * @param {import('./event-types').TickEvent} param0
+   */
   eventBus.on('tick', ({ now }) => {
     for (const room of roomRepository.values()) {
       if (!room.lastSpawnedAt || now - room.lastSpawnedAt >= SPAWN_COOLDOWN) {
@@ -49,6 +65,11 @@ function register_enemy_events() {
     }
   });
 
+  /**
+   * Handles the `tick` event to check and refresh stores.
+   *
+   * @param {import('./event-types').EnemyDiedEvent} param0
+   */
   eventBus.on('enemy.died', ({ attacker, enemy }) => {
     send_to_room(enemy, `${cyanBold(enemy.name)} has been defeated by ${redBold(attacker.name)}!`);
 
@@ -59,6 +80,7 @@ function register_enemy_events() {
         send_to_room(enemy.room, cyan(`${item.name} drops to the ground.`));
       }
     });
+
     eventBus.emit('player.xp.gain', { player: attacker, amount: enemy.experience });
     enemyRepository.delete(enemy.id);
   });

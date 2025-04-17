@@ -6,7 +6,7 @@
 const { SortedMap } = require('insort');
 
 /**
- * @typedef {import('../connection/connection')} Connection
+ * @typedef {import('../connections/connection')} Connection
  */
 
 /**

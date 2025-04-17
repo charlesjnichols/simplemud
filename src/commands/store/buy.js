@@ -18,9 +18,7 @@ const { send } = require('../../functions/player');
 const { redBold } = require('../../utils/formatting');
 
 /**
- * Handles a player attempting to buy an item in the current store.
- *
- * @param {Player} player - The player issuing the buy command.
+ * @param {Player} player - The player issuing the command.
  * @param {string[]} args - The arguments passed to the command; expects item name as the first argument.
  */
 module.exports = (player, [itemName]) => {
