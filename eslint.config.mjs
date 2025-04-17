@@ -7,6 +7,8 @@ import prettier from 'eslint-config-prettier';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
+import parserTs from '@typescript-eslint/parser';
+import pluginTs from '@typescript-eslint/eslint-plugin';
 
 const require = createRequire(import.meta.url);
 const pluginImport = require('eslint-plugin-import');
@@ -19,11 +21,20 @@ function stripLegacyPluginConfig(plugin) {
 export default defineConfig([
   {
     files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      parser: parserTs,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      globals: globals.node,
+    },
     plugins: {
       js,
       prettier: eslintPluginPrettier,
       'simple-import-sort': simpleImportSort,
       import: stripLegacyPluginConfig(pluginImport),
+      '@typescript-eslint': pluginTs,
     },
     extends: ['js/recommended'],
     rules: {
@@ -54,15 +65,16 @@ export default defineConfig([
       'prettier/prettier': 'error',
       'comma-dangle': ['error', 'always-multiline'],
       'import/no-unresolved': 'error',
+
+      // Type-checking rules for JS
+      '@typescript-eslint/explicit-module-boundary-types': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+
       ...prettier.rules,
     },
   },
   {
     files: ['**/*.js'],
     languageOptions: { sourceType: 'commonjs' },
-  },
-  {
-    files: ['**/*.{js,mjs,cjs}'],
-    languageOptions: { globals: globals.node },
   },
 ]);

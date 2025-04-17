@@ -7,8 +7,7 @@
 const _ = require('lodash');
 const Fuse = require('fuse.js');
 
-const { redBold, cyanBold } = require('../../utils/formatting');
-const { send_to_room } = require('../../functions/world');
+const { redBold } = require('../../utils/formatting');
 const { send } = require('../../functions/player');
 
 /**
@@ -18,12 +17,17 @@ const { send } = require('../../functions/player');
  * @returns
  */
 module.exports = (player, args) => {
-  if (!player.room.items) {
+  const { roomRepository } = require('../../repository/repositories').get();
+  const { eventBus } = require('../../events/event-bus').get();
+
+  const room = roomRepository.get(player.room);
+
+  if (!room?.items) {
     send(player, redBold("There's nothing here to pickup!"));
   }
 
   // @ts-ignore
-  const fuse = new Fuse(player.room.items, {
+  const fuse = new Fuse(room.items, {
     keys: ['name'],
     threshold: 0.4,
   });
@@ -41,12 +45,5 @@ module.exports = (player, args) => {
   }
 
   const item = _.first(matches).item;
-
-  if (!player.pickUpItem(item)) {
-    send(player, redBold("You can't carry that much!"));
-    return;
-  }
-
-  player.room.removeItem(item);
-  send_to_room(player, cyanBold(`${player.name} picks up ${item.name}.`));
+  eventBus.emit('player.item.picked_up', { player, item, room, source: 'room' });
 };

@@ -9,6 +9,7 @@
  * @typedef {import('../models/enemy').Enemy} Enemy
  * @typedef {import('../models/item').Item} Item
  * @typedef {import('../models/store').Store} Store
+ * @typedef {import('../models/room').Room} Room
  */
 
 /**
@@ -58,6 +59,7 @@
  * @typedef {Object} ItemPickupEvent
  * @property {Player} player - The player who picked up the item
  * @property {Item} item - The item picked up
+ * @property {Room} room - The room
  * @property {string} source - The source of the item (e.g., "enemy", "chest")
  */
 

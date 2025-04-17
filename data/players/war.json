@@ -3,8 +3,8 @@
   "name": "war",
   "password": "ENC:ikSf4MvvUFWeH/OENzrFVDXHp/7/h90m7y8nnAD2rwgrHKtPJJTHq16Ne45iHxaXzkz3uVBummfodT3N4BykuDBRtBvqknPV1nAGtXD05faU7qmwn1AHN2grwz6nR90fSmjxMOyjaXtJy7DKKUrRLeq+qWwlrZqW+rqSexTChD3rrMG+kFf2U6KkPU1xbqSCYz82gsvK8y0HDBC1BgwJnTJXxRLJRrReYV3nVHnVw3bSl8GVdRVm54vRqQo/oQkxPzyfvooeFRmBTtebgcw3JbdeZGNjtSVzSOm9TwUqCSgSM2BkeDDR0rCcGs9Pmz/aFpiYirBa1BvqbmoqOqtftQ==",
   "rank": "REGULAR",
-  "experience": 188,
-  "level": 4,
+  "experience": 194,
+  "level": 5,
   "class": null,
   "type": "PLAYER",
   "room": "2",
@@ -18,8 +18,8 @@
     "speed": 0,
     "price": 40
   },
-  "hp": 240,
-  "maxHp": 240,
+  "hp": 290,
+  "maxHp": 290,
   "money": 10000,
   "inventory": [],
   "attributes": {

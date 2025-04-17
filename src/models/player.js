@@ -22,8 +22,8 @@
  * @property {number} class - Player's current class
  * @property {string} room - ID of the current room
  * @property {ActorType} type - type of Actor
- * @property {Item} weapon - Index of equipped weapon in inventory (-1 if none)
- * @property {Item} armor - Index of equipped armor in inventory (-1 if none)
+ * @property {Item|null} weapon - Index of equipped weapon in inventory (-1 if none)
+ * @property {Item|null} armor - Index of equipped armor in inventory (-1 if none)
  * @property {number} hp - Current hit points
  * @property {number} maxHp - Maximum hit points
  * @property {number} money - Player gold

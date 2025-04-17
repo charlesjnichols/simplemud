@@ -7,10 +7,8 @@
 const _ = require('lodash');
 const Fuse = require('fuse.js');
 
-const { redBold, cyanBold } = require('../../utils/formatting');
-const { send_to_room } = require('../../functions/world');
-const { send, dropItem } = require('../../functions/player');
-const { add_item } = require('../../functions/room');
+const { redBold } = require('../../utils/formatting');
+const { send } = require('../../functions/player');
 
 /**
  *
@@ -20,6 +18,8 @@ const { add_item } = require('../../functions/room');
  */
 module.exports = (player, args) => {
   const { roomRepository } = require('../../repository/repositories').get();
+  const { eventBus } = require('../../events/event-bus').get();
+
   if (!player.inventory) {
     send(player, redBold("You don't have that!"));
   }
@@ -43,10 +43,5 @@ module.exports = (player, args) => {
   }
 
   const item = _.first(matches).item;
-  const room = roomRepository.get(player.room);
-
-  add_item(room, item);
-  dropItem(player, item);
-
-  send_to_room(player, cyanBold(`${player.name} drops ${item.name}.`));
+  eventBus.emit('player.item.dropped', { player, item, room: roomRepository.get(player.room), source: 'inventory' });
 };

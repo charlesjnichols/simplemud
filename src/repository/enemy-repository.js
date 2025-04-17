@@ -47,17 +47,17 @@ function create_enemy_store() {
     try {
       log('Loading enemy templates from %s', fileTemplate);
       const dataArray = jsonfile.readFileSync(fileTemplate);
-      dataArray.forEach((data) => {
+      dataArray.forEach((/** @type {Partial<Enemy>} */ data) => {
         enemyTemplateCache.add(data);
       });
       log(`Loaded ${dataArray.length} enemy templates.`);
     } catch (err) {
-      error(`Failed to load enemy templates: ${err.message}`, err);
+      error(`Failed to load enemy templates`, err);
       process.exit(1);
     }
   };
 
-  const get_template = (id) => enemyTemplateCache.get(id);
+  const get_template = (/** @type {string} */ id) => enemyTemplateCache.get(id);
 
   /**
    * Finds all active enemies in the specified room.

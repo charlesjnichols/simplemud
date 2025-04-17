@@ -11,9 +11,7 @@
     "source.fixAll.eslint": "always"
   },
   "eslint.useFlatConfig": true,
-  "javascript.validate.enable": true,
-  "js/ts.implicitProjectConfig.checkJs": true,
-  "eslint.enable": true,
-  "eslint.validate": ["javascript"],
+  "eslint.debug": true,
+  "eslint.lintTask.enable": true,
   "eslint.workingDirectories": [{ "mode": "auto" }]
 }
