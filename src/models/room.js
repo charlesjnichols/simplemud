@@ -11,14 +11,14 @@
  * @property {string|null} name
  * @property {string|null} description
  * @property {string[]} spawns
- * @property {number} maxEnemies
+ * @property {number} maxMobs
  * @property {string[]} rooms
  * @property {string|null} store
  * @property {RoomType|null} type
  *
  * Transient (Runtime-only) Properties:
  * @property {Item[]=} items - In-memory item list (not persisted)
- * @property {import('./enemy').Enemy[]=} enemies - In-memory item list (not persisted)
+ * @property {import('./mob').Mob[]=} mobs - In-memory item list (not persisted)
  * @property {number=} lastSpawnedAt
  */
 
@@ -31,7 +31,7 @@ const room_model = {
   rooms: null,
   store: null,
   spawns: [],
-  maxEnemies: 0,
+  maxMobs: 0,
 };
 
 module.exports = room_model;

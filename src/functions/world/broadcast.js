@@ -4,7 +4,7 @@
  * Utility functions for broadcasting messages to players across the world or within specific contexts.
  *
  * @typedef {import('../../models/player').Player} Player
- * @typedef {import('../../models/enemy').Enemy} Enemy
+ * @typedef {import('../../models/mob').Mob} Mob
  */
 
 'use strict';
@@ -36,7 +36,7 @@ const send_to = (exclude, message) => {
 /**
  * Sends a message to all other players in the same room as the given player.
  *
- * @param {Player|Enemy} player - The player whose room is used for lookup.
+ * @param {Player|Mob} player - The player whose room is used for lookup.
  * @param {string} message - The message to send to others in the room.
  */
 const send_to_room = (player, message) => {

@@ -6,7 +6,7 @@
 
 /**
  * @typedef {import('../models/player').Player} Player
- * @typedef {import('../models/enemy').Enemy} Enemy
+ * @typedef {import('../models/mob').Mob} Mob
  * @typedef {import('../models/item').Item} Item
  * @typedef {import('../models/store').Store} Store
  * @typedef {import('../models/room').Room} Room
@@ -34,7 +34,7 @@
 /**
  * @typedef {Object} PlayerDiedEvent
  * @property {Player} player - The player who died
- * @property {Player|Enemy} attacker - The entity responsible for the player's death
+ * @property {Player|Mob} attacker - The entity responsible for the player's death
  */
 
 /**
@@ -50,9 +50,9 @@
  */
 
 /**
- * @typedef {Object} EnemyDiedEvent
- * @property {Player|Enemy} attacker - The entity that killed the enemy
- * @property {Enemy} enemy - The enemy that died
+ * @typedef {Object} mobDiedEvent
+ * @property {Player|Mob} attacker - The entity that killed the mob
+ * @property {Mob} mob - The mob that died
  */
 
 /**
@@ -60,7 +60,7 @@
  * @property {Player} player - The player who picked up the item
  * @property {Item} item - The item picked up
  * @property {Room} room - The room
- * @property {string} source - The source of the item (e.g., "enemy", "chest")
+ * @property {string} source - The source of the item (e.g., "mob", "chest")
  */
 
 /**

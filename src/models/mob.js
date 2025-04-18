@@ -5,23 +5,24 @@
 const { ActorType } = require('../config');
 
 /**
- * @typedef {Object} Enemy
+ * @typedef {Object} mob
  *
- * @property {string|null} id - Unique identifier for the enemy (assigned at spawn).
- * @property {string|null} name - Display name of the enemy.
- * @property {string|null} room - Current room of the enemy.
- * @property {number|null} hp - Current hit points of the enemy.
+ * @property {string|null} id - Unique identifier for the mob (assigned at spawn).
+ * @property {string|null} name - Display name of the mob.
+ * @property {string|null} room - Current room of the mob.
+ * @property {number|null} hp - Current hit points of the mob.
  * @property {ActorType|null} type - type of Actor.
  * @property {number} maxHp - Maximum hit points.
  * @property {Item} weapon - Index of equipped weapon in inventory (-1 if none)
  * @property {Item} armor - Index of equipped armor in inventory (-1 if none)
  * @property {number} experience - xp to gain
  * @property {Item[]} loot - List of loot item templates dropped on death.
+ *
  * Runtime-Only Properties:
  * @property {number=} nextAttackTime
  */
 
-/** @type {Enemy} */
+/** @type {mob} */
 module.exports = {
   id: null,
   name: null,
@@ -30,7 +31,7 @@ module.exports = {
   experience: 0,
   weapon: null,
   armor: null,
-  type: ActorType.ENEMY,
+  type: ActorType.MOB,
   maxHp: 100,
   loot: [],
 };

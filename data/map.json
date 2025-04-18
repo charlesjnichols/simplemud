@@ -24,7 +24,7 @@
       "SOUTH": "1"
     },
     "spawns": ["6"],
-    "maxEnemies": "1"
+    "maxMobs": "1"
   },
   {
     "id": "3",

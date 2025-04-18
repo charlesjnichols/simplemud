@@ -18,6 +18,6 @@
  * @property {(itemsDb: any) => string} get_items - Returns a string listing the items and money in the room.
  * @property {() => string} get_exits - Returns a string of available exits (e.g. 'NORTH  EAST').
  * @property {() => boolean} is_in_store - Returns true if the room is a store.
- * @property {(list: Array<{ name: string }>, colorFn: (text: string) => string, label: string) => string} get_names - Formats a labeled name list (e.g. enemyRepository or playerRepository).
+ * @property {(list: Array<{ name: string }>, colorFn: (text: string) => string, label: string) => string} get_names - Formats a labeled name list (e.g. mobRepository or playerRepository).
  */
 module.exports = {};

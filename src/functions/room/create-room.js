@@ -26,7 +26,7 @@ function create_room(data = {}) {
 
   // Ensure required structural defaults
   room.items = room.items || [];
-  room.enemies = room.enemies || [];
+  room.mobs = room.mobs || [];
   room.lastSpawnedAt = room.lastSpawnedAt || 0;
 
   // TypeScript may not recognize attached runtime fields, so we suppress errors here.

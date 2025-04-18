@@ -3,7 +3,7 @@
  *
  * Handles logic for resolving an attack between two combatants.
  *
- * @typedef {import('../../models/enemy').Enemy} Enemy
+ * @typedef {import('../../models/mob').Mob} Mob
  * @typedef {import('../../models/player').Player} Player
  */
 
@@ -21,8 +21,8 @@ const debug = require('debug')('mud:combat:resolve-attack');
  * Performs a hit chance roll, calculates and applies damage,
  * emits death events if the target is defeated, and returns combat summary.
  *
- * @param {Player|Enemy} attacker - The entity initiating the attack.
- * @param {Player|Enemy} target - The entity being attacked.
+ * @param {Player|Mob} attacker - The entity initiating the attack.
+ * @param {Player|Mob} target - The entity being attacked.
  *
  * @returns {void}
  */
@@ -49,8 +49,8 @@ const resolveAttack = (attacker, target) => {
 /**
  * Emits the appropriate death event depending on the type of the target.
  *
- * @param {Player|Enemy} attacker - The entity who dealt the killing blow.
- * @param {Player|Enemy} target - The entity who died.
+ * @param {Player|Mob} attacker - The entity who dealt the killing blow.
+ * @param {Player|Mob} target - The entity who died.
  *
  * @returns {void}
  */
@@ -60,9 +60,9 @@ const handleDeath = (attacker, target) => {
   if (target.type === ActorType.PLAYER) {
     debug(`${target.name} (player) has died.`);
     eventBus.emit('player.died', { attacker, player: target });
-  } else if (target.type === ActorType.ENEMY) {
-    debug(`${target.name} (enemy) has died.`);
-    eventBus.emit('enemy.died', { attacker, enemy: target });
+  } else if (target.type === ActorType.MOB) {
+    debug(`${target.name} (mob) has died.`);
+    eventBus.emit('mob.died', { attacker, mob: target });
   }
 };
 

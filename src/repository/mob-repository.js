@@ -4,7 +4,7 @@
  * Provides in-memory caching for mob instances and templates.
  * Supports room-based mob lookup and loading mob templates from disk.
  *
- * @typedef {import('../models/mob').Mob} Mob
+ * @typedef {import('../models/mob').mob} mob
  */
 
 'use strict';
@@ -24,15 +24,15 @@ const fileTemplate = path.join(process.cwd(), 'data', 'mobs.json');
  * Creates an mob store with runtime instance caching and template loading support.
  *
  * @returns {{
- *   values: () => Mob[],
+ *   values: () => mob[],
  *   delete: (id: string) => void,
- *   add: (mob: Mob) => void,
- *   get: (id: string) => Mob,
- *   get_template: (id: string) => Mob,
+ *   add: (mob: mob) => void,
+ *   get: (id: string) => mob,
+ *   get_template: (id: string) => mob,
  *   has: (id: string) => boolean,
- *   find_by_full_name: (name: string, filter?: (mob: Mob) => boolean) => Mob | null,
+ *   find_by_full_name: (name: string, filter?: (mob: mob) => boolean) => mob | null,
  *   load_templates: () => void,
- *   find_by_room: (roomId: string, excludeId?: string | null) => Mob[]
+ *   find_by_room: (roomId: string, excludeId?: string | null) => mob[]
  * }} The mob store interface
  */
 function create_mob_store() {
@@ -47,7 +47,7 @@ function create_mob_store() {
     try {
       log('Loading mob templates from %s', fileTemplate);
       const dataArray = jsonfile.readFileSync(fileTemplate);
-      dataArray.forEach((/** @type {Partial<Mob>} */ data) => {
+      dataArray.forEach((/** @type {Partial<mob>} */ data) => {
         mobTemplateCache.add(data);
       });
       log(`Loaded ${dataArray.length} mob templates.`);
@@ -64,7 +64,7 @@ function create_mob_store() {
    *
    * @param {string} roomId - The ID of the room to search
    * @param {string | null} [excludeId=null] - Optional mob ID to exclude
-   * @returns {Mob[]} List of matching mobs
+   * @returns {mob[]} List of matching mobs
    */
   const find_by_room = (roomId, excludeId = null) => {
     return mobCache.values().filter((e) => e.room === roomId && e.id !== excludeId);

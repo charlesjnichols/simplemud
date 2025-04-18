@@ -52,7 +52,7 @@ const Direction = {
 const ActorType = {
   PLAYER: 'PLAYER',
   NPC: 'NPC',
-  ENEMY: 'ENEMY',
+  MOB: 'MOB',
 };
 
 const AttackResult = {
