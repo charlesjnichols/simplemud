@@ -9,6 +9,7 @@ const fuzzysort = require('fuzzysort');
 
 const { redBold } = require('../../utils/formatting');
 const { send } = require('../../functions/player');
+const { PLAYER } = require('../../events/event-types');
 
 /**
  *
@@ -42,5 +43,5 @@ module.exports = (player, args) => {
   }
 
   const item = _.first(matches)?.obj;
-  eventBus.emit('player.item.dropped', { player, item, room: roomRepository.get(player.room), source: 'inventory' });
+  eventBus.emit(PLAYER.ITEM_DROPPED, { player, item, room: roomRepository.get(player.room), source: 'inventory' });
 };

@@ -11,6 +11,8 @@ const { remove_item, add_item } = require('../functions/room');
 const { send_to_room } = require('../functions/world');
 const { cyanBold } = require('../utils/formatting');
 
+const { PLAYER } = require('./event-types');
+
 /**
  * Registers inventory-related event listeners onto the global event bus.
  *
@@ -27,7 +29,7 @@ const register_inventory_events = () => {
    *
    * @param {import('./event-types').ItemPickupEvent} param0 - Event payload containing the player, the item picked up, and the source of the item.
    */
-  eventBus.on('player.item.picked_up', ({ player, item, room }) => {
+  eventBus.on(PLAYER.ITEM_PICKED_UP, ({ player, item, room }) => {
     pickUpItem(player, item);
     remove_item(room, item);
 
@@ -39,7 +41,7 @@ const register_inventory_events = () => {
    *
    * @param {import('./event-types').ItemPickupEvent} param0 - Event payload containing the player, the item picked up, and the source of the item.
    */
-  eventBus.on('player.item.dropped', ({ player, item, room }) => {
+  eventBus.on(PLAYER.ITEM_DROPPED, ({ player, item, room }) => {
     dropItem(player, item);
     add_item(room, item);
 

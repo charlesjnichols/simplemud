@@ -16,6 +16,7 @@ const error = require('debug')('mud:commands:store:buy:error');
 
 const { send } = require('../../functions/player');
 const { redBold } = require('../../utils/formatting');
+const { STORE } = require('../../events/event-types');
 
 /**
  * Handles a player's attempt to buy an item from a store.
@@ -75,5 +76,5 @@ module.exports = (player, [itemName]) => {
     return;
   }
 
-  eventBus.emit('store.purchase', { player, item, store });
+  eventBus.emit(STORE.PURCHASED, { player, item, store });
 };

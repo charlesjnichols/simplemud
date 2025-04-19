@@ -8,6 +8,7 @@
  */
 
 const { ActorType, AttackResult } = require('../../config');
+const { MOB } = require('../../events/event-types');
 const { cyan } = require('../../utils/formatting');
 const { send_to_room } = require('../world');
 const { calculateDamage } = require('./damage');
@@ -59,10 +60,10 @@ const handleDeath = (attacker, target) => {
 
   if (target.type === ActorType.PLAYER) {
     debug(`${target.name} (player) has died.`);
-    eventBus.emit('player.died', { attacker, player: target });
+    eventBus.emit(PLAYER.DIED, { attacker, player: target });
   } else if (target.type === ActorType.MOB) {
     debug(`${target.name} (mob) has died.`);
-    eventBus.emit('mob.died', { attacker, mob: target });
+    eventBus.emit(MOB.DIED, { attacker, mob: target });
   }
 };
 

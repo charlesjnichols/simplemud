@@ -14,6 +14,7 @@ const _ = require('lodash');
 const debug = require('debug')('mud:core:bus:event:spawn-mobs-events');
 
 const { perform_auto_attack } = require('../functions/combat');
+const { SYSTEM } = require('./event-types');
 
 /**
  * Registers auto-attack combat behavior for both players and mobs on each game tick.
@@ -37,7 +38,7 @@ function register_combat_events() {
    *
    * @param {import('./event-types').TickEvent} param0
    */
-  eventBus.on('tick', ({ now }) => {
+  eventBus.on(SYSTEM.TICK, ({ now }) => {
     for (const room of roomRepository.values()) {
       const players = playerRepository.find_by_room(room.id);
       const mobs = mobRepository.find_by_room(room.id);

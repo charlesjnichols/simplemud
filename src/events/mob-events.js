@@ -14,12 +14,14 @@ const _ = require('lodash');
 const debug = require('debug')('mud:events:mob');
 const error = require('debug')('mud:events:mob:error');
 
+const { SPAWN_COOLDOWN } = require('../config');
+
 const { redBold, cyan, cyanBold } = require('../utils/formatting');
 const { create_mob } = require('../functions/mob/create-mob');
 const { send_to_roomId, send_to_room } = require('../functions/world');
 const { add_item } = require('../functions/room');
 
-const SPAWN_COOLDOWN = 60 * 1000;
+const { MOB, SYSTEM, PLAYER } = require('./event-types');
 
 /**
  * Registers event listeners for mob spawning and mob death handling.
@@ -94,12 +96,12 @@ function register_mob_events() {
       send_to_room(mob, cyan(`${item.name} drops to the ground.`));
     });
 
-    eventBus.emit('player.xp.gain', { player: attacker, amount: mob.experience });
+    eventBus.emit(PLAYER.XP_GAINED, { player: attacker, amount: mob.experience });
     mobRepository.delete(mob.id);
   }
 
-  eventBus.on('tick', handle_tick);
-  eventBus.on('mob.died', handle_mob_death);
+  eventBus.on(SYSTEM.TICK, handle_tick);
+  eventBus.on(MOB.DIED, handle_mob_death);
 }
 
 module.exports = {

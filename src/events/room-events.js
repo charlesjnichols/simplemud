@@ -25,6 +25,8 @@ const { send } = require('../functions/player');
 const { render_room } = require('../functions/room');
 const { send_to_room, send_to_roomId } = require('../functions/world');
 
+const { PLAYER, ROOM } = require('./event-types');
+
 /**
  * Registers room-related event listeners onto the global event bus.
  *
@@ -42,7 +44,7 @@ const register_room_events = () => {
    *
    * @param {import('./event-types').PlayerMoveEvent} param0
    */
-  eventBus.on('player.leftRoom', ({ player, from, direction }) => {
+  eventBus.on(PLAYER.LEFT_ROOM, ({ player, from, direction }) => {
     send(player, `You walk ${direction}.`);
     send_to_roomId(from, cyan(`${player.name} leaves to the ${direction}.`));
   });
@@ -52,14 +54,14 @@ const register_room_events = () => {
    *
    * @param {import('./event-types').PlayerMoveEvent} param0
    */
-  eventBus.on('player.enteredRoom', ({ player, to, enteredFrom }) => {
+  eventBus.on(PLAYER.ENTERED_ROOM, ({ player, to, enteredFrom }) => {
     send(player, render_room(to));
     if (enteredFrom) {
       send_to_room(player, cyan(`${player.name} enters from the ${enteredFrom}.`));
     } else {
       send_to_room(player, cyan(`${player.name} appears from the void`));
     }
-    eventBus.emit('room.entered', { player, to });
+    eventBus.emit(ROOM.ENTERED, { player, to });
   });
 };
 

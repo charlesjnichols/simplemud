@@ -61,6 +61,7 @@ const AttackResult = {
 };
 
 const STATBAR_INTERVAL_MS = 5000;
+const SPAWN_COOLDOWN = 60 * 1000;
 
 module.exports = {
   ItemType,
@@ -70,4 +71,5 @@ module.exports = {
   ActorType,
   AttackResult,
   STATBAR_INTERVAL_MS,
+  SPAWN_COOLDOWN,
 };

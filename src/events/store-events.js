@@ -23,6 +23,8 @@ const { pickUpItem } = require('../functions/player');
 const { send_to_room } = require('../functions/world');
 const { cyanBold } = require('../utils/formatting');
 
+const { STORE, SYSTEM } = require('./event-types');
+
 /**
  * Registers store-related listeners on the global event bus.
  *
@@ -44,7 +46,7 @@ const register_store_events = () => {
    *
    * @param {import('./event-types').TickEvent} param0
    */
-  eventBus.on('tick', ({ now }) => {
+  eventBus.on(SYSTEM.TICK, ({ now }) => {
     for (const store of storeRepository.values()) {
       const needsRefresh = now - store.last_refreshed >= store.refresh_interval;
 
@@ -62,7 +64,7 @@ const register_store_events = () => {
 
       store.last_refreshed = now;
 
-      eventBus.emit('store.refreshed', { store: store.id });
+      eventBus.emit(STORE.REFRESHED, { store: store.id });
       debug(`Store '${store.id}' refreshed with ${store.inventory.length} items.`);
     }
   });
@@ -72,7 +74,7 @@ const register_store_events = () => {
    *
    * @param {import('./event-types').StorePurchaseEvent} param0
    */
-  eventBus.on('store.purchase', ({ player, item }) => {
+  eventBus.on(STORE.PURCHASED, ({ player, item }) => {
     player.money -= item.price;
     pickUpItem(player, item);
 

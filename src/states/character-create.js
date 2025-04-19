@@ -8,6 +8,7 @@
 
 const Game = require('./game');
 const { resolveInput } = require('../utils/input');
+const { PLAYER } = require('../events/event-types');
 
 const State = {
   CHOOSE_CLASS: 'choose-class',
@@ -69,7 +70,7 @@ function create_character_handler(connection, player) {
       initializePlayer(player);
       stateHolder.state = State.DONE;
 
-      eventBus.emit('player.login.success', { player, connection });
+      eventBus.emit(PLAYER.LOGGED_IN, { player, connection });
       connection.addHandler(new Game(connection, player));
     }
   };

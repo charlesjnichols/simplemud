@@ -8,6 +8,7 @@
 
 const ConnectionHandler = require('../connections/connection-handler');
 const { command_contexts } = require('../commands/command-contexts');
+const { PLAYER } = require('../events/event-types');
 const { eventBus } = require('../events/event-bus').get();
 
 // Game Handler class
@@ -23,7 +24,7 @@ class Game extends ConnectionHandler {
   }
 
   enter() {
-    eventBus.emit('player.enteredRealm', { player: this.player });
+    eventBus.emit(PLAYER.ENTERED_REALM, { player: this.player });
   }
 
   /**
@@ -34,11 +35,11 @@ class Game extends ConnectionHandler {
   }
 
   leave() {
-    eventBus.emit('player.leftRealm', { player: this.player });
+    eventBus.emit(PLAYER.LEFT_REALM, { player: this.player });
   }
 
   hungup() {
-    eventBus.emit('player.leftRealm', { player: this.player });
+    eventBus.emit(PLAYER.LEFT_REALM, { player: this.player });
   }
 }
 

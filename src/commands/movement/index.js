@@ -11,6 +11,7 @@
 
 'use strict';
 
+const { PLAYER } = require('../../events/event-types');
 const { send_to_room } = require('../../functions/world');
 const { red } = require('../../utils/formatting');
 
@@ -58,7 +59,7 @@ module.exports = (direction) => {
       return;
     }
 
-    eventBus.emit('player.move', {
+    eventBus.emit(PLAYER.MOVED, {
       player,
       direction,
       from,

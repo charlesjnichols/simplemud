@@ -19,7 +19,7 @@ const { ActorType } = require('../config');
  * @property {Item[]} loot - List of loot item templates dropped on death.
  *
  * Runtime-Only Properties:
- * @property {number=} nextAttackTime
+ * @property {number} nextAttackTime
  */
 
 /** @type {Mob} */

@@ -6,6 +6,8 @@
 
 'use strict';
 
+const { SYSTEM } = require('../events/event-types');
+
 const TICK_INTERVAL = 1000;
 
 const create_game_loop = () => {
@@ -13,7 +15,7 @@ const create_game_loop = () => {
     setInterval(() => {
       const { eventBus } = require('../events/event-bus').get();
 
-      eventBus.emit('tick', { now: Date.now() });
+      eventBus.emit(SYSTEM.TICK, { now: Date.now() });
     }, TICK_INTERVAL);
   }
   return {

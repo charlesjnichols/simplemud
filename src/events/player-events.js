@@ -20,6 +20,8 @@ const { send_to, send_announcement, send_to_room } = require('../functions/world
 const { cyan, yellowBold, redBold, cyanBold, greenBold } = require('../utils/formatting');
 const { send, needForNextLevel } = require('../functions/player');
 
+const { PLAYER } = require('./event-types');
+
 /**
  * Registers player-related event listeners onto the global event bus.
  */
@@ -31,21 +33,21 @@ const register_player_events = () => {
    *
    * @param {import('./event-types').PlayerEvent} param0
    */
-  eventBus.on('player.enteredRealm', ({ player }) => {
+  eventBus.on(PLAYER.ENTERED_REALM, ({ player }) => {
     const connection = connectionRepository.getConnection(player.id);
     if (!connection) {
       error('%s has no connection', player.id);
       return;
     }
     send_announcement(cyan(`${player.name} appears in the realm.`));
-    eventBus.emit('player.enteredRoom', { player, to: player.room });
+    eventBus.emit(PLAYER.ENTERED_ROOM, { player, to: player.room });
   });
 
   /**
    *
    * @param {import('./event-types').PlayerEvent} param0
    */
-  eventBus.on('player.leftRealm', ({ player }) => {
+  eventBus.on(PLAYER.LEFT_REALM, ({ player }) => {
     send_to(player, yellowBold(`${player.name} vanishes into the void.`));
   });
 
@@ -53,7 +55,7 @@ const register_player_events = () => {
    *
    * @param {import('./event-types').PlayerEvent} param0
    */
-  eventBus.on('player.login.success', ({ player }) => {
+  eventBus.on(PLAYER.LOGGED_IN, ({ player }) => {
     send_to(player, yellowBold(`${player.name} has entered the realm.`));
   });
 
@@ -61,7 +63,7 @@ const register_player_events = () => {
    *
    * @param {import('./event-types').PlayerMoveEvent} param0
    */
-  eventBus.on('player.move', ({ player, direction, from, to, enteredFrom }) => {
+  eventBus.on(PLAYER.MOVED, ({ player, direction, from, to, enteredFrom }) => {
     const nextRoom = roomRepository.get(to);
     if (!nextRoom) return;
 
@@ -69,25 +71,25 @@ const register_player_events = () => {
     player.room = to;
 
     // Remove from current room
-    eventBus.emit('player.leftRoom', { player, from, direction });
-    eventBus.emit('player.enteredRoom', { player, to, direction, enteredFrom });
+    eventBus.emit(PLAYER.LEFT_ROOM, { player, from, direction });
+    eventBus.emit(PLAYER.ENTERED_ROOM, { player, to, direction, enteredFrom });
   });
 
   /**
    *
    * @param {import('./event-types').PlayerDiedEvent} param0
    */
-  eventBus.on('player.died', ({ player, attacker }) => {
+  eventBus.on(PLAYER.DIED, ({ player, attacker }) => {
     send_to_room(player, `${cyanBold(player.name)} has been defeated by ${redBold(attacker.name)}!`);
 
     player.setHitPoints(Math.floor(player.maxHp * 0.7));
     player.room = 1;
 
     send(player, yellowBold(`You have died, but have been ressurected`));
-    eventBus.emit('player.enteredRoom', { player, to: player.room });
+    eventBus.emit(PLAYER.ENTERED_ROOM, { player, to: player.room });
   });
 
-  eventBus.on('player.xp.gain', ({ player, amount }) => {
+  eventBus.on(PLAYER.XP_GAINED, ({ player, amount }) => {
     player.experience += amount;
 
     send(player, cyanBold(`You gain ${amount} experience.`));
@@ -97,7 +99,7 @@ const register_player_events = () => {
       player.level += 1;
       player.experience -= required;
 
-      eventBus.emit('player.level_up', { player });
+      eventBus.emit(PLAYER.LEVEL_UP, { player });
     }
     playerRepository.save(player.id);
   });
@@ -106,7 +108,7 @@ const register_player_events = () => {
    *
    * @param {import('./event-types').PlayerEvent} param0
    */
-  eventBus.on('player.level_up', ({ player }) => {
+  eventBus.on(PLAYER.LEVEL_UP, ({ player }) => {
     player.maxHp += 10 * player.level;
     player.hp = player.maxHp;
 

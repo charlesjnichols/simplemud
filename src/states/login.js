@@ -11,6 +11,7 @@ const { create_character_handler } = require('./character-create');
 const { create_player } = require('../functions/player/create-player');
 const { v4: uuidv4 } = require('uuid');
 const { decryptPassword, isEncrypted } = require('../utils/password-vault');
+const { PLAYER } = require('../events/event-types');
 
 const State = {
   ENTER_NAME: 'enter-name',
@@ -80,7 +81,7 @@ const create_logon_handler = (/** @type {import("../connections/connection")} */
       playerRepository.add(player);
       connectionRepository.addConnection(player.id, connection);
 
-      eventBus.emit('player.login.success', { player });
+      eventBus.emit(PLAYER.LOGGED_IN, { player });
 
       connection.removeHandler();
       connection.addHandler(new Game(connection, player));
