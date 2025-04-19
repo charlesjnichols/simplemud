@@ -51,7 +51,7 @@ function create_item_store() {
 
       log(`Loaded %d items.`, itemCache.size());
     } catch (err) {
-      error(`Failed to load item database: ${err.message}`);
+      error(`Failed to load item database: %O`, err);
     }
   }
 

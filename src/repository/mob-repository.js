@@ -4,7 +4,7 @@
  * Provides in-memory caching for mob instances and templates.
  * Supports room-based mob lookup and loading mob templates from disk.
  *
- * @typedef {import('../models/mob').mob} mob
+ * @typedef {import('../models/mob').Mob} mob
  */
 
 'use strict';

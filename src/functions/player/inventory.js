@@ -32,7 +32,9 @@ function dropItem(player, item) {
     removeArmor(player);
   } else {
     const index = player.inventory.findIndex((i) => i.id === item.id);
-    player.inventory.splice(index, 1);
+    if (index > -1) {
+      player.inventory.splice(index, 1);
+    }
   }
   return true;
 }
@@ -52,12 +54,11 @@ function useWeapon(player, item) {
 /**
  * Unequips the currently equipped weapon.
  *
- * @param {object} player - The player object.
+ * @param {import("../../models/player").Player} player - The player object.
  */
 function removeWeapon(player) {
-  const previous = player.weapon;
-  if (previous) {
-    pickUpItem(player, previous);
+  if (player.weapon) {
+    pickUpItem(player, player.weapon);
     player.weapon = null;
   }
 }
@@ -80,9 +81,8 @@ function useArmor(player, item) {
  * @param {import("../../models/player").Player} player - The player object.
  */
 function removeArmor(player) {
-  const previous = player.armor;
-  if (previous) {
-    pickUpItem(player, previous);
+  if (player.armor) {
+    pickUpItem(player, player.armor);
     player.armor = null;
   }
 }

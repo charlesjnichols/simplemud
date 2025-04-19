@@ -2,8 +2,8 @@
  * @module commands/buy
  *
  * Command handler for the `buy` action.
- * Attempts to purchase an item from the store in the current room using fuzzy search.
- * Handles validation, affordability, and inventory space.
+ * Uses fuzzy search to match an item in the room's store,
+ * checks affordability, and emits a purchase event.
  *
  * @typedef {import('../../models/player').Player} Player
  * @typedef {import('../../models/item').Item} Item
@@ -11,58 +11,62 @@
 
 'use strict';
 
-const Fuse = require('fuse.js');
-const _ = require('lodash');
+const fuzzysort = require('fuzzysort');
+const error = require('debug')('mud:commands:store:buy:error');
 
 const { send } = require('../../functions/player');
 const { redBold } = require('../../utils/formatting');
 
 /**
+ * Handles a player's attempt to buy an item from a store.
+ *
  * @param {Player} player - The player issuing the command.
- * @param {string[]} args - The arguments passed to the command; expects item name as the first argument.
+ * @param {string[]} args - The item name to buy.
  */
 module.exports = (player, [itemName]) => {
   const { eventBus } = require('../../events/event-bus').get();
   const { roomRepository, storeRepository } = require('../../repository/repositories').get();
 
   if (!itemName) {
-    send(player, redBold('What do you want to buy.'));
+    send(player, redBold('What do you want to buy?'));
     return;
   }
 
   const room = roomRepository.get(player.room);
-  const storeId = room.store;
-  if (!storeId) {
+  if (!room || !room.store) {
+    error('No store in room for player %O', player);
     send(player, redBold("There's no store here."));
     return;
   }
 
-  const store = storeRepository.get(storeId);
+  const store = storeRepository.get(room.store);
+  if (!store) {
+    error('Store not found: room.store=%s player=%O', room.store, player);
+    send(player, redBold('The store appears to be missing.'));
+    return;
+  }
 
-  /** @type {Fuse<Item>} */
-  // @ts-ignore
-  const fuse = new Fuse(store.inventory, {
-    keys: ['name'],
-    threshold: 0.4,
+  const matches = fuzzysort.go(itemName, store.inventory, {
+    key: 'name',
+    threshold: -1000,
   });
 
-  // @ts-ignore
-  const matches = fuse.search(itemName);
   if (matches.length === 0) {
     send(player, redBold("Sorry, we don't have that item!"));
     return;
   }
 
   if (matches.length > 1) {
-    const options = matches.map((m, i) => `  ${i + 1}. ${m.item.name}`).join('\n');
-    send(player, redBold('Multiple matches found:\n') + options + '\nPlease be more specific.');
+    const options = matches.map((m, i) => `${i + 1}. ${m.obj.name}`).join('\n');
+    send(player, redBold(`Multiple matches found:\n${options}\nPlease be more specific.`));
     return;
   }
 
-  const item = _.first(matches).item;
+  const item = matches[0].obj;
 
-  if (!item) {
-    send(player, redBold("Sorry, we don't have that item!"));
+  if (!item || typeof item.price !== 'number') {
+    error('Invalid item object in store: %O', item);
+    send(player, redBold("That item isn't valid."));
     return;
   }
 

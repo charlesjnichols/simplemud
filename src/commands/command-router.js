@@ -6,7 +6,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const Fuse = require('fuse.js');
+const fuzzysort = require('fuzzysort');
 const commandsLog = require('debug')('mud:command:router:getAllCommands');
 const routeLog = require('debug')('mud:command:router:route_command');
 
@@ -109,10 +109,11 @@ const route_command = (contexts, verb, args, player, options = {}) => {
     return fn(player, args, { route_command });
   }
 
-  // @ts-ignore
-  const fuse = new Fuse(commands, { keys: ['verb'], threshold: 0.4 });
-  const result = fuse.search(verb);
-  const suggestion = result[0]?.item?.verb;
+  const matches = fuzzysort.go(verb, commands, {
+    key: 'name',
+    threshold: -1000, // optional: filter bad matches
+  });
+  const suggestion = matches[0]?.obj?.verb;
 
   if (suggestion) {
     routeLog(`Unknown command: '${verb}', suggested: '${suggestion}'`);

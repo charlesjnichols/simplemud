@@ -13,10 +13,10 @@
  */
 class ConnectionHandler {
   /**
-   * @param {{ socket: { remoteAddress: string, remotePort: number } }} connection - The raw connection object.
+   * @param {import("./connection")} connection
    */
   constructor(connection) {
-    /** @type {{ socket: { remoteAddress: string, remotePort: number } }} */
+    /** @type {import("./connection")} connection */
     this.connection = connection;
 
     /** @type {string} */

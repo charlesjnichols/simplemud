@@ -13,13 +13,13 @@
  * @typedef {Object} Player
  *
  * Core Attributes:
- * @property {string|null} id - Unique player ID
- * @property {string|null} name - Player's name
- * @property {string|null} password - Encrypted password
+ * @property {string} id - Unique player ID
+ * @property {string} name - Player's name
+ * @property {string} password - Encrypted password
  * @property {PlayerRank} rank - Access level (e.g. REGULAR, ADMIN)
  * @property {number} experience - Current experience points
  * @property {number} level - Player's current level
- * @property {number} class - Player's current class
+ * @property {string} class - Player's current class
  * @property {string} room - ID of the current room
  * @property {ActorType} type - type of Actor
  * @property {Item|null} weapon - Index of equipped weapon in inventory (-1 if none)
@@ -31,9 +31,9 @@
  * @property {{ STRENGTH: number, DEXTERITY: number, INTELLIGENCE: number }} attributes - Stat block
  *
  * Runtime-Only Properties:
- * @property {number=} nextAttackTime
- * @property {number=} lastSentHp
- * @property {number=} lastStatbarTime
+ * @property {number} nextAttackTime
+ * @property {number} lastSentHp
+ * @property {number} lastStatbarTime
  *
  */
 const { PlayerRank, ActorType } = require('../config');

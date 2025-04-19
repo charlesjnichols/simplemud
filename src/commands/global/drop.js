@@ -5,7 +5,7 @@
  */
 
 const _ = require('lodash');
-const Fuse = require('fuse.js');
+const fuzzysort = require('fuzzysort');
 
 const { redBold } = require('../../utils/formatting');
 const { send } = require('../../functions/player');
@@ -24,24 +24,23 @@ module.exports = (player, args) => {
     send(player, redBold("You don't have that!"));
   }
 
-  // @ts-ignore
-  const fuse = new Fuse(player.inventory, {
-    keys: ['name'],
-    threshold: 0.4,
+  const query = args.join(' ');
+  const matches = fuzzysort.go(query, player.inventory, {
+    key: 'name',
+    threshold: -1000, // optional: filter bad matches
   });
 
-  const matches = fuse.search(args.join(' '));
   if (matches.length === 0) {
     send(player, redBold("You don't see that here!!"));
     return;
   }
 
   if (matches.length > 1) {
-    const options = matches.map((m, i) => `  ${i + 1}. ${m.item.name}`).join('\n');
+    const options = matches.map((m, i) => `${i + 1}. ${m.obj.name}`).join('\n');
     send(player, redBold('Multiple matches found:\n') + options + '\nPlease be more specific.');
     return;
   }
 
-  const item = _.first(matches).item;
+  const item = _.first(matches)?.obj;
   eventBus.emit('player.item.dropped', { player, item, room: roomRepository.get(player.room), source: 'inventory' });
 };

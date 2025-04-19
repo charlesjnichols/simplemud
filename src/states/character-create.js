@@ -17,6 +17,10 @@ const State = {
 
 const { eventBus } = require('../events/event-bus').get();
 
+/**
+ * @param {import("../connections/connection")} connection
+ * @param {import("../models/player").Player} player
+ */
 function create_character_handler(connection, player) {
   const stateHolder = {
     state: State.CHOOSE_CLASS,
@@ -38,7 +42,7 @@ function create_character_handler(connection, player) {
     connection.socket.write('\nWelcome, new adventurer!\nChoose your class (warrior, mage, rogue): ');
   };
 
-  const handle = (input) => {
+  const handle = (/** @type {string} */ input) => {
     const response = input.trim().toLowerCase();
 
     if (stateHolder.state === State.CHOOSE_CLASS) {
@@ -70,10 +74,13 @@ function create_character_handler(connection, player) {
     }
   };
 
-  const initializePlayer = (p) => {
-    p.level = 1;
-    p.money = 10;
-    p.room = '1';
+  /**
+   * @param {import("../models/player").Player} player
+   */
+  const initializePlayer = (player) => {
+    player.level = 1;
+    player.money = 0;
+    player.room = '1';
   };
 
   const leave = () => {};

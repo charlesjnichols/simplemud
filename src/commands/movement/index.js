@@ -45,6 +45,11 @@ module.exports = (direction) => {
    */
   return (player) => {
     const room = roomRepository.get(player.room);
+    if (!room || !room.rooms) {
+      send_to_room(player, red(`You bump into the void trying to go ${direction}.`));
+      return;
+    }
+
     const from = player.room;
     const to = room.rooms[direction.toUpperCase()];
 

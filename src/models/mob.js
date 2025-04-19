@@ -5,13 +5,13 @@
 const { ActorType } = require('../config');
 
 /**
- * @typedef {Object} mob
+ * @typedef {Object} Mob
  *
- * @property {string|null} id - Unique identifier for the mob (assigned at spawn).
- * @property {string|null} name - Display name of the mob.
- * @property {string|null} room - Current room of the mob.
- * @property {number|null} hp - Current hit points of the mob.
- * @property {ActorType|null} type - type of Actor.
+ * @property {string} id - Unique identifier for the mob (assigned at spawn).
+ * @property {string} name - Display name of the mob.
+ * @property {string} room - Current room of the mob.
+ * @property {number} hp - Current hit points of the mob.
+ * @property {ActorType} type - type of Actor.
  * @property {number} maxHp - Maximum hit points.
  * @property {Item} weapon - Index of equipped weapon in inventory (-1 if none)
  * @property {Item} armor - Index of equipped armor in inventory (-1 if none)
@@ -22,12 +22,12 @@ const { ActorType } = require('../config');
  * @property {number=} nextAttackTime
  */
 
-/** @type {mob} */
+/** @type {Mob} */
 module.exports = {
-  id: null,
-  name: null,
-  room: null,
-  hp: null,
+  id: '',
+  name: '',
+  room: '',
+  hp: '',
   experience: 0,
   weapon: null,
   armor: null,

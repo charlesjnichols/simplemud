@@ -18,7 +18,7 @@ const State = {
   ENTER_NEW_PASSWORD: 'enter-new-password',
 };
 
-const create_logon_handler = (connection) => {
+const create_logon_handler = (/** @type {import("../connections/connection")} */ connection) => {
   const { playerRepository, connectionRepository } = require('../repository/repositories').get();
   const { eventBus } = require('../events/event-bus').get();
 
@@ -33,6 +33,9 @@ const create_logon_handler = (connection) => {
     connection.sendMessage('<bold><green>What is your name? </green></bold>');
   }
 
+  /**
+   * @param {string} input
+   */
   function handle(input) {
     const data = input.trim();
 
@@ -118,7 +121,9 @@ const create_logon_handler = (connection) => {
   };
 };
 
-// Helpers
+/**
+ * @param {string} name
+ */
 function isValidName(name) {
   return /^[a-zA-Z0-9]{3,20}$/.test(name);
 }

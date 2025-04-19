@@ -5,12 +5,13 @@
  * which binds the player instance as the first argument.
  *
  * @module player/hp
+ * @typedef {import('../../models/player').Player} Player
  */
 
 /**
  * Sets the player's current HP to a bounded value between 0 and max HP.
  *
- * @param {object} player - The player object.
+ * @param {Player} player - The player object.
  * @param {number} hp - The new HP value to assign.
  */
 function setHitPoints(player, hp) {
@@ -21,7 +22,7 @@ function setHitPoints(player, hp) {
  * Increases the player's current HP by a specified amount,
  * without exceeding max HP.
  *
- * @param {object} player - The player object.
+ * @param {Player} player - The player object.
  * @param {number} hp - The amount of HP to add (can be negative).
  */
 function addHitPoints(player, hp) {
@@ -31,7 +32,7 @@ function addHitPoints(player, hp) {
 /**
  * Determines whether the player is currently alive.
  *
- * @param {object} player - The player object.
+ * @param {Player} player - The player object.
  * @returns {boolean} True if the player's HP is greater than 0.
  */
 function isAlive(player) {

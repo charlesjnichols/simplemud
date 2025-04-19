@@ -12,6 +12,10 @@ const { eventBus } = require('../events/event-bus').get();
 
 // Game Handler class
 class Game extends ConnectionHandler {
+  /**
+   * @param {import("../connections/connection")} connection
+   * @param {import("../models/player").Player} player
+   */
   constructor(connection, player) {
     super(connection);
     this.player = player;
@@ -22,6 +26,9 @@ class Game extends ConnectionHandler {
     eventBus.emit('player.enteredRealm', { player: this.player });
   }
 
+  /**
+   * @param {string} input
+   */
   handle(input) {
     this.handlePlayerInput(this.player, input);
   }

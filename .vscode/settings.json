@@ -13,5 +13,10 @@
   "eslint.useFlatConfig": true,
   "eslint.debug": true,
   "eslint.lintTask.enable": true,
-  "eslint.workingDirectories": [{ "mode": "auto" }]
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "CodeGPT.apiKey": "CodeGPT Plus Beta"
 }

@@ -52,7 +52,7 @@ function create_store_store() {
 
       log(`Loaded ${storeCache.size()} store(s).`);
     } catch (err) {
-      error(`Failed to load store data: ${err.message}`);
+      error(`Failed to load store data: %O`, err);
     }
   }
 

@@ -51,7 +51,7 @@ function create_player_store() {
     return true;
   };
 
-  const save = (id) => {
+  const save = (/** @type {string} */ id) => {
     const player = playerCache.get(id);
     const file = path.join(PLAYER_DIR, `${player.name}.json`);
 
@@ -61,26 +61,26 @@ function create_player_store() {
     log(`Saved player '${player.id}': '${player.name}' to ${file}`);
   };
 
-  const load_by_name = (name) => {
+  const load_by_name = (/** @type {string} */ name) => {
     const file = path.join(PLAYER_DIR, `${name}.json`);
     try {
       log(`reading player file ${file}`);
       const player = create_player(jsonfile.readFileSync(file));
       return player;
     } catch (err) {
-      error(`Failed to load player '${file}': ${err.message}`);
+      error(`Failed to load player '${file}': %O`, err);
       return null;
     }
   };
 
-  const add = (player) => {
+  const add = (/** @type {Player} */ player) => {
     if (playerCache.has(player.id) || playerCache.has_full_name(player.name)) return false;
     playerCache.add(player);
     save(player.id);
     return true;
   };
 
-  const find_by_room = (roomId, excludeId = null) => {
+  const find_by_room = (/** @type {string} */ roomId, /** @type {string|null} */ excludeId = null) => {
     return playerCache.values().filter((p) => p.room === roomId && p.id !== excludeId);
   };
 

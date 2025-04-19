@@ -37,9 +37,7 @@ const render_room = (roomId) => {
   const roomPeople = get_names(playerRepository.find_by_room(room.id), cyanBold, 'People');
   const roomMobs = get_names(mobRepository.find_by_room(room.id), redBold, 'Mobs');
 
-  const body = [header, roomItem ? 'You see: ' + roomItem + '\r\n' : '', roomPeople, roomMobs]
-    .filter(Boolean)
-    .join('');
+  const body = [header, roomItem ? 'You see: ' + roomItem + '\r\n' : '', roomPeople, roomMobs].filter(Boolean).join('');
 
   return body;
 };

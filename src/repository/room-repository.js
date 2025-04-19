@@ -49,7 +49,7 @@ function create_room_store() {
       });
       log(`Loaded ${roomCache.size()} room.`);
     } catch (err) {
-      error(`Failed to load room templates: ${err.message}`, err);
+      error(`Failed to load room templates: %O`, err);
       process.exit(1);
     }
   }

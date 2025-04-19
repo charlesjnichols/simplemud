@@ -26,8 +26,8 @@ function create_mob(data = {}, room) {
   // Populate with values or defaults
   Object.assign(mob, data);
 
-  mob.room = room;
-  mob.hp = data.maxHp;
+  mob.room = room || '';
+  mob.hp = data.maxHp || 100;
   mob.nextAttackTime = data.nextAttackTime || 0;
 
   return mob;

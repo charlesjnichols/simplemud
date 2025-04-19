@@ -12,12 +12,13 @@ const { is_alive } = require('../world');
 
 /**
  *
- * @param {Player|Mob} attacker
- * @param {Player|Mob} target
+ * @param {Player|Mob|undefined} attacker
+ * @param {Player|Mob|undefined} target
  * @param {number} timeNow
  * @returns
  */
 const perform_auto_attack = (attacker, target, timeNow) => {
+  if (!attacker || !target) return;
   if (!is_alive(attacker) || !is_alive(target)) return;
 
   const attackSpeed = attacker.weapon?.speed || 1000;

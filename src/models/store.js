@@ -12,9 +12,9 @@
  * @property {number} itemsToOffer - How many items to offer during each refresh.
  *
  * Transient (Runtime-Only) Properties:
- * @property {Item[]=} inventory - IDs of items currently available in the store.
- * @property {number=} last_refreshed - Timestamp (ms) of the last refresh.
- * @property {number=} refresh_interval - Interval (ms) between automatic store refreshes.
+ * @property {Item[]} inventory - IDs of items currently available in the store.
+ * @property {number} last_refreshed - Timestamp (ms) of the last refresh.
+ * @property {number} refresh_interval - Interval (ms) between automatic store refreshes.
  */
 
 /** @type {Store} */
