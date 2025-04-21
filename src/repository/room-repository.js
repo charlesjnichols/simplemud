@@ -28,6 +28,7 @@ const fileMap = path.join(process.cwd(), 'data', 'map.json');
  *   load_templates: () => void,
  *   values: () => Room[],
  *   get: (id: string) => Room | undefined
+ *   add: (room: Room) => void
  * }} The room store interface
  */
 function create_room_store() {
@@ -55,7 +56,7 @@ function create_room_store() {
   }
 
   return {
-    ..._.pick(roomCache, ['values', 'get']),
+    ..._.pick(roomCache, ['values', 'get', 'add']),
     load_templates,
   };
 }

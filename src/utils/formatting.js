@@ -100,7 +100,6 @@ const magenta = (txt) => tag('magenta', txt);
  * @param {string} txt
  */
 const grey = (txt) => tag('grey', txt);
-
 /**
  * @param {string} txt
  */
@@ -229,6 +228,7 @@ module.exports = {
   red,
   magenta,
   grey,
+  gray: grey,
   blue,
   orange,
   purple,

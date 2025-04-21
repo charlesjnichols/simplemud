@@ -28,9 +28,13 @@
   },
   "homepage": "https://github.com/lnguyenfx/simplemud#readme",
   "dependencies": {
+    "@faker-js/faker": "^9.7.0",
+    "@mikewesthad/dungeon": "^2.0.1",
     "chalk": "^5.4.1",
     "debug": "^4.4.0",
+    "dungrain": "^0.1.6",
     "eventemitter3": "^5.0.1",
+    "faker": "^6.6.6",
     "fuzzysort": "^3.1.0",
     "htmlparser2": "^4.1.0",
     "insort": "^0.4.0",

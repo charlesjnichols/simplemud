@@ -54,6 +54,11 @@
  *  @property {string} store
  */
 
+/** @typedef {Object} MapGenerateEvent
+ *  @property {Player} player
+ *  @property {Player} item
+ */
+
 // empty export to allow importing types
 module.exports = {
   PLAYER: {
@@ -115,6 +120,7 @@ module.exports = {
   },
 
   MAP: {
+    GENERATE: 'map.generate',
     GENERATED: 'map.generated',
     PORTAL_OPENED: 'map.portal.opened',
     PLAYER_ENTERED: 'map.player.entered',

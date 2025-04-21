@@ -34,6 +34,7 @@ const command_contexts = (player, input) => {
   }
   contexts.push('global');
   contexts.push('movement');
+  contexts.push('map');
 
   route_command(contexts, verb.toLowerCase(), args, player);
 };

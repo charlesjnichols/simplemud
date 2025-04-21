@@ -65,7 +65,10 @@ const register_player_events = () => {
    */
   eventBus.on(PLAYER.MOVED, ({ player, direction, from, to, enteredFrom }) => {
     const nextRoom = roomRepository.get(to);
-    if (!nextRoom) return;
+    if (!nextRoom) {
+      error('trying to move player to missing room %s', to);
+      return;
+    }
 
     // Update player room
     player.room = to;
