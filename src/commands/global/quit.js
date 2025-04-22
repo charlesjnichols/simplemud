@@ -16,6 +16,7 @@ const { playerRepository, connectionRepository } = require('../../repository/rep
  * @param {import('../../models/player').Player} player
  */
 module.exports = (player) => {
+  playerRepository.save(player.id);
   playerRepository.delete(player.id);
 
   const connection = connectionRepository.getConnection(player.id);

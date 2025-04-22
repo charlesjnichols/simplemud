@@ -13,5 +13,5 @@ const { render_room } = require('../../functions/room');
  * @returns
  */
 module.exports = (player) => {
-  send(player, render_room(player.room));
+  send(player, render_room(player));
 };

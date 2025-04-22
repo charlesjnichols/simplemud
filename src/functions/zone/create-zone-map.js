@@ -1,7 +1,6 @@
 // @ts-nocheck
 const Dungrain = require('dungrain');
 const _ = require('lodash');
-const seedrandom = require('seedrandom');
 
 /**
  * @typedef {{
@@ -24,7 +23,6 @@ const seedrandom = require('seedrandom');
  *   row: number,
  *   seed?: string,
  *   zone: string,
- *   iterationCount: number,
  *   anchors?: {
  *     start?: 'center' | 'edge',
  *     boss?: 'furthest' | 'mid'
@@ -36,14 +34,13 @@ const seedrandom = require('seedrandom');
  *     Empty: number
  *   }
  * }} options
- * @returns {Record<string, Room>}
+ * @returns {Record<string, room_model>}
  */
-const createZoneMap = ({
+const create_zone_map = ({
   column,
   row,
   seed = Date.now().toString(),
   zone,
-  iterationCount = 5,
   anchors = { start: 'center', boss: 'furthest' },
   indexMap = {
     Wall: 3,
@@ -53,7 +50,7 @@ const createZoneMap = ({
   },
 }) => {
   const dungeon = new Dungrain({
-    iterationCount,
+    iterationCount: 5,
     column,
     row,
     seed,
@@ -84,8 +81,6 @@ const createZoneMap = ({
       };
     });
   });
-
-  const getRoomKey = (x, y) => `${x},${y}`;
 
   Object.values(rooms).forEach((room) => {
     if (room.type === 'wall') return;
@@ -164,4 +159,4 @@ const findFurthestRoom = (coordsList, fromKey) => {
   return _.maxBy(coordsList, ({ x, y }) => Math.abs(x - fx) + Math.abs(y - fy)).key;
 };
 
-module.exports = { createZoneMap };
+module.exports = { create_zone_map };

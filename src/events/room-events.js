@@ -45,8 +45,13 @@ const register_room_events = () => {
    * @param {import('./event-types').PlayerMoveEvent} param0
    */
   eventBus.on(PLAYER.LEFT_ROOM, ({ player, from, direction }) => {
-    send(player, `You walk ${direction}.`);
-    send_to_roomId(from, cyan(`${player.name} leaves to the ${direction}.`));
+    if (direction) {
+      send(player, `You walk ${direction}.`);
+
+      if (from) {
+        send_to_roomId(from, cyan(`${player.name} leaves to the ${direction}.`));
+      }
+    }
   });
 
   /**
@@ -55,7 +60,9 @@ const register_room_events = () => {
    * @param {import('./event-types').PlayerMoveEvent} param0
    */
   eventBus.on(PLAYER.ENTERED_ROOM, ({ player, to, enteredFrom }) => {
-    send(player, render_room(to));
+    player.exploredRooms.add(to);
+
+    send(player, render_room(player));
     if (enteredFrom) {
       send_to_room(player, cyan(`${player.name} enters from the ${enteredFrom}.`));
     } else {

@@ -18,9 +18,11 @@ const { RoomType } = require('../config');
  * @property {RoomType} type
  *
  * Transient (Runtime-only) Properties:
- * @property {Item[]=} items - In-memory item list (not persisted)
- * @property {Mob[]=} mobs - In-memory item list (not persisted)
- * @property {number=} lastSpawnedAt
+ * @property {Item[]} items - In-memory item list (not persisted)
+ * @property {Mob[]} mobs - In-memory item list (not persisted)
+ * @property {number} lastSpawnedAt
+ * @property {string=} zone
+ * @property {string=} portal
  *
  * @property {Record<string, string>} rooms
  * A mapping of direction names (e.g., 'NORTH') to room IDs,
@@ -45,6 +47,9 @@ const room_model = {
   store: null,
   spawns: [],
   maxMobs: 0,
+  items: [],
+  mobs: [],
+  lastSpawnedAt: 0,
 };
 
 module.exports = room_model;

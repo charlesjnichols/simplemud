@@ -40,7 +40,14 @@ const register_player_events = () => {
       return;
     }
     send_announcement(cyan(`${player.name} appears in the realm.`));
-    eventBus.emit(PLAYER.ENTERED_ROOM, { player, to: player.room });
+
+    const room = roomRepository.get(player.room);
+    if (!room) {
+      error('player [%s] event [%s] from room [%s] that does not exist', player.id, PLAYER.ENTERED_REALM, player.room);
+      eventBus.emit(PLAYER.MOVED, { player, to: '1' });
+    } else {
+      eventBus.emit(PLAYER.ENTERED_ROOM, { player, to: player.room });
+    }
   });
 
   /**
@@ -75,7 +82,7 @@ const register_player_events = () => {
 
     // Remove from current room
     eventBus.emit(PLAYER.LEFT_ROOM, { player, from, direction });
-    eventBus.emit(PLAYER.ENTERED_ROOM, { player, to, direction, enteredFrom });
+    eventBus.emit(PLAYER.ENTERED_ROOM, { player, to, enteredFrom });
   });
 
   /**

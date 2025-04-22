@@ -13,6 +13,7 @@
 const ItemType = {
   WEAPON: 'WEAPON',
   ARMOR: 'ARMOR',
+  TOKEN: 'TOKEN',
 };
 
 /**

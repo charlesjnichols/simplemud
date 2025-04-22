@@ -16,6 +16,8 @@
 'use strict';
 
 const _ = require('lodash');
+const { v4: uuidv4 } = require('uuid');
+
 const debug = require('debug')('mud:store-events');
 
 const { create_item } = require('../functions/item/create-item');
@@ -24,6 +26,8 @@ const { send_to_room } = require('../functions/world');
 const { cyanBold } = require('../utils/formatting');
 
 const { STORE, SYSTEM } = require('./event-types');
+const { faker } = require('@faker-js/faker');
+const { ItemType } = require('../config');
 
 /**
  * Registers store-related listeners on the global event bus.
@@ -61,6 +65,15 @@ const register_store_events = () => {
         debug(` - Added '${item.name}' to '${store.id}'`);
         return item;
       });
+
+      store.inventory.push(
+        create_item({
+          id: uuidv4(),
+          name: `Token of ${faker.person.firstName()}`,
+          type: ItemType.TOKEN,
+          price: 1,
+        }),
+      );
 
       store.last_refreshed = now;
 

@@ -5,10 +5,13 @@
  */
 
 'use strict';
+const error = require('debug')('mud:functions:room:render_room:error');
 
-const { cyanBold, redBold, white, magenta, yellowBold, greenBold } = require('../../utils/formatting');
+const { cyanBold, redBold, white, magenta, yellowBold, greenBold, blue, blueBold } = require('../../utils/formatting');
 const { get_exits } = require('./room-navigation');
-const { roomRepository, playerRepository, mobRepository } = require('../../repository/repositories').get();
+const { render_zone_map } = require('../zone');
+const { roomRepository, playerRepository, mobRepository, zoneRepository } =
+  require('../../repository/repositories').get();
 
 /**
  * Formats a list of entities into a labeled and colored string.
@@ -17,7 +20,7 @@ const { roomRepository, playerRepository, mobRepository } = require('../../repos
  * colorFn = red, and label = 'Mobs', the output will be:
  *   "<red>Mobs: Goblin, Orc</red>\r\n"
  *
- * @param {Array<{ name: string }>} list - List of entities with a `name` field.
+ * @param {Array<{name: string}>} list - List of entities with a `name` field.
  * @param {(text: string) => string} colorFn - A function that wraps text in ANSI or tag-based color codes.
  * @param {string} label - The label prefix to display before the list.
  * @returns {string} A formatted string, or empty string if the list is empty.
@@ -28,18 +31,53 @@ const get_names = (list, colorFn, label) => {
   return colorFn(`${label}: ${names}`) + '\r\n';
 };
 
-const render_room = (roomId) => {
-  const room = roomRepository.get(roomId);
-  const header =
-    yellowBold(room.name) + '\r\n' + white(room.description) + '\r\n' + greenBold('exits: ' + get_exits(room)) + '\r\n';
+/**
+ * @param {import('../../models/player').Player} player - List of entities with a `name` field.
+ * @returns {string} A formatted string
+ */
+const render_room = (player) => {
+  const room = roomRepository.get(player.room);
+
+  if (!room) {
+    error('room is not in repository %O', player);
+    return 'No description.';
+  }
+
+  const lines = [];
+
+  if (room.zone) {
+    const zone = zoneRepository.get(room.zone);
+    if (!zone) {
+      error('playter %s room zone is not in repository %O', player.id, room);
+      return 'No description.';
+    }
+    lines.push(
+      yellowBold(room.name) +
+        '\r\n' +
+        white(render_zone_map(zone.rooms, player, player.exploredRooms).join('\r\n')) +
+        '\r\n' +
+        greenBold('exits: ' + get_exits(room)) +
+        '\r\n',
+    );
+  } else {
+    lines.push(
+      yellowBold(room.name) +
+        '\r\n' +
+        white(room.description) +
+        '\r\n' +
+        greenBold('exits: ' + get_exits(room)) +
+        '\r\n',
+    );
+  }
 
   const roomItem = get_names(room.items, magenta, 'Items');
-  const roomPeople = get_names(playerRepository.find_by_room(room.id), cyanBold, 'People');
-  const roomMobs = get_names(mobRepository.find_by_room(room.id), redBold, 'Mobs');
-
-  const body = [header, roomItem ? 'You see: ' + roomItem + '\r\n' : '', roomPeople, roomMobs].filter(Boolean).join('');
-
-  return body;
+  lines.push(roomItem ? 'You see: ' + roomItem + '\r\n' : '');
+  lines.push(get_names(playerRepository.find_by_room(room.id), cyanBold, 'People'));
+  lines.push(get_names(mobRepository.find_by_room(room.id), redBold, 'Mobs'));
+  if (room.portal) {
+    lines.push(blueBold('You see: a mysterous portal to somewhere\r\n'));
+  }
+  return lines.filter(Boolean).join('');
 };
 
 module.exports = {

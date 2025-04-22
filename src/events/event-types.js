@@ -54,9 +54,14 @@
  *  @property {string} store
  */
 
-/** @typedef {Object} MapGenerateEvent
+/** @typedef {Object} ZoneGenerateEvent
  *  @property {Player} player
- *  @property {Player} item
+ *  @property {Item} item
+ */
+
+/** @typedef {Object} PortalOpenedEvent
+ *  @property {Player} player
+ *  @property {Room} room
  */
 
 // empty export to allow importing types
@@ -119,12 +124,12 @@ module.exports = {
     INVENTORY_UPDATED: 'store.inventory.updated',
   },
 
-  MAP: {
-    GENERATE: 'map.generate',
-    GENERATED: 'map.generated',
-    PORTAL_OPENED: 'map.portal.opened',
-    PLAYER_ENTERED: 'map.player.entered',
-    COMPLETED: 'map.completed',
+  ZONE: {
+    GENERATE: 'zone.generate',
+    GENERATED: 'ZoneGenerateEvent.generated',
+    PORTAL_OPENED: 'ZoneGenerateEvent.portal.opened',
+    PLAYER_ENTERED: 'ZoneGenerateEvent.player.entered',
+    COMPLETED: 'ZoneGenerateEvent.completed',
   },
 
   QUEST: {

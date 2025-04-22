@@ -25,6 +25,9 @@ const command_contexts = (player, input) => {
     error('No store in room for player %O', player);
     return;
   }
+  if (room.zone) {
+    contexts.push('zone');
+  }
 
   if (is_in_store(room)) {
     contexts.push('store');
@@ -34,7 +37,6 @@ const command_contexts = (player, input) => {
   }
   contexts.push('global');
   contexts.push('movement');
-  contexts.push('map');
 
   route_command(contexts, verb.toLowerCase(), args, player);
 };

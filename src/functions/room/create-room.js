@@ -29,6 +29,9 @@ function create_room(data = {}) {
   room.mobs = room.mobs || [];
   room.lastSpawnedAt = room.lastSpawnedAt || 0;
 
+  room.zone = room.zone || undefined;
+  room.portal = room.portal || undefined;
+
   // TypeScript may not recognize attached runtime fields, so we suppress errors here.
   // @ts-ignore
   return Object.seal(room);

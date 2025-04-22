@@ -29,6 +29,7 @@ const { create_player_store } = require('./player-repository');
 const { create_room_store } = require('./room-repository');
 const { create_store_store } = require('./store-repository');
 const { create_mob_store } = require('./mob-repository');
+const { create_zone_store } = require('./zone-repository');
 const { create_connection_cache } = require('./connection-repository');
 
 // Create instances
@@ -37,6 +38,7 @@ const playerRepository = create_player_store();
 const roomRepository = create_room_store();
 const storeRepository = create_store_store();
 const mobRepository = create_mob_store();
+const zoneRepository = create_zone_store();
 const connectionRepository = create_connection_cache();
 
 /**
@@ -61,7 +63,7 @@ function load() {
 
     log('✅ All repositories loaded.');
   } catch (err) {
-    error(`💥 Error loading repositories: ${err.message}\n${err.stack}`);
+    error(`Error loading repositories: %O`, err);
     process.exit(1);
   }
 }
@@ -75,6 +77,7 @@ function load() {
  *   roomRepository: ReturnType<typeof create_room_store>,
  *   storeRepository: ReturnType<typeof create_store_store>,
  *   mobRepository: ReturnType<typeof create_mob_store>,
+ *   zoneRepository: ReturnType<typeof create_zone_store>,
  *   connectionRepository: ReturnType<typeof create_connection_cache>
  * }}
  */
@@ -85,6 +88,7 @@ function get() {
     roomRepository,
     storeRepository,
     mobRepository,
+    zoneRepository,
     connectionRepository,
   };
 }

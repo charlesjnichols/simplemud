@@ -19,7 +19,7 @@ const { encryptPassword, isEncrypted } = require('../../utils/password-vault');
  *
  * @type {string[]}
  */
-const runtimeOnly = ['nextAttackTime', 'lastSentHp', 'lastStatbarTime'];
+const runtimeOnly = ['nextAttackTime', 'lastSentHp', 'lastStatbarTime', 'exploredRooms'];
 
 /**
  * Creates a new player instance and attaches modular behavior.
@@ -37,6 +37,7 @@ function create_player(data = {}) {
   player.lastStatbarTime = data.nextAttackTime || 0;
   player.money = data.nextAttackTime || 10000;
   player.hp = data.maxHp || 100;
+  player.exploredRooms = new Set(data.exploredRooms || []);
 
   // Secure password
   player.password = isEncrypted(player.password) ? player.password : encryptPassword(player.password || '');

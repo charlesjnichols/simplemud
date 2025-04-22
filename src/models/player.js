@@ -28,6 +28,7 @@
  * @property {number} maxHp - Maximum hit points
  * @property {number} money - Player gold
  * @property {Item[]} inventory - Items the player is carrying
+ * @property {Set<string>} exploredRooms
  * @property {{ STRENGTH: number, DEXTERITY: number, INTELLIGENCE: number }} attributes - Stat block
  *
  * Runtime-Only Properties:
@@ -55,6 +56,7 @@ module.exports = {
   maxHp: 100,
   money: 0,
   inventory: [],
+  exploredRooms: null,
   attributes: {
     STRENGTH: 1,
     DEXTERITY: 1,
